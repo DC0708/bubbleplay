@@ -17,6 +17,7 @@
 package com.example.mapdemo;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -75,7 +76,12 @@ public final class MainActivity extends ActionBarActivity{
 
         FAB = (ImageButton) findViewById(R.id.imageButton);
         FAB1 = (ImageButton) findViewById(R.id.imageButton1);
-        FAB2 = (ImageButton) findViewById(R.id.imageButton2);
+        //FAB2 = (ImageButton) findViewById(R.id.imageButton2);
+        TextView tx = (TextView)findViewById(R.id.textView);
+
+        Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/GoodDog.otf");
+
+        tx.setTypeface(custom_font);
 
         Log.d("hyugf", "fgdfgdrtsgrf");
 
