@@ -80,7 +80,7 @@ public final class MainActivity extends ActionBarActivity{
         Log.d("hyugf", "fgdfgdrtsgrf");
 
         callbackManager = CallbackManager.Factory.create();
-//        setContentView(R.layout.main);
+  //        setContentView(R.layout.main);
   //      info = (TextView)findViewById(R.id.info);
         loginButton = (LoginButton)findViewById(R.id.login_button);
 

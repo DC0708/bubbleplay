@@ -215,6 +215,7 @@ public class TopView extends AppCompatActivity implements LocationListener,SeekB
                 radius.latitude, radius.longitude, result);
         return result[0];
     }
+
 //small --> 0.00025 , 0.00025
 //medium --> 0.00035 , 0.00035
 //large --> 0.00050 , 0.00050
@@ -243,7 +244,7 @@ public class TopView extends AppCompatActivity implements LocationListener,SeekB
         if(extras != null)
             BoundaryType = extras.getString("Boundary");
 
-        mMyLocationCheckbox = (CheckBox) findViewById(R.id.my_location);
+       // mMyLocationCheckbox = (CheckBox) findViewById(R.id.my_location);
 
         final SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -270,16 +271,18 @@ public class TopView extends AppCompatActivity implements LocationListener,SeekB
         if(gps.canGetLocation()) {
             String bestProvider = locationManager.getBestProvider(criteria, true);
             final Location location = locationManager.getLastKnownLocation(bestProvider);
-            InitialLoc = new LatLng(location.getLatitude(), location.getLongitude());
 
+            if(location != null){
+                InitialLoc = new LatLng(location.getLatitude(), location.getLongitude());
+
+            }
+
+            else{
+                Log.d("location error","location is not enabled!!");
+            }
             if (location != null) {
                 onLocationChanged(location);
-               // InitialLoc = new LatLng(location.getLatitude(), location.getLongitude());
-
-//            player.circle.setCenter(new LatLng(location.getLatitude(),location.getLongitude()));
-                //InitialLoc = new LatLng(location.getLatitude(), location.getLongitude());
                 Log.d(" initial location set ", location.getLatitude() + " " + location.getLongitude());
-
                 Log.d("Location is if changed ", location.getLatitude() + " " + location.getLongitude());
             }
             final Timer timer = new Timer();
@@ -561,48 +564,49 @@ public class TopView extends AppCompatActivity implements LocationListener,SeekB
 
 
         // check if GPS enabled
-        if(gps.canGetLocation()){
+        if(gps.canGetLocation()) {
 
-            if(BoundaryType.equals("Large Boundary")){
+            if (BoundaryType.equals("Large Boundary")) {
 
-                Log.d("boundary is","Large" + BoundaryType);
+                Log.d("boundary is", "Large" + BoundaryType);
 
-                width = 2*0.0003;
-                height= 2*0.0003;
+                width = 2 * 0.0003;
+                height = 2 * 0.0003;
+                if(InitialLoc != null)
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(InitialLoc.latitude, InitialLoc.longitude), 19.5f));
                 numberOfBubbles = 21;
                 warmHoleCount = 3;
-            }
-            else if(BoundaryType.equals("Medium Boundary")){
-                Log.d("boundary is","medium" + BoundaryType);
+            } else if (BoundaryType.equals("Medium Boundary")) {
+                Log.d("boundary is", "medium" + BoundaryType);
 
-                width = 2*0.0002;
-                height= 2*0.0002;
+                width = 2 * 0.0002;
+                height = 2 * 0.0002;
                 numberOfBubbles = 15;
                 warmHoleCount = 3;
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(InitialLoc.latitude, InitialLoc.longitude), 19.5f));
+                if (InitialLoc != null)
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(InitialLoc.latitude, InitialLoc.longitude), 19.5f));
 
-            }
-            else{
+            } else {
 
-                Log.d("boundary is","small" + BoundaryType);
-                width = 2*0.0001;
-                height= 2*0.0001;
+                Log.d("boundary is", "small" + BoundaryType);
+                width = 2 * 0.0001;
+                height = 2 * 0.0001;
                 numberOfBubbles = 9;
                 warmHoleCount = 3;
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(InitialLoc.latitude, InitialLoc.longitude), 19.5f));
+                if (InitialLoc != null)
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(InitialLoc.latitude, InitialLoc.longitude), 19.5f));
 
             }
+            if(InitialLoc != null){
 
-            map.addPolygon(new PolygonOptions()
-                    .addAll(createRectangle(new LatLng(InitialLoc.latitude, InitialLoc.longitude), width/2, height/2))
-                    .strokeColor(Color.BLUE)
-                    .strokeWidth(2));
+                map.addPolygon(new PolygonOptions()
+                        .addAll(createRectangle(new LatLng(InitialLoc.latitude, InitialLoc.longitude), width / 2, height / 2))
+                        .strokeColor(Color.BLUE)
+                        .strokeWidth(2));
 
-            //  Log.d(" gps ",gpsLocation.latitude + " fssfd "+ gpsLocation.longitude);
-
-            UpdateBubbles(InitialLoc.latitude,InitialLoc.longitude,BoundaryType);
-
+                //Log.d(" gps ",gpsLocation.latitude + " fssfd "+ gpsLocation.longitude);
+                UpdateBubbles(InitialLoc.latitude, InitialLoc.longitude, BoundaryType);
+            }
             // \n is for new line
             //Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
         }else{
@@ -617,8 +621,6 @@ public class TopView extends AppCompatActivity implements LocationListener,SeekB
 
 
     private List<LatLng> createRectangle(LatLng center, double halfWidth, double halfHeight) {
-
-
 
         return Arrays.asList(new LatLng(center.latitude - halfHeight, center.longitude - halfWidth),
                 new LatLng(center.latitude - halfHeight, center.longitude + halfWidth),
@@ -694,9 +696,6 @@ public class TopView extends AppCompatActivity implements LocationListener,SeekB
             }
 
         }
-
-
-
         // Creating Matter Bubbles
 
         for(int i=0;i<2*numberOfBubbles/3;i++){

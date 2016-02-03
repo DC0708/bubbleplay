@@ -53,13 +53,12 @@ public final class ChoseBoundary extends ActionBarActivity {
             @Override
             public void onClick(View v) {
 
-            Intent i = new Intent(ChoseBoundary.this, TopView.class);
+            Intent i = new Intent(ChoseBoundary.this, Controller1.class);
             i.putExtra("Boundary", "Small Boundary");
             Toast.makeText(ChoseBoundary.this,"Small Boundary chosen",Toast.LENGTH_SHORT).show();
             mediaPlayer.start();
 
             startActivity(i);
-
 
             }
         });
@@ -68,7 +67,7 @@ public final class ChoseBoundary extends ActionBarActivity {
             @Override
             public void onClick(View v) {
 
-                Intent i = new Intent(ChoseBoundary.this, TopView.class);
+                Intent i = new Intent(ChoseBoundary.this, Controller1.class);
                 i.putExtra("Boundary", "Medium Boundary");
                 Toast.makeText(ChoseBoundary.this,"Medium Boundary chosen",Toast.LENGTH_SHORT).show();
                 mediaPlayer.start();
@@ -83,7 +82,7 @@ public final class ChoseBoundary extends ActionBarActivity {
             @Override
             public void onClick(View v) {
 
-                Intent i = new Intent(ChoseBoundary.this, TopView.class);
+                Intent i = new Intent(ChoseBoundary.this, Controller1.class);
                 i.putExtra("Boundary", "Large Boundary");
                 Toast.makeText(ChoseBoundary.this,"Large Boundary chosen",Toast.LENGTH_SHORT).show();
                 mediaPlayer.start();
