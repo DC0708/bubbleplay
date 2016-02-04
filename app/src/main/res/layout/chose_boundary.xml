@@ -24,11 +24,21 @@
         layout="@layout/tool_bar"
 
         ></include>-->
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="BubblePlay"
+        android:id="@+id/title"
+        android:layout_margin="16dp"
+        android:textColor="#ffffff"
+        android:textSize="30dp"
+        android:gravity="right" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingTop="200dp">
+        android:paddingTop="150dp">
 
 
         <FrameLayout

@@ -76,7 +76,7 @@ public final class MainActivity extends ActionBarActivity{
 
         FAB = (ImageButton) findViewById(R.id.imageButton);
         FAB1 = (ImageButton) findViewById(R.id.imageButton1);
-        //FAB2 = (ImageButton) findViewById(R.id.imageButton2);
+        FAB2 = (ImageButton) findViewById(R.id.imageButton2);
         TextView tx = (TextView)findViewById(R.id.textView);
 
         Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/GoodDog.otf");
@@ -146,9 +146,21 @@ public final class MainActivity extends ActionBarActivity{
             public void onClick(View v) {
 
 
-                Toast.makeText(MainActivity.this,"About to be written",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this,"About to be written",Toast.LENGTH_SHORT).show();
 
                 startActivity(new Intent(MainActivity.this, About.class));
+
+            }
+        });
+
+        FAB2.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+
+
+                //Toast.makeText(MainActivity.this,"About to be written",Toast.LENGTH_SHORT).show();
+
+                startActivity(new Intent(MainActivity.this, Instructions.class));
 
             }
         });

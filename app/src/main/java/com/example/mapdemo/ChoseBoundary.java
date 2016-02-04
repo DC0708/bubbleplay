@@ -17,11 +17,13 @@
 package com.example.mapdemo;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -48,6 +50,10 @@ public final class ChoseBoundary extends ActionBarActivity {
         small = (ImageButton) findViewById(R.id.imageButton);
         mdium = (ImageButton) findViewById(R.id.imageButton1);
         large = (ImageButton) findViewById(R.id.imageButton2);
+
+        TextView tx = (TextView)findViewById(R.id.title);
+        Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/GoodDog.otf");
+        tx.setTypeface(custom_font);
 
         small.setOnClickListener(new View.OnClickListener() {
             @Override
