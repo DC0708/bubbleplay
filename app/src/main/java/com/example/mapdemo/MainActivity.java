@@ -148,7 +148,7 @@ public final class MainActivity extends ActionBarActivity{
 
                 Toast.makeText(MainActivity.this,"About to be written",Toast.LENGTH_SHORT).show();
 
-                //startActivity(new Intent(this, ChoseBoundary.class));
+                startActivity(new Intent(MainActivity.this, About.class));
 
             }
         });

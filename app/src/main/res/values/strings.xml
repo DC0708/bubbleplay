@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
      Copyright (C) 2012 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,15 +59,15 @@
     <string name="ground_overlay_demo_description">Demonstrates how to add a GroundOverlay to a map.</string>
     <string name="hybrid">Hybrid</string>
     <string name="indoor">Indoor</string>
+
     <string-array name="layers_array">
         <item>@string/normal</item>
         <item>@string/hybrid</item>
-
-
         <item>@string/satellite</item>
         <item>@string/terrain</item>
         <item>@string/none_map</item>
     </string-array>
+
     <string name="layers_demo_label">Layers</string>
     <string name="layers_demo_description">Demonstrates the different map layers.</string>
     <string name="left_arrow">\u2190</string>
@@ -159,7 +160,7 @@
     <string name="lite_list_demo_label">Lite Mode ListView</string>
     <string name="lite_list_demo_description">Demonstrates using maps in lite mode in a ListView</string>
 
-    <!--     Indoor    -->
+    <!-- Indoor -->
     <string name="activate_higher_level">Activate Higher Level</string>
     <string name="focused_building_info">Focused Building</string>
     <string name="focused_level_info">Focused Level</string>
@@ -167,7 +168,7 @@
     <string name="indoor_demo_label">Indoor</string>
     <string name="toggle_level_picker">Toggle Level Picker</string>
 
-    <!--    Streetview    -->
+    <!-- Streetview -->
     <string name="go_to_invalid">Go to Invalid Point</string>
     <string name="go_to_san_fran">Go to San Fran</string>
     <string name="navigate_to_another_panorama">navigate to another panorama</string>
@@ -193,9 +194,12 @@
     <string name="long_press_screen">long press screen</string>
     <string name="walk_panorama">Walk</string>
 
-    <!--    Permissions    -->
+    <!-- Permissions -->
     <string name="permission_rationale_location">Access to the location service is required to demonstrate the \'my location\' feature, which shows your current location on the map.</string>
-    <string name="location_permission_denied">This sample requires location permission to enable the \'my location\' layer. Please try again and grant access to use the location.\nIf the permission has been permanently denied, it can be enabled from the System Settings &gt; Apps &gt; \'Google Maps API Demos\'.</string>
+    <string name="location_permission_denied">This sample requires location permission to enable the \'my location\' layer. Please try again and grant access to use the location.\nIf the permission has been permanently denied, it can be enabled from the System Settings > Apps > \'Google Maps API Demos\'.</string>
     <string name="permission_required_toast">Location permission is required for this demo.</string>
+    <string name="title_activity_about">About</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 
 </resources>
