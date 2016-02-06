@@ -25,19 +25,27 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.login.LoginResult;
 
 import com.facebook.login.widget.LoginButton;
+import com.facebook.login.widget.ProfilePictureView;
+
+import org.json.JSONException;
 
 
 /**
@@ -60,14 +68,26 @@ public final class MainActivity extends ActionBarActivity{
     private LoginButton loginButton;
     private CallbackManager callbackManager;
     String username;
+    LinearLayout linearLayout;
+    TextView user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
+
         FacebookSdk.sdkInitialize(getApplicationContext());
 
         setContentView(R.layout.main);
+
+        user = (TextView) findViewById(R.id.username);
+        Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/GoodDog.otf");
+        user.setTypeface(custom_font);
+
+        linearLayout = (LinearLayout)findViewById(R.id.user_content);
+        linearLayout.setVisibility(View.INVISIBLE);
 
         mediaPlayer = MediaPlayer.create(this, R.raw.gamebubble);
 
@@ -77,10 +97,8 @@ public final class MainActivity extends ActionBarActivity{
         FAB = (ImageButton) findViewById(R.id.imageButton);
         FAB1 = (ImageButton) findViewById(R.id.imageButton1);
         FAB2 = (ImageButton) findViewById(R.id.imageButton2);
+
         TextView tx = (TextView)findViewById(R.id.textView);
-
-        Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/GoodDog.otf");
-
         tx.setTypeface(custom_font);
 
         Log.d("hyugf", "fgdfgdrtsgrf");
@@ -104,6 +122,33 @@ public final class MainActivity extends ActionBarActivity{
                                 + loginResult.getAccessToken().getToken()
                 );
 */              username = loginResult.getAccessToken().getToken();
+
+                ProfilePictureView profilePictureView;
+                profilePictureView = (ProfilePictureView) findViewById(R.id.ProfilePicture);
+                profilePictureView.setProfileId(loginResult.getAccessToken().getUserId());
+
+                linearLayout.setVisibility(View.VISIBLE);
+
+                new GraphRequest(
+                        AccessToken.getCurrentAccessToken(),
+                        "/me",
+                        null,
+                        HttpMethod.GET,
+                        new GraphRequest.Callback() {
+                            public void onCompleted(GraphResponse response) {
+                                 /* handle the result */
+                                try {
+
+                                    user.setText("Hi " + response.getJSONObject().get("name") + "!");
+//                                    System.out.println(response.getJSONObject().get("name"));
+                                }
+                                catch(JSONException e)
+                                {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                ).executeAsync();
 
  //               Log.d("fb status",);
 
