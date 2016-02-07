@@ -4,7 +4,9 @@ package com.example.mapdemo;
  * Created by DC on 3/11/15.
  */
     //    import android.app.ActivityThread;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -63,6 +65,7 @@ public class GeolocationService extends Service implements LocationListener {
 
             if (!isGPSEnabled && !isNetworkEnabled) {
                 // no network provider is enabled
+               // showSettingsAlert();
             } else {
                 this.canGetLocation = true;
                 // First get location from Network Provider
@@ -154,14 +157,20 @@ public class GeolocationService extends Service implements LocationListener {
      * Function to show settings alert dialog
      * On pressing Settings button will lauch Settings Options
      * */
-    public void showSettingsAlert(){
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+    public void showSettingsAlert(Activity activity){
+
+        Log.d("Alert","In error!!");
+       // AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
+        Log.d("Alert","In error1!!");
 
         // Setting Dialog Title
-        alertDialog.setTitle("GPS is settings");
+        alertDialog.setTitle("GPS Settings");
+        Log.d("Alert", "In error2!!");
 
         // Setting Dialog Message
         alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
+        Log.d("Alert", "In error3!!");
 
         // On pressing Settings button
         alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
@@ -170,6 +179,7 @@ public class GeolocationService extends Service implements LocationListener {
                 mContext.startActivity(intent);
             }
         });
+        Log.d("Alert", "In error4!!");
 
         // on pressing cancel button
         alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -179,7 +189,12 @@ public class GeolocationService extends Service implements LocationListener {
         });
 
         // Showing Alert Message
+        Log.d("Alert","In error5!!");
+
         alertDialog.show();
+
+        Log.d("Alert","In error6!!");
+
     }
 
     @Override

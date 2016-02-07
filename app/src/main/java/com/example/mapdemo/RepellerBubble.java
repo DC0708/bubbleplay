@@ -17,9 +17,9 @@ public class RepellerBubble {
 
     public int boolTag;
 
-    public int mStrokeColor;
+    public final int mStrokeColor = Color.RED;
 
-    public final int mFillColor=Color.RED;
+    public final int mFillColor = Color.RED;
 
     public int mWidth;
 
@@ -35,7 +35,7 @@ public class RepellerBubble {
         int x = (r.nextInt(10)+0)%10;
         int y = (r.nextInt(10)+0)%10;
         this.dir = (r.nextInt(360)+0)%360;
-        this.boolTag = 4;
+        this.boolTag = 3;
         this.radius = 1 + (0.01 * (double)((r.nextInt(100)+0)%100));
 
         //   Log.d("checkValue",String.valueOf(x)+" " +y+" "+dir);

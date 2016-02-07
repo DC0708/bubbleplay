@@ -20,7 +20,7 @@ public class SnackBubble {
 
     public int dir;
 
-    public int mStrokeColor;
+    public int mStrokeColor = Color.YELLOW ;
 
     public final int mFillColor = Color.YELLOW;
 
@@ -28,6 +28,17 @@ public class SnackBubble {
 
     public double speed;
     final double bubbleSpeed = 1.0/250000.0;
+
+
+    public SnackBubble(double radii, int direction,  double speeds,LatLng loc ){
+
+
+        this.dir = direction;
+        this.boolTag=1;
+        this.center = new Centre(loc.latitude,loc.longitude);
+        this.speed = speeds ;
+        this.radius = radii;
+    }
 
     public SnackBubble(Boolean[][] isPlacedBubble,int count,Model gamemodel,LatLng initialloc){
 
@@ -64,6 +75,7 @@ public class SnackBubble {
 
             isPlacedBubble[x][y]=true;
         }
+
 
         /** Place the bubble on the map with its size depending on the boundary **/
     }

@@ -76,9 +76,12 @@ public class TopView extends AppCompatActivity implements LocationListener,SeekB
     private LatLng InitialLoc;
 
 //    private static final LatLng INDIA = new LatLng(-33.86365, 151.20589);
+
 //
+
 //    private static final LatLng PAK = new LatLng(-33.88365, 151.20389);
 //
+
 //    private static final LatLng ENG = new LatLng(-33.87365, 151.21689);
 //
 //    private static final LatLng DC = new LatLng(-33.86165, 151.21892);
@@ -289,247 +292,244 @@ public class TopView extends AppCompatActivity implements LocationListener,SeekB
             timer.scheduleAtFixedRate(new TimerTask() {
 
                 @Override
-                public void run() {
-                    runOnUiThread(new Runnable(){
-                        @Override
-                        public void run() {
-                            //   Log.d("size ",String.valueOf(circles.size()));
+                public void run(){
+                runOnUiThread(new Runnable(){
+                    @Override
+                    public void run(){
 
+                        //   Log.d("size ",String.valueOf(circles.size()));
+                        /******* Collission with Boundary *******/
+                        OnCollisionBoundary(circles,InitialLoc,height,width);
 
-                            /*******Collission with Boundary ************/
-                            OnCollisionBoundary(circles,InitialLoc,height,width);
+                        CollisionNonPlayerBubbles(circles,mMap);
 
-                            CollisionNonPlayerBubbles(circles,mMap);
+                        CollisionPlayerNonplayer(circles,mCircles,bCircles);
 
-                            CollisionPlayerNonplayer(circles,mCircles,bCircles);
+                        RepellerPhysics();
 
-                            RepellerPhysics();
+                        if(gameover==true){
 
-                            if(gameover==true){
-
-                                timer.cancel();
-                                timer.purge();
-                            }
-
-                            if(circles.size()>0){
-                                AlertDialog alertDialog = new AlertDialog.Builder(
-                                        TopView.this).create();
-
-                                // Setting Dialog Title
-                                alertDialog.setTitle("CONGRATTSSS!!!");
-                                Log.d("Game is "," Over !!!");
-                                // Setting Dialog Message
-                                alertDialog.setMessage("You Won. You are a champ, but are you pro??");
-
-
-                                alertDialog.setButton("START AGAIN", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        // Write your code here to execute after dialog closed
-                                        getIntent().setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(new Intent(TopView.this, MainActivity.class));
-                                        Toast.makeText(getApplicationContext(), "You clicked on RESTART", Toast.LENGTH_SHORT).show();
-                                        timer.cancel();
-                                        timer.purge();
-                                        finish();
-                                    }
-                                });
-                            }
-
-                            else if(circles.size()>0)
-                                OnPlayerBoundaryCollission(new LatLng(location.getLatitude(),location.getLongitude()),height,width);
-                            else if(circles.size()<=0){
-                                AlertDialog alertDialog = new AlertDialog.Builder(
-                                        TopView.this).create();
-
-                                // Setting Dialog Title
-                                alertDialog.setTitle("OOOPSSS!!!");
-                                Log.d("Game is "," Over !!!");
-                                // Setting Dialog Message
-                                alertDialog.setMessage("You scored " + String.valueOf(totalscore) + " .Game Over!!");
-
-
-                                alertDialog.setButton("START AGAIN", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        // Write your code here to execute after dialog closed
-                                        getIntent().setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-                                        startActivity(new Intent(TopView.this, MainActivity.class));
-                                        timer.cancel();
-                                        Toast.makeText(getApplicationContext(), "You clicked on RESTART", Toast.LENGTH_SHORT).show();
-                                        timer.purge();
-
-                                        finish();
-                                    }
-                                });
-                            }
-
-                            timeplayed+=1;
-
-                            /*******  -------  ************ /
-                             int check=0;
-                             /****** ----- Collision of non player bubbles ***
-                             for(int i=0;i<circles.size();i++){
-
-                             for(int j=0;j<circles.size();j++){
-
-                             if(i!=j){
-                             double distanceBwBubbles = distFrom(circles.get(i).circle.getCenter().latitude, circles.get(i).circle.getCenter().longitude, circles.get(j).circle.getCenter().latitude, circles.get(j).circle.getCenter().longitude);
-
-                             if(circles.get(i).radius+circles.get(j).radius>=Math.abs(distanceBwBubbles)){
-
-
-                             double r1 = circles.get(i).radius;
-                             double r2 = circles.get(j).radius;
-
-                             double lat = r1>=r2?circles.get(i).circle.getCenter().latitude:circles.get(j).circle.getCenter().latitude;
-                             double lon = r1>=r2?circles.get(i).circle.getCenter().longitude:circles.get(j).circle.getCenter().longitude;
-                             int dir = r1>=r2?circles.get(i).direction:circles.get(j).direction;
-                             int tag = r1>=r2?circles.get(i).bTag:circles.get(j).bTag;
-                             double sp = r1>=r2?circles.get(i).speed:circles.get(j).speed;
-
-                             double newRadius;
-                             if (circles.get(i).bTag==circles.get(j).bTag)
-                             newRadius = Math.pow((Math.pow(r1,3)+Math.pow(r2,3)),1.0/3.0);
-                             else
-                             newRadius = Math.pow(Math.abs(Math.pow(r1,3)-Math.pow(r2,3)),1.0/3.0);
-                             //    Log.d("New Radius is"," "+newRadius);
-
-                             //    Log.d("size of circles before removal", " "+ circles.size());
-                             //circles.get(i).
-                             if(i<j)
-                             j-=1;
-                             circles.get(i).circle.remove();
-
-                             circles.remove(i);
-
-                             circles.get(j).circle.remove();
-
-
-                             circles.remove(j);
-                             //  Log.d("size of circles", " "+ circles.size());
-                             if (tag==1)
-                             mFillColor = Color.YELLOW;
-                             else
-                             mFillColor = Color.GREEN;
-                             circles.add(new DraggableCircle(new LatLng(lat,lon), newRadius,dir,tag,sp));
-                             check=1;
-                             break;
-                             }
-
-
-                             }
-
-
-                             }
-
-                             if(check==1)
-                             break;
-
-
-
-                             }
-
-                             /****** ----- Collision of PLayer bubble ***
-                             if(mCircles.size()>0){
-                             DraggableCircle player = mCircles.get(mCircles.size()-1);
-
-                             for(int i =0 ; i <circles.size();i++){
-
-                             double distanceBwBubbles = distFrom(circles.get(i).circle.getCenter().latitude, circles.get(i).circle.getCenter().longitude, mCircles.get(mCircles.size()-1).circle.getCenter().latitude, mCircles.get(mCircles.size()-1).circle.getCenter().longitude);
-
-                             if(circles.get(i).radius+mCircles.get(mCircles.size()-1).radius>=Math.abs(distanceBwBubbles)) {
-                             Log.d("collision with player", " " + circles.get(i).bTag);
-                             if (player.radius < circles.get(i).radius) {
-                             int size = mCircles.size();
-                             mCircles.get(size - 1).circle.remove();
-                             mCircles.remove(size - 1);
-                             break;
-                             } else {
-                             if (circles.get(i).bTag == 1) {
-                             double r1 = player.radius;
-                             double r2 = circles.get(i).radius;
-
-                             double newRadius = Math.pow((Math.pow(r1, 3) + Math.pow(r2, 3)), 1.0 / 3.0);
-                             player.circle.setRadius(newRadius);
-                             circles.get(i).circle.remove();
-                             circles.remove(i);
-                             break;
-                             } else if (circles.get(i).bTag == 2) {
-                             double r1 = player.radius;
-                             double r2 = circles.get(i).radius;
-
-                             double newRadius = Math.pow(Math.abs(Math.pow(r1, 3) - Math.pow(r2, 3)), 1.0 / 3.0);
-                             player.circle.setRadius(newRadius);
-                             circles.get(i).circle.remove();
-                             circles.remove(i);
-                             break;
-                             } else {
-
-                             }
-
-                             }
-
-                             }
-
-                             }
-                             Random ran = new Random();
-                             int ch = 0;
-
-                             for(int i =0 ; i <circles.size();i++){
-
-                             for (int j=0; j<bCircles.size();j++) {
-
-                             double distanceBwBubbles = distFrom(circles.get(i).circle.getCenter().latitude, circles.get(i).circle.getCenter().longitude, bCircles.get(j).circle.getCenter().latitude, bCircles.get(j).circle.getCenter().longitude);
-
-                             if (circles.get(i).radius + bCircles.get(j).radius > Math.abs(distanceBwBubbles)) {
-
-                             int hole = ((ran.nextInt(warmHoleCount)+0)%warmHoleCount);
-
-
-                             while (hole==j)
-                             hole = ((ran.nextInt(warmHoleCount)+0)%warmHoleCount);
-
-
-                             Log.d("collision with warm hole", " " + j + " " + hole);
-
-                             circles.get(i).circle.setCenter(bCircles.get(hole).circle.getCenter());
-                             while (distFrom(circles.get(i).circle.getCenter().latitude,circles.get(i).circle.getCenter().longitude,bCircles.get(hole).circle.getCenter().latitude,bCircles.get(hole).circle.getCenter().longitude)<circles.get(i).circle.getRadius()+bCircles.get(hole).circle.getRadius())
-                             {
-                             circles.get(i).circle.setCenter(new LatLng(circles.get(i).circle.getCenter().latitude+Math.sin(Math.toRadians(circles.get(i).direction))*circles.get(i).speed,circles.get(i).circle.getCenter().longitude+Math.cos(Math.toRadians(circles.get(i).direction))*circles.get(i).speed));
-                             Log.d("life is what you want it to be!!", " everything is awesome ");
-                             }
-
-
-                             ch = 1;
-                             break;
-                             }
-                             }
-                             if (ch==1)
-                             break;
-                             }
-
-
-
-
-
-
-                             }
-                             else{
-                             String strName = null;
-                             }
-
-                             */
-
-
+                            timer.cancel();
+                            timer.purge();
                         }
-                    });
-                }
-            }, 1000, 200);
-            locationManager.requestLocationUpdates(bestProvider, 33, 0, this); // once every second
+
+                        if(circles.size()>0){
+                            AlertDialog alertDialog = new AlertDialog.Builder(
+                                    TopView.this).create();
+
+                            // Setting Dialog Title
+                            alertDialog.setTitle("CONGRATTTSSS!!!");
+                            Log.d("Game is "," Over !!!");
+                            // Setting Dialog Message
+                            alertDialog.setMessage("You Won. You are a champ, but are you pro??");
+
+                            alertDialog.setButton("START AGAIN", new DialogInterface.OnClickListener(){
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // Write your code here to execute after dialog closed
+                                    getIntent().setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(new Intent(TopView.this, MainActivity.class));
+                                    Toast.makeText(getApplicationContext(), "You clicked on RESTART", Toast.LENGTH_SHORT).show();
+                                    timer.cancel();
+                                    timer.purge();
+                                    finish();
+                                }
+                            });
+                        }
+
+                        else if(circles.size()>0)
+                            OnPlayerBoundaryCollission(new LatLng(location.getLatitude(),location.getLongitude()),height,width);
+                        else if(circles.size()<=0){
+                            AlertDialog alertDialog = new AlertDialog.Builder(
+                                    TopView.this).create();
+
+                            // Setting Dialog Title
+                            alertDialog.setTitle("OOOPSSS!!!");
+                            Log.d("Game is "," Over !!!");
+                            // Setting Dialog Message
+                            alertDialog.setMessage("You scored " + String.valueOf(totalscore) + " .Game Over!!");
+
+
+                            alertDialog.setButton("START AGAIN", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // Write your code here to execute after dialog closed
+                                    getIntent().setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+                                    startActivity(new Intent(TopView.this, MainActivity.class));
+                                    timer.cancel();
+                                    Toast.makeText(getApplicationContext(), "You clicked on RESTART", Toast.LENGTH_SHORT).show();
+                                    timer.purge();
+
+                                    finish();
+                                }
+                            });
+                        }
+
+                        timeplayed+=1;
+
+                        /*******  -------  ************ /
+                         int check=0;
+                         /****** ----- Collision of non player bubbles ***
+                         for(int i=0;i<circles.size();i++){
+
+                         for(int j=0;j<circles.size();j++){
+
+                         if(i!=j){
+                         double distanceBwBubbles = distFrom(circles.get(i).circle.getCenter().latitude, circles.get(i).circle.getCenter().longitude, circles.get(j).circle.getCenter().latitude, circles.get(j).circle.getCenter().longitude);
+
+                         if(circles.get(i).radius+circles.get(j).radius>=Math.abs(distanceBwBubbles)){
+
+
+                         double r1 = circles.get(i).radius;
+                         double r2 = circles.get(j).radius;
+
+                         double lat = r1>=r2?circles.get(i).circle.getCenter().latitude:circles.get(j).circle.getCenter().latitude;
+                         double lon = r1>=r2?circles.get(i).circle.getCenter().longitude:circles.get(j).circle.getCenter().longitude;
+                         int dir = r1>=r2?circles.get(i).direction:circles.get(j).direction;
+                         int tag = r1>=r2?circles.get(i).bTag:circles.get(j).bTag;
+                         double sp = r1>=r2?circles.get(i).speed:circles.get(j).speed;
+
+                         double newRadius;
+                         if (circles.get(i).bTag==circles.get(j).bTag)
+                         newRadius = Math.pow((Math.pow(r1,3)+Math.pow(r2,3)),1.0/3.0);
+                         else
+                         newRadius = Math.pow(Math.abs(Math.pow(r1,3)-Math.pow(r2,3)),1.0/3.0);
+                         //    Log.d("New Radius is"," "+newRadius);
+
+                         //    Log.d("size of circles before removal", " "+ circles.size());
+                         //circles.get(i).
+                         if(i<j)
+                         j-=1;
+                         circles.get(i).circle.remove();
+
+                         circles.remove(i);
+
+                         circles.get(j).circle.remove();
+
+                         circles.remove(j);
+                         //  Log.d("size of circles", " "+ circles.size());
+                         if (tag==1)
+                         mFillColor = Color.YELLOW;
+                         else
+                         mFillColor = Color.GREEN;
+                         circles.add(new DraggableCircle(new LatLng(lat,lon), newRadius,dir,tag,sp));
+                         check=1;
+                         break;
+                         }
+
+
+                         }
+
+
+                         }
+
+                         if(check==1)
+                         break;
+
+
+
+                         }
+
+                         /****** ----- Collision of PLayer bubble *****
+                         if(mCircles.size()>0){
+                         DraggableCircle player = mCircles.get(mCircles.size()-1);
+
+                         for(int i =0 ; i <circles.size();i++){
+
+                         double distanceBwBubbles = distFrom(circles.get(i).circle.getCenter().latitude, circles.get(i).circle.getCenter().longitude, mCircles.get(mCircles.size()-1).circle.getCenter().latitude, mCircles.get(mCircles.size()-1).circle.getCenter().longitude);
+
+                         if(circles.get(i).radius+mCircles.get(mCircles.size()-1).radius>=Math.abs(distanceBwBubbles)) {
+                         Log.d("collision with player", " " + circles.get(i).bTag);
+                         if (player.radius < circles.get(i).radius) {
+                         int size = mCircles.size();
+                         mCircles.get(size - 1).circle.remove();
+                         mCircles.remove(size - 1);
+                         break;
+                         } else {
+                         if (circles.get(i).bTag == 1) {
+                         double r1 = player.radius;
+                         double r2 = circles.get(i).radius;
+
+                         double newRadius = Math.pow((Math.pow(r1, 3) + Math.pow(r2, 3)), 1.0 / 3.0);
+                         player.circle.setRadius(newRadius);
+                         circles.get(i).circle.remove();
+                         circles.remove(i);
+                         break;
+                         } else if (circles.get(i).bTag == 2) {
+                         double r1 = player.radius;
+                         double r2 = circles.get(i).radius;
+
+                         double newRadius = Math.pow(Math.abs(Math.pow(r1, 3) - Math.pow(r2, 3)), 1.0 / 3.0);
+                         player.circle.setRadius(newRadius);
+                         circles.get(i).circle.remove();
+                         circles.remove(i);
+                         break;
+                         } else {
+
+                         }
+
+                         }
+
+                         }
+
+                         }
+                         Random ran = new Random();
+                         int ch = 0;
+
+                         for(int i =0 ; i <circles.size();i++){
+
+                         for (int j=0; j<bCircles.size();j++) {
+
+                         double distanceBwBubbles = distFrom(circles.get(i).circle.getCenter().latitude, circles.get(i).circle.getCenter().longitude, bCircles.get(j).circle.getCenter().latitude, bCircles.get(j).circle.getCenter().longitude);
+
+                         if (circles.get(i).radius + bCircles.get(j).radius > Math.abs(distanceBwBubbles)) {
+
+                         int hole = ((ran.nextInt(warmHoleCount)+0)%warmHoleCount);
+
+
+                         while (hole==j)
+                         hole = ((ran.nextInt(warmHoleCount)+0)%warmHoleCount);
+
+
+                         Log.d("collision with warm hole", " " + j + " " + hole);
+
+                         circles.get(i).circle.setCenter(bCircles.get(hole).circle.getCenter());
+                         while (distFrom(circles.get(i).circle.getCenter().latitude,circles.get(i).circle.getCenter().longitude,bCircles.get(hole).circle.getCenter().latitude,bCircles.get(hole).circle.getCenter().longitude)<circles.get(i).circle.getRadius()+bCircles.get(hole).circle.getRadius())
+                         {
+                         circles.get(i).circle.setCenter(new LatLng(circles.get(i).circle.getCenter().latitude+Math.sin(Math.toRadians(circles.get(i).direction))*circles.get(i).speed,circles.get(i).circle.getCenter().longitude+Math.cos(Math.toRadians(circles.get(i).direction))*circles.get(i).speed));
+                         Log.d("life is what you want it to be!!", " everything is awesome ");
+                         }
+
+
+                         ch = 1;
+                         break;
+                         }
+                         }
+                         if (ch==1)
+                         break;
+                         }
+
+
+
+
+
+
+                         }
+                         else{
+                         String strName = null;
+                         }
+
+                         */
+
+
+                    }
+                });
+            }
+        }, 1000, 200);
+        locationManager.requestLocationUpdates(bestProvider, 33, 0, this); // once every second
         }
         else{
 
-            gps.showSettingsAlert();
+            gps.showSettingsAlert(TopView.this);
         }
         //Log.d("current location ", location.getLatitude()+ " " + location.getLongitude());
 
@@ -566,7 +566,7 @@ public class TopView extends AppCompatActivity implements LocationListener,SeekB
         // check if GPS enabled
         if(gps.canGetLocation()) {
 
-            if (BoundaryType.equals("Large Boundary")) {
+            if(BoundaryType.equals("Large Boundary")){
 
                 Log.d("boundary is", "Large" + BoundaryType);
 
@@ -576,7 +576,7 @@ public class TopView extends AppCompatActivity implements LocationListener,SeekB
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(InitialLoc.latitude, InitialLoc.longitude), 19.5f));
                 numberOfBubbles = 21;
                 warmHoleCount = 3;
-            } else if (BoundaryType.equals("Medium Boundary")) {
+            } else if (BoundaryType.equals("Medium Boundary")){
                 Log.d("boundary is", "medium" + BoundaryType);
 
                 width = 2 * 0.0002;
@@ -613,14 +613,14 @@ public class TopView extends AppCompatActivity implements LocationListener,SeekB
             // can't get location
             // GPS or Network is not enabled
             // Ask user to enable GPS/network in settings
-            gps.showSettingsAlert();
+            gps.showSettingsAlert(TopView.this);
         }
 
 
     }
 
 
-    private List<LatLng> createRectangle(LatLng center, double halfWidth, double halfHeight) {
+    private List<LatLng> createRectangle(LatLng center, double halfWidth, double halfHeight){
 
         return Arrays.asList(new LatLng(center.latitude - halfHeight, center.longitude - halfWidth),
                 new LatLng(center.latitude - halfHeight, center.longitude + halfWidth),
@@ -694,7 +694,6 @@ public class TopView extends AppCompatActivity implements LocationListener,SeekB
                 isPlacedBubble[i][j]=false;
 
             }
-
         }
         // Creating Matter Bubbles
 
@@ -979,7 +978,7 @@ public class TopView extends AppCompatActivity implements LocationListener,SeekB
 
 
             // Setting OK Button
-            alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+            alertDialog.setButton("OK", new DialogInterface.OnClickListener(){
                 public void onClick(DialogInterface dialog, int which) {
                     // Write your code here to execute after dialog closed
                     Toast.makeText(getApplicationContext(), "You clicked on OK", Toast.LENGTH_SHORT).show();
@@ -1001,7 +1000,6 @@ public class TopView extends AppCompatActivity implements LocationListener,SeekB
             // Setting Dialog Message
             alertDialog.setMessage("Move Back within boundary");
 
-
             // Setting OK Button
             alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
@@ -1012,9 +1010,6 @@ public class TopView extends AppCompatActivity implements LocationListener,SeekB
 
             // Showing Alert Message
             alertDialog.show();
-
-
-
             //   Log.d("actual collision", latit + " " + longit + " "+ cir.direction);
         }
         else if(distFrom(latit,longit,InitialLoc.latitude-width/2,longit) < cir.circle.getRadius()){
@@ -1065,14 +1060,8 @@ public class TopView extends AppCompatActivity implements LocationListener,SeekB
             // Showing Alert Message
             alertDialog.show();
 
-
-
-
             //   Log.d("actual collision", latit + " " + longit + " "+ cir.direction);
         }
-
-
-
 
     }
 
@@ -1149,7 +1138,6 @@ public class TopView extends AppCompatActivity implements LocationListener,SeekB
             LatLng repLocation = new LatLng(rCircles.get(0).circle.getCenter().latitude + Math.sin(Math.toRadians(rCircles.get(0).direction)) * speedx, rCircles.get(0).circle.getCenter().longitude + Math.cos(Math.toRadians(rCircles.get(0).direction)) * speedy);
 
             rCircles.get(0).circle.setCenter(repLocation);
-
 
             for (int i = 0; i < rCircles.size(); i++) {
 
@@ -1300,14 +1288,14 @@ public class TopView extends AppCompatActivity implements LocationListener,SeekB
 
     public void CollisionPlayerNonplayer(List<DraggableCircle> circles ,List<DraggableCircle> mCircles, List<DraggableCircle> bCircles  ) {
 
-        if (mCircles.size() > 0) {
+        if (mCircles.size() > 0){
             DraggableCircle player = mCircles.get(mCircles.size() - 1);
 
-            for (int i = 0; i < circles.size(); i++) {
+            for(int i = 0; i < circles.size(); i++) {
 
                 double distanceBwBubbles = distFrom(circles.get(i).circle.getCenter().latitude, circles.get(i).circle.getCenter().longitude, mCircles.get(mCircles.size() - 1).circle.getCenter().latitude, mCircles.get(mCircles.size() - 1).circle.getCenter().longitude);
 
-                if (circles.get(i).radius + mCircles.get(mCircles.size() - 1).radius >= Math.abs(distanceBwBubbles)) {
+                if(circles.get(i).radius + mCircles.get(mCircles.size() - 1).radius >= Math.abs(distanceBwBubbles)){
                     Log.d("collision with player", " " + circles.get(i).bTag);
                     if (player.radius < circles.get(i).radius) {
                         int size = mCircles.size();

@@ -10,10 +10,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolygonOptions;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Criteria;
@@ -33,6 +37,9 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 
@@ -43,9 +50,17 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
 
     private LatLng InitialLoc;
     GoogleMap googleMap;
+    public LatLng gpsLocation;
+
+    public int gpschecker =1;
 
     private CheckBox mMyLocationCheckbox;
 
+    double speedx = -1.0;
+
+    double speedy = -1.0;
+
+    private static final double DEFAULT_RADIUS = 1;
     public int totalscore=0;
 
     GeolocationService gps;
@@ -62,14 +77,26 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
     public String BoundaryType;
 
     public String bestProvider = LocationManager.GPS_PROVIDER;
+
+    public Circle Player;
     public List<SnackBubble> snacks = new ArrayList<SnackBubble>(20);
 
     public List<JunkBubble> junks = new ArrayList<JunkBubble>(20);
 
     public List<WormHole> holes = new ArrayList<WormHole>(20);
 
+    public List<Circle> snac = new ArrayList<Circle>(10);
+
+    public List<Circle> jun = new ArrayList<Circle>(10);
+
+    public List<Circle> repe = new ArrayList<Circle>(10);
+
     public RepellerBubble repeller;
+
+    public boolean gameover = false;
+
     public Boolean isGPSEnabled = false;
+
 
     public Boolean isNetworkEnabled = false;
 
@@ -80,6 +107,15 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
         setContentView(R.layout.basic_demo);
 
         gps = new GeolocationService(Controller1.this);
+
+
+        if(gps.canGetLocation){
+            Log.d("Isin","if");
+        }
+        else{
+            Log.d("Isin","else");
+            gps.showSettingsAlert(Controller1.this);
+        }
 
         Bundle extras = getIntent().getExtras();
 
@@ -92,6 +128,8 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
 
         googleMap = mapFragment.getMap();
 
+        googleMap.setMyLocationEnabled(false);
+
         updateMapType();
 
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -102,13 +140,12 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
         // Getting GPS status
         if(locationManager!=null){
 
-
             isGPSEnabled = locationManager
                         .isProviderEnabled(LocationManager.GPS_PROVIDER);
 
             if(!isGPSEnabled){
-                Log.d("in GPS settings","show settings");
-                gps.showSettingsAlert();
+//                Log.d("in GPS settings","show settings");
+                gps.showSettingsAlert(Controller1.this);
             }
 
             bestProvider = locationManager.getBestProvider(criteria, true);
@@ -130,18 +167,141 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
             onLocationChanged(location);
             FetchGps();
 
+
+            gamemodel = new Model(BoundaryType);
+
+            if(isGPSEnabled){
+
+                createboundary(BoundaryType);
+            }
+            else{
+                gps.showSettingsAlert(Controller1.this);
+            }
+
+            createsnackbubbles();
+            createjunkbubbles();
+            createwormholes();
+            createrepeller();
+
+            final Timer timer = new Timer();
+            timer.scheduleAtFixedRate(new TimerTask() {
+
+                @Override
+                public void run(){
+                    runOnUiThread(new Runnable(){
+                        @Override
+                        public void run(){
+
+                            OnCollisionBoundary();
+                            CollisionNonPlayerBubbles();
+                            CollisionPlayerNonplayer();
+                            CollisionWormHole();
+                            RepellerPhysics();
+
+                            /** repeller winning condition **/
+
+                            if(Player.getRadius() + repeller.radius >= Math.abs(distFrom(Player.getCenter().latitude, Player.getCenter().longitude, repeller.center.x, repeller.center.y))){
+
+                                AlertDialog.Builder builder = new AlertDialog.Builder(Controller1.this);
+                                builder.setTitle("YOU WON!")
+                                        .setMessage("Congratulations!!...You won!!")
+                                        .setCancelable(false)
+                                        .setNegativeButton("Start Again!",new DialogInterface.OnClickListener(){
+                                            public void onClick(DialogInterface dialog, int id) {
+
+
+                                                startActivity(new Intent(Controller1.this, MainActivity.class));
+                                                dialog.cancel();
+                                            }
+                                        });
+                                AlertDialog alert = builder.create();
+                                alert.show();
+                            }
+
+
+
+
+                            /** ************** **/
+
+                            /** biggest bubble condition **/
+                            double maxRadius = -1;
+
+                            for(int i=0;i<snac.size();i++){
+
+                                if(snac.get(i).getRadius() > maxRadius)
+                                    maxRadius = snac.get(i).getRadius();
+
+                            }
+
+
+                            if(Player.getRadius() > maxRadius){
+
+                                AlertDialog.Builder builder = new AlertDialog.Builder(Controller1.this);
+                                builder.setTitle("YOU WON!")
+                                        .setMessage("Congratulations!!...You won!!")
+                                        .setCancelable(false)
+                                        .setNegativeButton("Start Again!",new DialogInterface.OnClickListener(){
+                                            public void onClick(DialogInterface dialog, int id) {
+
+
+                                                startActivity(new Intent(Controller1.this, MainActivity.class));
+                                                //destroy activity
+
+                                                dialog.cancel();
+                                            }
+                                        });
+                                AlertDialog alert = builder.create();
+                                alert.show();
+                            }
+
+
+                            /** ************** **/
+
+                            /** losing condition **/
+                            if(gameover){
+
+                                AlertDialog.Builder builder = new AlertDialog.Builder(Controller1.this);
+                                builder.setTitle("YOU LOST!")
+                                        .setMessage("Ooopss!!...You Lost!!")
+                                        .setCancelable(false)
+                                        .setNegativeButton("Start Again!",new DialogInterface.OnClickListener(){
+                                            public void onClick(DialogInterface dialog, int id) {
+
+                                                //destroy activity
+
+                                                startActivity(new Intent(Controller1.this, MainActivity.class));
+                                                dialog.cancel();
+                                            }
+                                        });
+                                AlertDialog alert = builder.create();
+                                alert.show();
+
+
+                            }
+
+                        }
+                    });
+                }
+            }, 1000, 200);
+
+
+
             // Getting network status
-            isNetworkEnabled = locationManager
-                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
         }
         else{
 
-            gps.showSettingsAlert();
+            gps.showSettingsAlert(Controller1.this);
         }
 
         Log.d("Here","asdsa");
         Log.d("Here", "asdsa");
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Toast.makeText(getApplicationContext(),"16. onDestroy()", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -151,27 +311,46 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
 
         score.setText("SCORE :" + String.valueOf(totalscore));
 
-        gamemodel = new Model(BoundaryType);
-
-        if(isGPSEnabled){
-
-            createboundary(BoundaryType);
-        }
-        else{
-            gps.showSettingsAlert();
-        }
-
-        createsnackbubbles();
-        createjunkbubbles();
-        createwormholes();
-        createrepeller();
     }
+
 
     @Override
     public void onLocationChanged(Location location) {
 
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
+        LatLng latLng = new LatLng(latitude, longitude);
+
+        gpsLocation = new LatLng(latitude,longitude);
+
+        //    Log.d("location",latitude+ " ");
+//        totalscore+=0;
+  //      score.setText("  SCORE :" + String.valueOf(totalscore));
+
+
+        googleMap.setOnMapLongClickListener(this);
+
+        //mFillColor = Color.MAGENTA;
+        //mStrokeColor = Color.BLACK;
+        //mWidth = 2;
+        // PolygonOptions options = new PolygonOptions().addAll(createRectangle(playerLocation, 500, 8));
+        Log.d(" location on changed is called ", gpsLocation.latitude + " lat " );
+        //   PlayerBubble play = new PlayerBubble(gpsLocation, DEFAULT_RADIUS,mMap);
+        if(gpschecker==1) {
+            CircleOptions temp3 = new CircleOptions()
+                    .center(gpsLocation)
+                    .radius(DEFAULT_RADIUS)
+                    .strokeWidth(2)
+                    .strokeColor(Color.BLACK)
+                    .fillColor(Color.MAGENTA);
+            Player = googleMap.addCircle(temp3);
+            gpschecker+=1;
+        }
+        else {
+                //if(mCircles.size()>0)
+                //mCircles.get(mCircles.size()-1).circle.setCenter(new LatLng(gpsLocation.latitude,gpsLocation.longitude));
+                Player.setCenter(gpsLocation);
+        }
 
     }
 
@@ -195,35 +374,531 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
 
     }
 
+    public void OnCollisionBoundary() {
+
+        /******* Collission with Boundary of snack bubble ********/
+        for (int i = 0; i < snacks.size(); i++){
+
+            SnackBubble snack = snacks.get(i);
+            Circle tempsnack = snac.get(i);
+            Centre loca = snack.center;
+            double latit = loca.x;
+            double longit = loca.y;
+
+            LatLng finalLoc = new LatLng(latit + Math.sin(Math.toRadians(snack.dir)) * snack.speed, longit + Math.cos(Math.toRadians(snack.dir)) * snack.speed);
+  //          Log.d("moved","no"+ snack.speed + " dir "+ snack.dir);
+            snack.center.x = finalLoc.latitude;
+            snack.center.y = finalLoc.longitude;
+            tempsnack.setCenter(new LatLng(finalLoc.latitude,finalLoc.longitude));
+  //        Log.d("moved","yes");
+            double decFactor = 0.000005;
+            if (distFrom(latit, longit, InitialLoc.latitude + gamemodel.boundaryWidth / 2, longit) < snack.radius) {
+
+                snack.dir = 360 - snack.dir;
+                snack.center.x = latit-decFactor;
+                snack.center.y = longit;
+                tempsnack.setCenter(new LatLng(finalLoc.latitude-decFactor,finalLoc.longitude));
+            } else if (distFrom(latit, longit, latit, InitialLoc.longitude + gamemodel.boundaryWidth / 2) < snack.radius) {
+
+                if (snack.dir < 180)
+                    snack.dir = 180 - snack.dir;
+                else
+                    snack.dir = 540 - snack.dir;
+
+                snack.dir = 360 - snack.dir;
+                snack.center.x = latit;
+                snack.center.y = longit-decFactor;
+                tempsnack.setCenter(new LatLng(finalLoc.latitude,finalLoc.longitude-decFactor));
+
+            } else if (distFrom(latit, longit, InitialLoc.latitude - gamemodel.boundaryWidth / 2, longit) < snack.radius) {
+
+                snack.dir = 360 - snack.dir;
+
+                snack.center.x = latit+decFactor;
+                snack.center.y = longit;
+
+                tempsnack.setCenter(new LatLng(finalLoc.latitude+decFactor,finalLoc.longitude));
+
+            } else if (distFrom(latit, longit, latit, InitialLoc.longitude - gamemodel.boundaryWidth / 2) < snack.radius) {
+
+                if (snack.dir < 180)
+                    snack.dir = 180 - snack.dir;
+                else
+                    snack.dir = 540 - snack.dir;
+                snack.center.x = latit;
+                snack.center.y = longit+decFactor;
+
+                tempsnack.setCenter(new LatLng(finalLoc.latitude,finalLoc.longitude+decFactor));
+
+            }
+        }
+
+        /******** Collission with Boundary of junk bubble ************/
+        for (int i = 0; i < junks.size(); i++){
+
+            JunkBubble snack = junks.get(i);
+            Circle tempsnack = jun.get(i);
+            Centre loca = snack.center;
+            double latit = loca.x;
+            double longit = loca.y;
+
+            LatLng finalLoc = new LatLng(latit + Math.sin(Math.toRadians(snack.dir)) * snack.speed, longit + Math.cos(Math.toRadians(snack.dir)) * snack.speed);
+           // Log.d("moved","no"+ snack.speed + " dir "+ snack.dir);
+            snack.center.x = finalLoc.latitude;
+            snack.center.y = finalLoc.longitude;
+            tempsnack.setCenter(new LatLng(finalLoc.latitude,finalLoc.longitude));
+           //
+           // Log.d("moved","yes");
+            double decFactor = 0.000005;
+            if (distFrom(latit, longit, InitialLoc.latitude + gamemodel.boundaryWidth / 2, longit) < snack.radius) {
+
+                snack.dir = 360 - snack.dir;
+                snack.center.x = latit-decFactor;
+                snack.center.y = longit;
+                tempsnack.setCenter(new LatLng(finalLoc.latitude-decFactor,finalLoc.longitude));
+            } else if (distFrom(latit, longit, latit, InitialLoc.longitude + gamemodel.boundaryWidth / 2) < snack.radius) {
+
+                if (snack.dir < 180)
+                    snack.dir = 180 - snack.dir;
+                else
+                    snack.dir = 540 - snack.dir;
+
+                snack.dir = 360 - snack.dir;
+                snack.center.x = latit;
+                snack.center.y = longit-decFactor;
+                tempsnack.setCenter(new LatLng(finalLoc.latitude,finalLoc.longitude-decFactor));
+
+            } else if (distFrom(latit, longit, InitialLoc.latitude - gamemodel.boundaryWidth / 2, longit) < snack.radius) {
+
+                snack.dir = 360 - snack.dir;
+
+                snack.center.x = latit+decFactor;
+                snack.center.y = longit;
+
+                tempsnack.setCenter(new LatLng(finalLoc.latitude+decFactor,finalLoc.longitude));
+
+            } else if (distFrom(latit, longit, latit, InitialLoc.longitude - gamemodel.boundaryWidth / 2) < snack.radius) {
+
+                if (snack.dir < 180)
+                    snack.dir = 180 - snack.dir;
+                else
+                    snack.dir = 540 - snack.dir;
+                snack.center.x = latit;
+                snack.center.y = longit+decFactor;
+
+                tempsnack.setCenter(new LatLng(finalLoc.latitude,finalLoc.longitude+decFactor));
+
+            }
+        }
+
+    }
+
+    public void CollisionNonPlayerBubbles(){
+
+        int check=0;
+        /****** ----- Collision of non player bubbles ****/
+        for(int i=0;i<jun.size();i++){
+            Circle temp = jun.get(i);
+            for(int j=0;j<jun.size();j++){
+                Circle temp2 = jun.get(j);
+
+                if(i!=j){
+                    double distanceBwBubbles = distFrom(temp.getCenter().latitude, temp.getCenter().longitude, temp2.getCenter().latitude, temp2.getCenter().longitude);
+
+                    if(temp.getRadius()+temp2.getRadius()>=Math.abs(distanceBwBubbles)){
+
+
+                        double r1 = temp.getRadius();
+                        double r2 = temp2.getRadius();
+
+                        double lat = r1>=r2?temp.getCenter().latitude:temp.getCenter().latitude;
+                        double lon = r1>=r2?temp.getCenter().longitude:temp2.getCenter().longitude;
+                        int dir = r1>=r2?junks.get(i).dir:junks.get(j).dir;
+                        int tag = r1>=r2?junks.get(i).boolTag:junks.get(j).boolTag;
+                        double sp = r1>=r2?junks.get(i).speed:junks.get(j).speed;
+
+                        double newRadius;
+                        //if (snacks.get(i).boolTag==snacks.get(j).boolTag)
+                        newRadius = Math.pow((Math.pow(r1,3)+Math.pow(r2,3)),1.0/3.0);
+                        //else
+                        //   newRadius = Math.pow(Math.abs(Math.pow(r1,3)-Math.pow(r2,3)),1.0/3.0);
+                        //    Log.d("New Radius is"," "+newRadius);
+
+                        //    Log.d("size of circles before removal", " "+ circles.size());
+                        //circles.get(i).
+                        if(i<j) {
+                            j -= 1;
+
+                            Log.d("lol","hua");
+                        }
+
+                        //snac.get(i).remove();
+
+                        Log.d("size junks initial ",jun.size() + " " + junks.size());
+
+//                        snac.remove(i);
+                        jun.get(i).remove();
+                        jun.remove(i);
+                        junks.remove(i);
+
+                        Log.d("junk size " , jun.size() + " " + junks.size());
+
+                        jun.get(j).remove();
+                        jun.remove(j);
+                        junks.remove(j);
+
+                        Log.d(" junk size 2 " , jun.size() + " " + junks.size());
+
+
+                        JunkBubble tempsnack = new JunkBubble(newRadius,dir,sp,new LatLng(lat,lon));
+                        // snacks.add(tempsnack);
+
+                        CircleOptions temp3 = new CircleOptions()
+                                .center(new LatLng(lat,lon))
+                                .radius(newRadius)
+                                .strokeWidth(tempsnack.mWidth)
+                                .strokeColor(tempsnack.mStrokeColor)
+                                .fillColor(tempsnack.mFillColor);
+
+                        Circle temp4 = googleMap.addCircle(temp3);
+                        jun.add(temp4);
+                        junks.add(tempsnack);
+
+                        break;
+                    }
+
+
+                }
+
+
+            }
+
+            if(check==1)
+                break;
+
+        }
+
+
+
+        /** snack collission **/
+        for(int i=0;i<snac.size();i++){
+            Circle temp = snac.get(i);
+            for(int j=0;j<snac.size();j++){
+                Circle temp2 = snac.get(j);
+
+                if(i!=j){
+                    double distanceBwBubbles = distFrom(temp.getCenter().latitude, temp.getCenter().longitude, temp2.getCenter().latitude, temp2.getCenter().longitude);
+
+                    if(temp.getRadius()+temp2.getRadius()>=Math.abs(distanceBwBubbles)){
+
+
+                        double r1 = temp.getRadius();
+                        double r2 = temp2.getRadius();
+
+                        double lat = r1>=r2?temp.getCenter().latitude:temp2.getCenter().latitude;
+                        double lon = r1>=r2?temp.getCenter().longitude:temp2.getCenter().longitude;
+                        int dir = r1>=r2?snacks.get(i).dir:snacks.get(j).dir;
+                        int tag = r1>=r2?snacks.get(i).boolTag:snacks.get(j).boolTag;
+                        double sp = r1>=r2?snacks.get(i).speed:snacks.get(j).speed;
+
+                        double newRadius;
+                        //if (snacks.get(i).boolTag==snacks.get(j).boolTag)
+                        newRadius = Math.pow((Math.pow(r1,3)+Math.pow(r2,3)),1.0/3.0);
+                        //else
+                         //   newRadius = Math.pow(Math.abs(Math.pow(r1,3)-Math.pow(r2,3)),1.0/3.0);
+                        //    Log.d("New Radius is"," "+newRadius);
+
+                        //    Log.d("size of circles before removal", " "+ circles.size());
+                        //circles.get(i).
+                        if(i<j) {
+                            j -= 1;
+
+                            Log.d("lol","hua");
+                        }
+
+                        Log.d("size snacks initial ",snac.size() + " " + snacks.size());
+
+//                        snac.remove(i);
+                        snac.get(i).remove();
+                        snac.remove(i);
+                        snacks.remove(i);
+
+                        Log.d("snac size " , snac.size() + " " + snacks.size());
+
+                        snac.get(j).remove();
+                        snac.remove(j);
+                        snacks.remove(j);
+
+                        Log.d(" snac size 2 " , snac.size() + " " + snacks.size());
+
+
+                        SnackBubble tempsnack = new SnackBubble(newRadius,dir,sp,new LatLng(lat,lon));
+                       // snacks.add(tempsnack);
+
+                        CircleOptions temp3 = new CircleOptions()
+                                .center(new LatLng(lat,lon))
+                                .radius(newRadius)
+                                .strokeWidth(tempsnack.mWidth)
+                                .strokeColor(tempsnack.mStrokeColor)
+                                .fillColor(tempsnack.mFillColor);
+
+                        Circle temp4 = googleMap.addCircle(temp3);
+                        snac.add(temp4);
+                        snacks.add(tempsnack);
+
+                        break;
+                    }
+
+
+                }
+
+
+            }
+
+            if(check==1)
+                break;
+
+        }
+
+        check=0;
+        /****** Collision of non player bubbles ****/
+        for(int i=0;i<snac.size();i++){
+            Circle temp = snac.get(i);
+            for(int j=0;j<jun.size();j++){
+                Circle temp2 = jun.get(j);
+
+                double distanceBwBubbles = distFrom(temp.getCenter().latitude, temp.getCenter().longitude, temp2.getCenter().latitude, temp2.getCenter().longitude);
+
+                if(temp.getRadius()+temp2.getRadius()>=Math.abs(distanceBwBubbles)){
+
+
+                    double r1 = temp.getRadius();
+                    double r2 = temp2.getRadius();
+
+                    double lat = r1>=r2?temp.getCenter().latitude:temp2.getCenter().latitude;
+                    double lon = r1>=r2?temp.getCenter().longitude:temp2.getCenter().longitude;
+                    int dir = r1>=r2?snacks.get(i).dir:junks.get(j).dir;
+                    int tag = r1>=r2?snacks.get(i).boolTag:junks.get(j).boolTag;
+                    double sp = r1>=r2?snacks.get(i).speed:junks.get(j).speed;
+
+                    double newRadius;
+                    newRadius = Math.pow(Math.abs(Math.pow(r1,3)-Math.pow(r2,3)),1.0/3.0);
+                    //    Log.d("New Radius is"," "+newRadius);
+
+                    //    Log.d("size of circles before removal", " "+ circles.size());
+                    //circles.get(i).
+                    //snac.get(i).remove();
+                    Log.d("size snacks initial ",snac.size() + " " + snacks.size());
+//
+                    snac.get(i).remove();
+                    snac.remove(i);
+                    snacks.remove(i);
+                    Log.d("snac size 11 " , snac.size() + " " + snacks.size());
+
+                    jun.get(j).remove();
+                    jun.remove(j);
+
+                    junks.remove(j);
+                    Log.d("snac size 22 " , jun.size() + " " + junks.size());
+
+                    if(tag==1){
+                        SnackBubble tempsnack = new SnackBubble(newRadius, dir,sp,new LatLng(lat,lon));
+                        // snacks.add(tempsnack);
+
+                        CircleOptions temp3 = new CircleOptions()
+                                .center(new LatLng(lat,lon))
+                                .radius(newRadius)
+                                .strokeWidth(tempsnack.mWidth)
+                                .strokeColor(tempsnack.mStrokeColor)
+                                .fillColor(tempsnack.mFillColor);
+
+                        Circle temp4 = googleMap.addCircle(temp3);
+                        snac.add(temp4);
+                        snacks.add(tempsnack);
+
+                    }
+                    else{
+                        JunkBubble tempjunk = new JunkBubble(newRadius, dir,sp,new LatLng(lat,lon));
+                        // snacks.add(tempsnack);
+
+                        CircleOptions temp3 = new CircleOptions()
+                                .center(new LatLng(lat,lon))
+                                .radius(newRadius)
+                                .strokeWidth(tempjunk.mWidth)
+                                .strokeColor(tempjunk.mStrokeColor)
+                                .fillColor(tempjunk.mFillColor);
+
+                        Circle temp4 = googleMap.addCircle(temp3);
+                        jun.add(temp4);
+                        junks.add(tempjunk);
+
+
+
+
+                    }
+                    break;
+                }
+
+
+
+
+            }
+
+            if(check==1)
+                break;
+
+        }
+
+    }
+
+    public void RepellerPhysics(){
+
+        if (speedx == -1.0) {
+            speedx = repeller.speed;
+            speedy = speedx;
+        }
+
+        LatLng repLocation = new LatLng(repeller.center.x + Math.sin(Math.toRadians(repeller.dir)) * speedx, repeller.center.y + Math.cos(Math.toRadians(repeller.dir)) * speedy);
+
+        repeller.center.x = repLocation.latitude;
+        repeller.center.y = repLocation.longitude;
+
+        repe.get(0).setCenter(repLocation);
+
+        for (int i = 0; i < repe.size(); i++) {
+
+            double dist1 = repe.get(i).getCenter().longitude - Player.getCenter().longitude ;
+            double dist2 = repe.get(i).getCenter().latitude - Player.getCenter().latitude;
+
+            double angle = Math.toDegrees(Math.atan(dist2 / dist1));
+
+            double dist = distFrom(repe.get(i).getCenter().latitude, repe.get(i).getCenter().longitude, Player.getCenter().latitude, Player.getCenter().longitude);
+            if (dist<10.0) {
+                if (speedx == -1.0) {
+                    speedx = repeller.speed;
+                    speedy = speedx;
+                } else {
+                    speedx += ((1 / (dist * dist)) * Math.sin(Math.toRadians(angle))) / 25000;
+                    speedy += ((1 / (dist * dist)) * Math.cos(Math.toRadians(angle))) / 25000;
+                }
+                repLocation = new LatLng(repeller.center.x + (Math.sin(Math.toRadians(repeller.dir))) * (speedx), repeller.center.y + (Math.cos(Math.toRadians(repeller.dir))) * (speedy));
+                repe.get(0).setCenter(repLocation);
+                repeller.center.x = repLocation.latitude;
+                repeller.center.y = repLocation.longitude;
+
+                repeller.dir = (int) Math.toDegrees(Math.atan(speedy / speedx));
+            }
+
+            Log.d("Repeller ki", " Physics h!");
+        }
+
+        for (int i = 0; i < repe.size(); i++){
+
+            RepellerBubble snack = repeller;
+            Circle tempsnack = repe.get(i);
+            Centre loca = repeller.center;
+            double latit = loca.x;
+            double longit = loca.y;
+
+            LatLng finalLoc = new LatLng(latit + Math.sin(Math.toRadians(snack.dir)) * snack.speed, longit + Math.cos(Math.toRadians(snack.dir)) * snack.speed);
+            //          Log.d("moved","no"+ snack.speed + " dir "+ snack.dir);
+            snack.center.x = finalLoc.latitude;
+            snack.center.y = finalLoc.longitude;
+            tempsnack.setCenter(new LatLng(finalLoc.latitude,finalLoc.longitude));
+            //        Log.d("moved","yes");
+            double decFactor = 0.000005;
+            if (distFrom(latit, longit, InitialLoc.latitude + gamemodel.boundaryWidth / 2, longit) < snack.radius) {
+
+                snack.dir = 360 - snack.dir;
+                snack.center.x = latit-decFactor;
+                snack.center.y = longit;
+                tempsnack.setCenter(new LatLng(finalLoc.latitude-decFactor,finalLoc.longitude));
+            } else if (distFrom(latit, longit, latit, InitialLoc.longitude + gamemodel.boundaryWidth / 2) < snack.radius) {
+
+                if (snack.dir < 180)
+                    snack.dir = 180 - snack.dir;
+                else
+                    snack.dir = 540 - snack.dir;
+
+                snack.dir = 360 - snack.dir;
+                snack.center.x = latit;
+                snack.center.y = longit-decFactor;
+                tempsnack.setCenter(new LatLng(finalLoc.latitude,finalLoc.longitude-decFactor));
+
+            } else if (distFrom(latit, longit, InitialLoc.latitude - gamemodel.boundaryWidth / 2, longit) < snack.radius) {
+
+                snack.dir = 360 - snack.dir;
+
+                snack.center.x = latit+decFactor;
+                snack.center.y = longit;
+
+                tempsnack.setCenter(new LatLng(finalLoc.latitude+decFactor,finalLoc.longitude));
+
+            } else if (distFrom(latit, longit, latit, InitialLoc.longitude - gamemodel.boundaryWidth / 2) < snack.radius) {
+
+                if (snack.dir < 180)
+                    snack.dir = 180 - snack.dir;
+                else
+                    snack.dir = 540 - snack.dir;
+                snack.center.x = latit;
+                snack.center.y = longit+decFactor;
+
+                tempsnack.setCenter(new LatLng(finalLoc.latitude,finalLoc.longitude+decFactor));
+
+            }
+        }
+
+
+
+    }
+
     public void createsnackbubbles(){
 
         for(int i=0;i<gamemodel.sizeSnackBubble;i++){
-            SnackBubble tempsnack = new SnackBubble(gamemodel.isPlacedBubble,i,gamemodel,InitialLoc);
-            snacks.add(tempsnack);
-            googleMap.addCircle(new CircleOptions()
-                    .center(new LatLng(tempsnack.center.x,tempsnack.center.y))
-                    .radius(tempsnack.radius)
-                    .strokeWidth(tempsnack.mWidth)
-                    .strokeColor(tempsnack.mStrokeColor)
-                    .fillColor(tempsnack.mFillColor));
-        }
-    }
+                createsnack(i);
 
+            }
+    }
+    public void createsnack(int i){
+
+        SnackBubble tempsnack = new SnackBubble(gamemodel.isPlacedBubble,i,gamemodel,InitialLoc);
+        snacks.add(tempsnack);
+
+        CircleOptions temp = new CircleOptions()
+                .center(new LatLng(tempsnack.center.x,tempsnack.center.y))
+                .radius(tempsnack.radius)
+                .strokeWidth(tempsnack.mWidth)
+                .strokeColor(tempsnack.mStrokeColor)
+                .fillColor(tempsnack.mFillColor);
+
+
+
+        Circle temp1 = googleMap.addCircle(temp);
+        snac.add(temp1);
+
+
+
+    }
     public void createjunkbubbles(){
 
         for(int i=0;i<gamemodel.sizeJunkBubbles;i++){
-            JunkBubble tempjunk = new JunkBubble(gamemodel.isPlacedBubble,i,gamemodel,InitialLoc);
-            junks.add(tempjunk);
-            googleMap.addCircle(new CircleOptions()
-                    .center(new LatLng(tempjunk.center.x,tempjunk.center.y))
-                    .radius(tempjunk.radius)
-                    .strokeWidth(tempjunk.mWidth)
-                    .strokeColor(tempjunk.mStrokeColor)
-                    .fillColor(tempjunk.mFillColor));;
-
+            createjunk(i);
         }
     }
+    public void createjunk(int i){
 
+        JunkBubble tempjunk = new JunkBubble(gamemodel.isPlacedBubble,i,gamemodel,InitialLoc);
+        junks.add(tempjunk);
+        Circle temp2 = googleMap.addCircle(new CircleOptions()
+                .center(new LatLng(tempjunk.center.x,tempjunk.center.y))
+                .radius(tempjunk.radius)
+                .strokeWidth(tempjunk.mWidth)
+                .strokeColor(tempjunk.mStrokeColor)
+                .fillColor(tempjunk.mFillColor));;
+        jun.add(temp2);
+
+
+    }
 
     public void createwormholes(){
 
@@ -244,12 +919,163 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
     public void createrepeller(){
 
         repeller = new RepellerBubble(gamemodel.isPlacedBubble,gamemodel,InitialLoc);
-        googleMap.addCircle(new CircleOptions()
+
+        Circle temp3 = googleMap.addCircle(new CircleOptions()
                 .center(new LatLng(repeller.center.x, repeller.center.y))
                 .radius(repeller.radius)
                 .strokeWidth(repeller.mWidth)
                 .strokeColor(repeller.mStrokeColor)
                 .fillColor(repeller.mFillColor));;
+        repe.add(temp3);
+
+    }
+
+    public void CollisionPlayerNonplayer(){
+
+        for(int i=0;i<snac.size();i++){
+
+            double distanceBwBubbles = distFrom(snacks.get(i).center.x,snacks.get(i).center.y,Player.getCenter().latitude,Player.getCenter().longitude);
+
+            Log.d("Snack"," and player");
+
+            if(Player.getRadius() + snacks.get(i).radius >= Math.abs(distanceBwBubbles)){
+
+                if(Player.getRadius() > snacks.get(i).radius){
+                    double r1 = Player.getRadius();
+                    double r2 = snacks.get(i).radius;
+
+                    double newRadius = Math.pow((Math.pow(r1, 3) - Math.pow(r2, 3)), 1.0 / 3.0);
+
+                    Player.setRadius(newRadius);
+                    snac.get(i).remove();
+                    snac.remove(i);
+                    snacks.remove(i);
+                    break;
+                }
+
+                else{
+                    Log.d("Snack"," and player!!..Game Over!!");
+
+                    Player.remove();
+                    gameover = true;
+                }
+
+            }
+            if(gameover)
+                break;
+        }
+
+        for(int i=0;i<jun.size();i++){
+
+            double distanceBwBubbles = distFrom(junks.get(i).center.x,junks.get(i).center.y,Player.getCenter().latitude,Player.getCenter().longitude);
+
+            if(Player.getRadius() + junks.get(i).radius >= Math.abs(distanceBwBubbles)){
+                Log.d("Junk"," and player");
+                if(Player.getRadius() > junks.get(i).radius){
+                    double r1 = Player.getRadius();
+                    double r2 = junks.get(i).radius;
+
+                    double newRadius = Math.pow((Math.pow(r1, 3) - Math.pow(r2, 3)), 1.0 / 3.0);
+
+                    Player.setRadius(newRadius);
+                    jun.get(i).remove();
+                    jun.remove(i);
+                    junks.remove(i);
+                    break;
+                }
+
+                else{
+                    Log.d("Junk"," and player!!..Game Over!!");
+                    Player.remove();
+                    gameover = true;
+                }
+            }
+            if(gameover)
+                break;
+
+        }
+
+
+    }
+
+    public void CollisionWormHole(){
+
+        Random ran = new Random();
+        int ch = 0;
+
+        for(int i = 0 ;i<holes.size(); i++){
+            Log.d(" size of wormholes ", " " + holes.size());
+            for(int j = 0;j<snacks.size(); j++){
+
+                double distanceBw = distFrom(holes.get(i).center.x,holes.get(i).center.y,snacks.get(j).center.x,snacks.get(j).center.y);
+                Log.d(" yoo "," snackkkkk and hole");
+
+                if(snacks.get(j).radius + holes.get(i).radius >= Math.abs(distanceBw)){
+
+                    int hole = ((ran.nextInt(holes.size()) + 0) % holes.size());
+
+                    while (hole == i)
+                        hole = ((ran.nextInt(holes.size()) + 0) % holes.size());
+
+                    snacks.get(j).center.x = holes.get(hole).center.x;
+                    snacks.get(j).center.y = holes.get(hole).center.y;
+
+                    snac.get(j).setCenter(new LatLng(holes.get(hole).center.x,holes.get(hole).center.y));
+
+                    while (distFrom(snacks.get(j).center.x, snacks.get(j).center.y, holes.get(hole).center.x, holes.get(hole).center.y) < snac.get(j).getRadius() + holes.get(hole).radius) {
+                       // circles.get(i).circle.setCenter(new LatLng(circles.get(i).circle.getCenter().latitude + Math.sin(Math.toRadians(circles.get(i).direction)) * circles.get(i).speed, circles.get(i).circle.getCenter().longitude + Math.cos(Math.toRadians(circles.get(i).direction)) * circles.get(i).speed));
+                        Log.d(" yoo "," snackkkkk and hole part2");
+
+                        double locx = snacks.get(j).center.x + Math.sin(Math.toRadians(snacks.get(i).dir)) * snacks.get(i).speed;
+                        double locy = snacks.get(j).center.y + Math.cos(Math.toRadians(snacks.get(i).dir)) * snacks.get(i).speed;;
+                        snacks.get(j).center.x = locx;
+                        snacks.get(j).center.y = locy;
+                        snac.get(j).setCenter(new LatLng(locx,locy));
+
+
+                    }
+                }
+
+            }
+
+
+            for(int j = 0;j < junks.size(); j++){
+
+                double distanceBw = distFrom(holes.get(i).center.x,holes.get(i).center.y,junks.get(j).center.x,junks.get(j).center.y);
+
+                if(junks.get(j).radius + holes.get(i).radius >= Math.abs(distanceBw)){
+
+                    Log.d(" yoo "," junkkkkk and hole");
+
+                    int hole = ((ran.nextInt(holes.size()) + 0) % holes.size());
+
+                    while (hole == i)
+                        hole = ((ran.nextInt(holes.size()) + 0) % holes.size());
+
+                    junks.get(j).center.x = holes.get(hole).center.x;
+                    junks.get(j).center.y = holes.get(hole).center.y;
+
+                    jun.get(j).setCenter(new LatLng(holes.get(hole).center.x,holes.get(hole).center.y));
+
+                    while (distFrom(junks.get(j).center.x, junks.get(j).center.y, holes.get(hole).center.x, holes.get(hole).center.y) < jun.get(j).getRadius() + holes.get(hole).radius) {
+                        // circles.get(i).circle.setCenter(new LatLng(circles.get(i).circle.getCenter().latitude + Math.sin(Math.toRadians(circles.get(i).direction)) * circles.get(i).speed, circles.get(i).circle.getCenter().longitude + Math.cos(Math.toRadians(circles.get(i).direction)) * circles.get(i).speed));
+                        Log.d(" yoo "," junkkkkk and hole part2");
+
+
+                        double locx = junks.get(j).center.x + Math.sin(Math.toRadians(junks.get(i).dir)) * junks.get(i).speed;
+                        double locy = junks.get(j).center.y + Math.cos(Math.toRadians(junks.get(i).dir)) * junks.get(i).speed;;
+                        junks.get(j).center.x = locx;
+                        junks.get(j).center.y = locy;
+                        jun.get(j).setCenter(new LatLng(locx,locy));
+
+
+                    }
+                }
+
+            }
+
+        }
+
     }
 
     public void createboundary(String boundaryType){
@@ -349,11 +1175,11 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
         }
         else{
 
-            gps.showSettingsAlert();
+            gps.showSettingsAlert(Controller1.this);
         }
 
     }
-
+/*
     private void updateMyLocation() {
         if(!checkReady()) {
             return;
@@ -375,5 +1201,6 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
                     Manifest.permission.ACCESS_FINE_LOCATION, false);
         }
     }
+*/
 
 }

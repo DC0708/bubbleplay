@@ -18,7 +18,7 @@ public class JunkBubble {
 
     public int boolTag;
 
-    public int mStrokeColor;
+    public final int mStrokeColor = Color.GREEN ;
 
     public final int mFillColor = Color.GREEN;
 
@@ -29,6 +29,16 @@ public class JunkBubble {
     public double speed;
 
     final double bubbleSpeed = 1.0 / 250000.0;
+
+
+    public JunkBubble(double radii, int direction,  double speeds,LatLng loc ){
+
+        this.dir = direction;
+        this.boolTag=2;
+        this.center = new Centre(loc.latitude,loc.longitude);
+        this.speed = speeds ;
+        this.radius = radii;
+    }
 
     public JunkBubble(Boolean[][] isPlacedBubble, int count, Model gamemodel, LatLng initialloc) {
 
