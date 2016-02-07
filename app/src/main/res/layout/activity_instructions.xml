@@ -62,7 +62,6 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="1) hbasd dshsfakjd hkaj hfkjshfkja shfkjhaskjf kasj hdfkjash kjf ashdjkf hkasj hfjkdsh fkjah kjsdfh kjas fhkjah sdjkfh akjh fdkjsah fkjsah fkjsa hjkfh sakjfh kjdh fjkashfkjahsfkj shkjf hakjh fjksahdfjk ashfjaskh fkjash fkja h"
                         android:id="@+id/textView3"
                         android:background="#ffffff"
                         android:textColor="#008B8B"
@@ -73,7 +72,6 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="1) hbasd dshsfakjd hkaj hfkjshfkja shfkjhaskjf kasj hdfkjash kjf ashdjkf hkasj hfjkdsh fkjah kjsdfh kjas fhkjah sdjkfh akjh fdkjsah fkjsah fkjsa hjkfh sakjfh kjdh fjkashfkjahsfkj shkjf hakjh fjksahdfjk ashfjaskh fkjash fkja h"
                         android:id="@+id/textView2"
                         android:background="#ffffff"
                         android:textColor="#008B8B"
@@ -85,7 +83,6 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="1) hbasd dshsfakjd hkaj hfkjshfkja shfkjhaskjf kasj hdfkjash kjf ashdjkf hkasj hfjkdsh fkjah kjsdfh kjas fhkjah sdjkfh akjh fdkjsah fkjsah fkjsa hjkfh sakjfh kjdh fjkashfkjahsfkj shkjf hakjh fjksahdfjk ashfjaskh fkjash fkja h"
                         android:id="@+id/textView4"
                         android:background="#ffffff"
                         android:textColor="#008B8B"
@@ -97,7 +94,6 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="1) hbasd dshsfakjd hkaj hfkjshfkja shfkjhaskjf kasj hdfkjash kjf ashdjkf hkasj hfjkdsh fkjah kjsdfh kjas fhkjah sdjkfh akjh fdkjsah fkjsah fkjsa hjkfh sakjfh kjdh fjkashfkjahsfkj shkjf hakjh fjksahdfjk ashfjaskh fkjash fkja h"
                         android:id="@+id/textView5"
                         android:background="#ffffff"
                         android:textColor="#008B8B"
@@ -109,8 +105,18 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="1) hbasd dshsfakjd hkaj hfkjshfkja shfkjhaskjf kasj hdfkjash kjf ashdjkf hkasj hfjkdsh fkjah kjsdfh kjas fhkjah sdjkfh akjh fdkjsah fkjsah fkjsa hjkfh sakjfh kjdh fjkashfkjahsfkj shkjf hakjh fjksahdfjk ashfjaskh fkjash fkja h"
                         android:id="@+id/textView6"
+                        android:background="#ffffff"
+                        android:textColor="#008B8B"
+                        android:textSize="16dp"
+                        android:layout_marginTop="15dp"
+                        android:textStyle="italic"
+                        android:padding="2dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textView7"
                         android:background="#ffffff"
                         android:textColor="#008B8B"
                         android:textSize="16dp"
