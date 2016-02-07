@@ -202,5 +202,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_instructions">Instructions</string>
+    <string name="title_activity_end_game">EndGame</string>
+    <string name="title_activity_chose_mode">ChoseMode</string>
 
 </resources>

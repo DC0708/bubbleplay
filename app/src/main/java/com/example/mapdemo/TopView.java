@@ -314,54 +314,62 @@ public class TopView extends AppCompatActivity implements LocationListener,SeekB
                         }
 
                         if(circles.size()>0){
-                            AlertDialog alertDialog = new AlertDialog.Builder(
-                                    TopView.this).create();
+//                            AlertDialog alertDialog = new AlertDialog.Builder(
+//                                    TopView.this).create();
+//
+//                            // Setting Dialog Title
+//                            alertDialog.setTitle("CONGRATTTSSS!!!");
+//                            Log.d("Game is "," Over !!!");
+//                            // Setting Dialog Message
+//                            alertDialog.setMessage("You Won. You are a champ, but are you pro??");
+//
+//                            alertDialog.setButton("START AGAIN", new DialogInterface.OnClickListener(){
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    // Write your code here to execute after dialog closed
+//                                    getIntent().setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                                    startActivity(new Intent(TopView.this, MainActivity.class));
+//                                    Toast.makeText(getApplicationContext(), "You clicked on RESTART", Toast.LENGTH_SHORT).show();
+//                                    timer.cancel();
+//                                    timer.purge();
+//                                    finish();
+//                                }
+//                            });
 
-                            // Setting Dialog Title
-                            alertDialog.setTitle("CONGRATTTSSS!!!");
-                            Log.d("Game is "," Over !!!");
-                            // Setting Dialog Message
-                            alertDialog.setMessage("You Won. You are a champ, but are you pro??");
-
-                            alertDialog.setButton("START AGAIN", new DialogInterface.OnClickListener(){
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // Write your code here to execute after dialog closed
-                                    getIntent().setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(new Intent(TopView.this, MainActivity.class));
-                                    Toast.makeText(getApplicationContext(), "You clicked on RESTART", Toast.LENGTH_SHORT).show();
-                                    timer.cancel();
-                                    timer.purge();
-                                    finish();
-                                }
-                            });
+                            startActivity(new Intent(TopView.this, EndGame.class));
+                            timer.cancel();
+                            timer.purge();
                         }
 
                         else if(circles.size()>0)
                             OnPlayerBoundaryCollission(new LatLng(location.getLatitude(),location.getLongitude()),height,width);
                         else if(circles.size()<=0){
-                            AlertDialog alertDialog = new AlertDialog.Builder(
-                                    TopView.this).create();
+//                            AlertDialog alertDialog = new AlertDialog.Builder(
+//                                    TopView.this).create();
+//
+//                            // Setting Dialog Title
+//                            alertDialog.setTitle("OOOPSSS!!!");
+//                            Log.d("Game is "," Over !!!");
+//                            // Setting Dialog Message
+//                            alertDialog.setMessage("You scored " + String.valueOf(totalscore) + " .Game Over!!");
+//
+//
+//                            alertDialog.setButton("START AGAIN", new DialogInterface.OnClickListener() {
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    // Write your code here to execute after dialog closed
+//                                    getIntent().setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//
+//                                    startActivity(new Intent(TopView.this, MainActivity.class));
+//                                    timer.cancel();
+//                                    Toast.makeText(getApplicationContext(), "You clicked on RESTART", Toast.LENGTH_SHORT).show();
+//                                    timer.purge();
+//
+//                                    finish();
+//                                }
+//                            });
+                            startActivity(new Intent(TopView.this, EndGame.class));
+                            timer.cancel();
+                            timer.purge();
 
-                            // Setting Dialog Title
-                            alertDialog.setTitle("OOOPSSS!!!");
-                            Log.d("Game is "," Over !!!");
-                            // Setting Dialog Message
-                            alertDialog.setMessage("You scored " + String.valueOf(totalscore) + " .Game Over!!");
-
-
-                            alertDialog.setButton("START AGAIN", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // Write your code here to execute after dialog closed
-                                    getIntent().setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-                                    startActivity(new Intent(TopView.this, MainActivity.class));
-                                    timer.cancel();
-                                    Toast.makeText(getApplicationContext(), "You clicked on RESTART", Toast.LENGTH_SHORT).show();
-                                    timer.purge();
-
-                                    finish();
-                                }
-                            });
                         }
 
                         timeplayed+=1;
@@ -968,6 +976,7 @@ public class TopView extends AppCompatActivity implements LocationListener,SeekB
         if(distFrom(latit,longit,InitialLoc.latitude+width/2,longit) < cir.circle.getRadius()){
 
             AlertDialog alertDialog = new AlertDialog.Builder(
+
                     TopView.this).create();
 
             // Setting Dialog Title
@@ -1304,33 +1313,35 @@ public class TopView extends AppCompatActivity implements LocationListener,SeekB
 
                         /** Game Over Here **/
 
-                        AlertDialog alertDialog = new AlertDialog.Builder(
-                                TopView.this).create();
-
-                        // Setting Dialog Title
-                        alertDialog.setTitle("OOOPSSS!!!");
-                        Log.d("Game is "," Over !!!");
-                        // Setting Dialog Message
-
-                        alertDialog.setMessage("You scored " + String.valueOf(totalscore) + " .Game Over!!");
+//                        AlertDialog alertDialog = new AlertDialog.Builder(
+//                                TopView.this).create();
+//
+//                        // Setting Dialog Title
+//                        alertDialog.setTitle("OOOPSSS!!!");
+//                        Log.d("Game is "," Over !!!");
+//                        // Setting Dialog Message
+//
+//                        alertDialog.setMessage("You scored " + String.valueOf(totalscore) + " .Game Over!!");
 
                         totalscore=0;
 
                         // Setting OK Button
-                        alertDialog.setButton("START AGAIN", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Write your code here to execute after dialog closed
-                                getIntent().setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-                                startActivity(new Intent(TopView.this, MainActivity.class));
-                                Toast.makeText(getApplicationContext(), "You clicked on RESTART", Toast.LENGTH_SHORT).show();
+//                        alertDialog.setButton("START AGAIN", new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                // Write your code here to execute after dialog closed
+//                                getIntent().setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//
+//                                startActivity(new Intent(TopView.this, MainActivity.class));
+//                                Toast.makeText(getApplicationContext(), "You clicked on RESTART", Toast.LENGTH_SHORT).show();
                                 gameover=true;
-                                finish();
-                            }
-                        });
+//                                finish();
+//                            }
+//                        });
 
                         // Showing Alert Message
-                        alertDialog.show();
+                        //alertDialog.show();
+
+                        startActivity(new Intent(TopView.this, EndGame.class));
 
 
 

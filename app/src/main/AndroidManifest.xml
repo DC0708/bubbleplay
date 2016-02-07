@@ -85,6 +85,14 @@
             android:name=".Instructions"
             android:label="@string/title_activity_instructions" >
         </activity>
+        <activity
+            android:name=".EndGame"
+            android:label="@string/title_activity_end_game" >
+        </activity>
+        <activity
+            android:name=".ChoseMode"
+            android:label="@string/title_activity_chose_mode" >
+        </activity>
     </application>
 
 </manifest>
