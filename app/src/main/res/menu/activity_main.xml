@@ -14,8 +14,8 @@
      limitations under the License.
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
+    <!--<item
         android:id="@+id/menu_legal"
         android:showAsAction="never"
-        android:title="@string/legal_info" />
+        android:title="@string/legal_info" />-->
 </menu>
