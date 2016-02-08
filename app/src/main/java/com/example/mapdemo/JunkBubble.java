@@ -34,13 +34,13 @@ public class JunkBubble {
     public JunkBubble(double radii, int direction,  double speeds,LatLng loc ){
 
         this.dir = direction;
-        this.boolTag=2;
+        this.boolTag = 2;
         this.center = new Centre(loc.latitude,loc.longitude);
         this.speed = speeds ;
         this.radius = radii;
     }
 
-    public JunkBubble(Boolean[][] isPlacedBubble, int count, Model gamemodel, LatLng initialloc) {
+    public JunkBubble(Boolean[][] isPlacedBubble, int count, Model gamemodel, LatLng initialloc,double defaultradius) {
 
         Random r = new Random();
 
@@ -48,8 +48,12 @@ public class JunkBubble {
         int y = (r.nextInt(10) + 0) % 10;
         this.dir = (r.nextInt(360) + 0) % 360;
         this.boolTag = 2;
-        this.radius = 1 + (0.01 * (double) ((r.nextInt(100) + 0) % 100));
-
+        int check = r.nextInt(2);
+        if(check==0)
+            this.radius =  defaultradius + (0.01 * (double)((r.nextInt(29)+1)%30));
+        else{
+            this.radius =   (0.01 * (double)((r.nextInt(49)+1)%50));
+        }
         //   Log.d("checkValue",String.valueOf(x)+" " +y+" "+dir);
         while (isPlacedBubble[x][y]) {
 
@@ -58,20 +62,32 @@ public class JunkBubble {
 
         }
 
-        if (gamemodel.boundarytype.equals("Small Boundary") || gamemodel.boundarytype.equals("Medium Boundary")) {
+        if (gamemodel.boundarytype.equals("Small Boundary")) {
         /* circles.add(new DraggableCircle(new LatLng((lat - width / 2) + (x + 1) * width / 12, (lon - height / 2) + (y + 1) * height / 12), 0.7*radius,dir,tag,0.5*bubbleSpeed)); */
-            this.radius = 0.7 * this.radius;
+            this.radius = 0.7 * radius;
             this.center = new Centre((initialloc.latitude - gamemodel.boundaryWidth / 2) + (x + 1) * gamemodel.boundaryWidth / 12, (initialloc.longitude - gamemodel.boundaryHeight / 2) + (y + 1) * gamemodel.boundaryHeight / 12);
-            this.speed = 0.5 * bubbleSpeed;
+            this.speed = 0.2 * bubbleSpeed;
 
             /** place bubble on the map **/
 
             isPlacedBubble[x][y] = true;
-        } else {
+        }
+        else if(gamemodel.boundarytype.equals("Medium")){
+            this.radius = 1.0 * radius;
+            this.center = new Centre((initialloc.latitude - gamemodel.boundaryWidth / 2) + (x + 1) * gamemodel.boundaryWidth / 12,(initialloc.longitude - gamemodel.boundaryHeight / 2) + (y + 1) * gamemodel.boundaryHeight / 12);
+            this.speed = 0.3*bubbleSpeed;
+            /** place bubble on the map **/
+
+            isPlacedBubble[x][y]=true;
+
+
+        }
+        else {
 
             /** place bubble on the map **/
+            this.radius = 1.2*radius;
             this.center = new Centre((initialloc.latitude - gamemodel.boundaryWidth / 2) + (x + 1) * gamemodel.boundaryWidth / 12, (initialloc.longitude - gamemodel.boundaryHeight / 2) + (y + 1) * gamemodel.boundaryHeight / 12);
-            this.speed = 0.5 * bubbleSpeed;
+            this.speed = 0.2 * bubbleSpeed;
 
             isPlacedBubble[x][y] = true;
         }

@@ -222,6 +222,13 @@ public final class MainActivity extends ActionBarActivity{
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //   Toast.makeText(getApplicationContext(),"16. onDestroy()", Toast.LENGTH_SHORT).show();
+    }
+
+
 /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

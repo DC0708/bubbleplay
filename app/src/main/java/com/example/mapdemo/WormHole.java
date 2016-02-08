@@ -33,7 +33,7 @@ public class WormHole {
         int x = (r.nextInt(10)+0)%10;
         int y = (r.nextInt(10)+0)%10;
         this.boolTag = 3;
-        this.radius = 2;
+        this.radius = 1;
 
         int check = 1;
         for (int j=0;j<count;j++)
@@ -64,18 +64,25 @@ public class WormHole {
 
         }
 
-        if(gamemodel.boundarytype.equals("Large Boundary")) {
-          //  bCircles.add(new DraggableCircle(new LatLng((lat - width / 2) + (x + 1) * width / 12, (lon - height / 2) + (y + 1) * height / 12), radius, dir, tag, 0));
+        if(gamemodel.boundarytype.equals("Large")) {
             this.center = new Centre((initialloc.latitude - gamemodel.boundaryWidth / 2) + (x + 1) * gamemodel.boundaryWidth / 12, (initialloc.longitude - gamemodel.boundaryHeight / 2) + (y + 1) * gamemodel.boundaryHeight / 12);
+            this.radius = 1.5 * radius;
 
             xCoordinate[count] = x;
             yCoordinate[count++] = y;
         }
 
+        else if(gamemodel.boundarytype.equals("Medium")) {
+            this.center = new Centre((initialloc.latitude - gamemodel.boundaryWidth / 2) + (x + 1) * gamemodel.boundaryWidth / 12, (initialloc.longitude - gamemodel.boundaryHeight / 2) + (y + 1) * gamemodel.boundaryHeight / 12);
+            this.radius = 1.0 * radius;
+
+            xCoordinate[count] = x;
+            yCoordinate[count++] = y;
+        }
         else{
         //    bCircles.add(new DraggableCircle(new LatLng((lat - width / 2) + (x + 1) * width / 12, (lon - height / 2) + (y + 1) * height / 12),0.6 * radius, dir, tag, 0));
 
-            this.radius = 0.6 * this.radius;
+            this.radius = 0.6 * radius;
             this.center = new Centre((initialloc.latitude - gamemodel.boundaryWidth / 2) + (x + 1) * gamemodel.boundaryWidth / 12, (initialloc.longitude - gamemodel.boundaryHeight / 2) + (y + 1) * gamemodel.boundaryHeight / 12);
 
             xCoordinate[count] = x;

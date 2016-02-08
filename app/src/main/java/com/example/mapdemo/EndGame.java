@@ -49,7 +49,7 @@ public class EndGame extends ActionBarActivity {
                 //mediaPlayer.start();
 
                 startActivity(new Intent(EndGame.this, MainActivity.class));
-
+                finish();
             }
         });
     }
@@ -76,4 +76,11 @@ public class EndGame extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //   Toast.makeText(getApplicationContext(),"16. onDestroy()", Toast.LENGTH_SHORT).show();
+    }
+
 }

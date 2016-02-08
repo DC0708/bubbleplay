@@ -44,7 +44,7 @@ public class Model {
             this.boundaryWidth = 2*0.00010;
             this.sizeJunkBubbles = 3;
             this.sizeRepellerBubbles = 1;
-            this.sizeSnackBubble = 6;
+            this.sizeSnackBubble = 7;
 
         }
 
@@ -55,7 +55,7 @@ public class Model {
             this.boundaryWidth = 2*0.00020;
             this.sizeJunkBubbles = 5;
             this.sizeRepellerBubbles = 1;
-            this.sizeSnackBubble = 10;
+            this.sizeSnackBubble = 11;
 
         }
         else{
@@ -63,9 +63,9 @@ public class Model {
             this.boundarytype = "Large";
             this.boundaryHeight = 2*0.00030;
             this.boundaryWidth = 2*0.00030;
-            this.sizeJunkBubbles = 14;
+            this.sizeJunkBubbles = 7;
             this.sizeRepellerBubbles = 1;
-            this.sizeSnackBubble = 7;
+            this.sizeSnackBubble = 14;
 
         }
     }

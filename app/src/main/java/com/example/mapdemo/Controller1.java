@@ -56,12 +56,15 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
 
     private CheckBox mMyLocationCheckbox;
 
+    public final double mediumfactor = 1.5;
+    public final double largefactor = 2.0;
+
     double speedx = -1.0;
 
     double speedy = -1.0;
 
-    private static final double DEFAULT_RADIUS = 1;
-    public int totalscore=0;
+    private static final double DEFAULT_RADIUS = 0.5;
+    public int totalscore = 0;
 
     GeolocationService gps;
 
@@ -195,6 +198,7 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
             createsnackbubbles();
             createjunkbubbles();
             createwormholes();
+            if(Gamemode.equals("repulsor"))
             createrepeller();
 
             final Timer timer = new Timer();
@@ -210,6 +214,7 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
                             CollisionNonPlayerBubbles();
                             CollisionPlayerNonplayer();
                             CollisionWormHole();
+                            if(Gamemode.equals("repulsor"))
                             RepellerPhysics();
 
                             /** repeller winning condition **/
@@ -312,7 +317,7 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Toast.makeText(getApplicationContext(),"16. onDestroy()", Toast.LENGTH_SHORT).show();
+     //   Toast.makeText(getApplicationContext(),"16. onDestroy()", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -347,9 +352,19 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
         Log.d(" location on changed is called ", gpsLocation.latitude + " lat " );
         //   PlayerBubble play = new PlayerBubble(gpsLocation, DEFAULT_RADIUS,mMap);
         if(gpschecker==1) {
+            double playerradii = DEFAULT_RADIUS;
+            if(BoundaryType.equals("Small")){
+                playerradii = DEFAULT_RADIUS;
+            }
+            else if(BoundaryType.equals("Medium")){
+                playerradii = mediumfactor * DEFAULT_RADIUS;
+            }
+            else{
+                playerradii = largefactor * DEFAULT_RADIUS;
+            }
             CircleOptions temp3 = new CircleOptions()
                     .center(gpsLocation)
-                    .radius(1.5*DEFAULT_RADIUS)
+                    .radius(playerradii)
                     .strokeWidth(2)
                     .strokeColor(Color.BLACK)
                     .fillColor(Color.MAGENTA);
@@ -871,7 +886,7 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
     }
     public void createsnack(int i){
 
-        SnackBubble tempsnack = new SnackBubble(gamemodel.isPlacedBubble,i,gamemodel,InitialLoc);
+        SnackBubble tempsnack = new SnackBubble(gamemodel.isPlacedBubble,i,gamemodel,InitialLoc,Player.getRadius());
         snacks.add(tempsnack);
 
         CircleOptions temp = new CircleOptions()
@@ -897,7 +912,7 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
     }
     public void createjunk(int i){
 
-        JunkBubble tempjunk = new JunkBubble(gamemodel.isPlacedBubble,i,gamemodel,InitialLoc);
+        JunkBubble tempjunk = new JunkBubble(gamemodel.isPlacedBubble,i,gamemodel,InitialLoc,Player.getRadius());
         junks.add(tempjunk);
         Circle temp2 = googleMap.addCircle(new CircleOptions()
                 .center(new LatLng(tempjunk.center.x,tempjunk.center.y))
@@ -1044,8 +1059,8 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
                             break;
                         }
 
-                        double locx = snacks.get(j).center.x + Math.sin(Math.toRadians(snacks.get(i).dir)) * snacks.get(i).speed;
-                        double locy = snacks.get(j).center.y + Math.cos(Math.toRadians(snacks.get(i).dir)) * snacks.get(i).speed;;
+                        double locx = snacks.get(j).center.x + Math.sin(Math.toRadians(snacks.get(j).dir)) * snacks.get(j).speed;
+                        double locy = snacks.get(j).center.y + Math.cos(Math.toRadians(snacks.get(j).dir)) * snacks.get(j).speed;;
                         snacks.get(j).center.x = locx;
                         snacks.get(j).center.y = locy;
                         snac.get(j).setCenter(new LatLng(locx,locy));
@@ -1081,15 +1096,18 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
                         if(j>=junks.size()){
                             break;
                         }
-
-                        double locx = junks.get(j).center.x + Math.sin(Math.toRadians(junks.get(i).dir)) * junks.get(i).speed;
-                        double locy = junks.get(j).center.y + Math.cos(Math.toRadians(junks.get(i).dir)) * junks.get(i).speed;;
+                        Log.d("junks size",junks.size() + " .. " );
+                        double locx = junks.get(j).center.x + Math.sin(Math.toRadians(junks.get(j).dir)) * junks.get(j).speed;
+                        double locy = junks.get(j).center.y + Math.cos(Math.toRadians(junks.get(j).dir)) * junks.get(j).speed;
                         junks.get(j).center.x = locx;
                         junks.get(j).center.y = locy;
                         jun.get(j).setCenter(new LatLng(locx,locy));
 
 
                     }
+                }
+                if(j>=junks.size()){
+                    break;
                 }
 
             }

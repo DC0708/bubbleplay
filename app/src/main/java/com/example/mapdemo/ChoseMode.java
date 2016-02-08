@@ -78,6 +78,11 @@ public class ChoseMode extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.menu_chose_mode, menu);
         return true;
     }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //   Toast.makeText(getApplicationContext(),"16. onDestroy()", Toast.LENGTH_SHORT).show();
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
