@@ -1,10 +1,12 @@
 package com.example.mapdemo;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
+import android.view.*;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 
@@ -18,6 +20,54 @@ public class ChoseMode extends ActionBarActivity {
         TextView tx = (TextView)findViewById(R.id.title);
         Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/GoodDog.otf");
         tx.setTypeface(custom_font);
+
+        ImageButton biggest;
+        ImageButton repulsor;
+
+
+        biggest = (ImageButton)findViewById(R.id.biggest);
+        repulsor = (ImageButton)findViewById(R.id.repulsor);
+
+        biggest.setOnClickListener(new android.view.View.OnClickListener(){
+            @Override
+            public void onClick(android.view.View v) {
+
+                Log.d("gjygyf", "fhfdhtct");
+
+                //               Intent myIntent = new Intent(MainActivity.this, TransitionPlayers.class);
+                //              myIntent.putExtra("name",username);
+                //              Toast.makeText(MainActivity.this,"Play button chosen",Toast.LENGTH_SHORT).show();
+                //mediaPlayer.start();
+                Intent i = getIntent();
+                String s = i.getStringExtra("playermode");
+                Intent i1 = new Intent(ChoseMode.this, ChoseBoundary.class);
+                i1.putExtra("playermode",s);
+                i1.putExtra("gamemode","biggest");
+                startActivity(i1);
+                finish();
+            }
+        });
+
+
+        repulsor.setOnClickListener(new android.view.View.OnClickListener(){
+            @Override
+            public void onClick(android.view.View v) {
+
+                Log.d("gjygyf", "fhfdhtct");
+
+                //               Intent myIntent = new Intent(MainActivity.this, TransitionPlayers.class);
+                //              myIntent.putExtra("name",username);
+                //              Toast.makeText(MainActivity.this,"Play button chosen",Toast.LENGTH_SHORT).show();
+                //mediaPlayer.start();
+                Intent i = getIntent();
+                String s = i.getStringExtra("playermode");
+                Intent i1 = new Intent(ChoseMode.this, ChoseBoundary.class);
+                i1.putExtra("playermode",s);
+                i1.putExtra("gamemode","repulsor");
+                startActivity(i1);
+                finish();
+            }
+        });
 
     }
 

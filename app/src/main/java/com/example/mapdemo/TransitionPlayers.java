@@ -64,11 +64,12 @@ public final class TransitionPlayers extends ActionBarActivity {
 
                 String username = myintent.getStringExtra("name");
 
-                Intent myIntent = new Intent(TransitionPlayers.this, ChoseBoundary.class);
+                Intent myIntent = new Intent(TransitionPlayers.this, ChoseMode.class);
                 myIntent.putExtra("name",username);
+                myIntent.putExtra("playermode","single");
 
                 startActivity(myIntent);
-
+                finish();
             }
         });
 

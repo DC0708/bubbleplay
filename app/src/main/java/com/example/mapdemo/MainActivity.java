@@ -180,7 +180,7 @@ public final class MainActivity extends ActionBarActivity{
                 mediaPlayer.start();
 
                 startActivity(new Intent(MainActivity.this, TransitionPlayers.class));
-
+                finish();
             }
         });
 
@@ -194,7 +194,7 @@ public final class MainActivity extends ActionBarActivity{
                 //Toast.makeText(MainActivity.this,"About to be written",Toast.LENGTH_SHORT).show();
 
                 startActivity(new Intent(MainActivity.this, About.class));
-
+                finish();
             }
         });
 
@@ -206,7 +206,7 @@ public final class MainActivity extends ActionBarActivity{
                 //Toast.makeText(MainActivity.this,"About to be written",Toast.LENGTH_SHORT).show();
 
                 startActivity(new Intent(MainActivity.this, Instructions.class));
-
+                finish();
             }
         });
 

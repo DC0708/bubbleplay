@@ -314,7 +314,7 @@ public class TopView extends AppCompatActivity implements LocationListener,SeekB
                         }
 
                         if(circles.size()>0){
-//                            AlertDialog alertDialog = new AlertDialog.Builder(
+//                            rtDialog alertDialog = new AlertDialog.Builder(
 //                                    TopView.this).create();
 //
 //                            // Setting Dialog Title

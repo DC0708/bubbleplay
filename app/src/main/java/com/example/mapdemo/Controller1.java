@@ -93,6 +93,10 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
 
     public RepellerBubble repeller;
 
+    public String Gamemode;
+
+    public String Playermode;
+
     public boolean gameover = false;
 
     public Boolean isGPSEnabled = false;
@@ -108,6 +112,10 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
 
         gps = new GeolocationService(Controller1.this);
 
+        score =(TextView) findViewById(R.id.description);
+
+        score.setText("  SCORE :" + String.valueOf(totalscore));
+
 
         if(gps.canGetLocation){
             Log.d("Isin","if");
@@ -117,10 +125,16 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
             gps.showSettingsAlert(Controller1.this);
         }
 
-        Bundle extras = getIntent().getExtras();
+        final Bundle extras = getIntent().getExtras();
 
-        if(extras != null)
+        if(extras != null) {
             BoundaryType = extras.getString("Boundary");
+            Gamemode = extras.getString("gamemode");
+            Playermode = extras.getString("playermode");
+        }
+
+
+        Log.d("Game mode is", Gamemode);
 
         final SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -200,81 +214,78 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
 
                             /** repeller winning condition **/
 
-                            if(Player.getRadius() + repeller.radius >= Math.abs(distFrom(Player.getCenter().latitude, Player.getCenter().longitude, repeller.center.x, repeller.center.y))){
+                            if (Gamemode.equals("repulsor")) {
+                                if (Player.getRadius() + repeller.radius >= Math.abs(distFrom(Player.getCenter().latitude, Player.getCenter().longitude, repeller.center.x, repeller.center.y))) {
 
-                                AlertDialog.Builder builder = new AlertDialog.Builder(Controller1.this);
-                                builder.setTitle("YOU WON!")
-                                        .setMessage("Congratulations!!...You won!!")
-                                        .setCancelable(false)
-                                        .setNegativeButton("Start Again!",new DialogInterface.OnClickListener(){
-                                            public void onClick(DialogInterface dialog, int id) {
-
-
-                                                startActivity(new Intent(Controller1.this, MainActivity.class));
-                                                dialog.cancel();
-                                            }
-                                        });
-                                AlertDialog alert = builder.create();
-                                alert.show();
-                            }
+                                    Intent i = new Intent(Controller1.this, EndGame.class);
+                                    i.putExtra("totalscore", String.valueOf(totalscore));
+                                    i.putExtra("gameresult","won");
+                                    startActivity(i);
+                                    finish();
+                                    timer.cancel();
+                                    timer.purge();
 
 
-
-
-                            /** ************** **/
-
-                            /** biggest bubble condition **/
-                            double maxRadius = -1;
-
-                            for(int i=0;i<snac.size();i++){
-
-                                if(snac.get(i).getRadius() > maxRadius)
-                                    maxRadius = snac.get(i).getRadius();
+                                }
 
                             }
 
+                            else {
+                                /** ************** **/
 
-                            if(Player.getRadius() > maxRadius){
+                                /** biggest bubble condition **/
+                                double maxRadius = -1;
 
-                                AlertDialog.Builder builder = new AlertDialog.Builder(Controller1.this);
-                                builder.setTitle("YOU WON!")
-                                        .setMessage("Congratulations!!...You won!!")
-                                        .setCancelable(false)
-                                        .setNegativeButton("Start Again!",new DialogInterface.OnClickListener(){
-                                            public void onClick(DialogInterface dialog, int id) {
+                                for (int i = 0; i < snac.size(); i++) {
+
+                                    if (snac.get(i).getRadius() > maxRadius)
+                                        maxRadius = snac.get(i).getRadius();
+
+                                }
 
 
-                                                startActivity(new Intent(Controller1.this, MainActivity.class));
-                                                //destroy activity
+                                if (Player.getRadius() > maxRadius) {
 
-                                                dialog.cancel();
-                                            }
-                                        });
-                                AlertDialog alert = builder.create();
-                                alert.show();
+                                    Intent i = new Intent(Controller1.this, EndGame.class);
+                                    i.putExtra("totalscore", String.valueOf(totalscore));
+                                    i.putExtra("gameresult","won");
+                                    startActivity(i);
+                                    finish();
+                                    timer.cancel();
+                                    timer.purge();
+
+                                }
+
                             }
-
-
                             /** ************** **/
 
                             /** losing condition **/
                             if(gameover){
 
-                                AlertDialog.Builder builder = new AlertDialog.Builder(Controller1.this);
-                                builder.setTitle("YOU LOST!")
-                                        .setMessage("Ooopss!!...You Lost!!")
-                                        .setCancelable(false)
-                                        .setNegativeButton("Start Again!",new DialogInterface.OnClickListener(){
-                                            public void onClick(DialogInterface dialog, int id) {
+//                                AlertDialog.Builder builder = new AlertDialog.Builder(Controller1.this);
+//                                builder.setTitle("YOU LOST!")
+//                                        .setMessage("Ooopss!!...You Lost!!")
+//                                        .setCancelable(false)
+//                                        .setNegativeButton("Start Again!",new DialogInterface.OnClickListener(){
+//                                            public void onClick(DialogInterface dialog, int id) {
+//
+//                                                //destroy activity
+//
+//                                                startActivity(new Intent(Controller1.this, MainActivity.class));
+//                                                dialog.cancel();
+//                                            }
+//                                        });
+//                                AlertDialog alert = builder.create();
+//                                alert.show();
 
-                                                //destroy activity
+                                Intent i = new Intent(Controller1.this, EndGame.class);
+                                i.putExtra("totalscore",String.valueOf(totalscore));
+                                i.putExtra("gameresult","lost");
 
-                                                startActivity(new Intent(Controller1.this, MainActivity.class));
-                                                dialog.cancel();
-                                            }
-                                        });
-                                AlertDialog alert = builder.create();
-                                alert.show();
+                                startActivity(i);
+                                finish();
+                                timer.cancel();
+                                timer.purge();
 
 
                             }
@@ -323,6 +334,9 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
 
         gpsLocation = new LatLng(latitude,longitude);
 
+        totalscore = totalscore + 3;
+        score.setText(" SCORE : " + totalscore);
+
         //    Log.d("location",latitude+ " ");
 //        totalscore+=0;
   //      score.setText("  SCORE :" + String.valueOf(totalscore));
@@ -330,16 +344,12 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
 
         googleMap.setOnMapLongClickListener(this);
 
-        //mFillColor = Color.MAGENTA;
-        //mStrokeColor = Color.BLACK;
-        //mWidth = 2;
-        // PolygonOptions options = new PolygonOptions().addAll(createRectangle(playerLocation, 500, 8));
         Log.d(" location on changed is called ", gpsLocation.latitude + " lat " );
         //   PlayerBubble play = new PlayerBubble(gpsLocation, DEFAULT_RADIUS,mMap);
         if(gpschecker==1) {
             CircleOptions temp3 = new CircleOptions()
                     .center(gpsLocation)
-                    .radius(DEFAULT_RADIUS)
+                    .radius(1.5*DEFAULT_RADIUS)
                     .strokeWidth(2)
                     .strokeColor(Color.BLACK)
                     .fillColor(Color.MAGENTA);
@@ -944,8 +954,9 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
                     double r1 = Player.getRadius();
                     double r2 = snacks.get(i).radius;
 
-                    double newRadius = Math.pow((Math.pow(r1, 3) - Math.pow(r2, 3)), 1.0 / 3.0);
-
+                    double newRadius = Math.pow((Math.pow(r1, 3) + Math.pow(r2, 3)), 1.0 / 3.0);
+                    totalscore = totalscore + (int)( 30 * Math.abs(Math.pow((Math.pow(r1, 3) - Math.pow(r2, 3)), 1.0 / 3.0)));
+                    score.setText(" SCORE : " + totalscore);
                     Player.setRadius(newRadius);
                     snac.get(i).remove();
                     snac.remove(i);
@@ -976,6 +987,10 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
                     double r2 = junks.get(i).radius;
 
                     double newRadius = Math.pow((Math.pow(r1, 3) - Math.pow(r2, 3)), 1.0 / 3.0);
+
+
+                    totalscore = totalscore - (int)(30 * Math.abs(Math.pow((Math.pow(r1, 3) - Math.pow(r2, 3)), 1.0 / 3.0)));
+                    score.setText(" SCORE : " + totalscore);
 
                     Player.setRadius(newRadius);
                     jun.get(i).remove();
@@ -1025,6 +1040,9 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
                     while (distFrom(snacks.get(j).center.x, snacks.get(j).center.y, holes.get(hole).center.x, holes.get(hole).center.y) < snac.get(j).getRadius() + holes.get(hole).radius) {
                        // circles.get(i).circle.setCenter(new LatLng(circles.get(i).circle.getCenter().latitude + Math.sin(Math.toRadians(circles.get(i).direction)) * circles.get(i).speed, circles.get(i).circle.getCenter().longitude + Math.cos(Math.toRadians(circles.get(i).direction)) * circles.get(i).speed));
                         Log.d(" yoo "," snackkkkk and hole part2");
+                        if(j>=snacks.size()){
+                            break;
+                        }
 
                         double locx = snacks.get(j).center.x + Math.sin(Math.toRadians(snacks.get(i).dir)) * snacks.get(i).speed;
                         double locy = snacks.get(j).center.y + Math.cos(Math.toRadians(snacks.get(i).dir)) * snacks.get(i).speed;;
@@ -1060,7 +1078,9 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
                     while (distFrom(junks.get(j).center.x, junks.get(j).center.y, holes.get(hole).center.x, holes.get(hole).center.y) < jun.get(j).getRadius() + holes.get(hole).radius) {
                         // circles.get(i).circle.setCenter(new LatLng(circles.get(i).circle.getCenter().latitude + Math.sin(Math.toRadians(circles.get(i).direction)) * circles.get(i).speed, circles.get(i).circle.getCenter().longitude + Math.cos(Math.toRadians(circles.get(i).direction)) * circles.get(i).speed));
                         Log.d(" yoo "," junkkkkk and hole part2");
-
+                        if(j>=junks.size()){
+                            break;
+                        }
 
                         double locx = junks.get(j).center.x + Math.sin(Math.toRadians(junks.get(i).dir)) * junks.get(i).speed;
                         double locy = junks.get(j).center.y + Math.cos(Math.toRadians(junks.get(i).dir)) * junks.get(i).speed;;

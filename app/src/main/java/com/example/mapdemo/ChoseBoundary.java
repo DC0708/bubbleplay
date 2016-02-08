@@ -21,6 +21,7 @@ import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -55,12 +56,20 @@ public final class ChoseBoundary extends ActionBarActivity {
         Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/GoodDog.otf");
         tx.setTypeface(custom_font);
 
+        Intent temp = getIntent();
+        final String gamemode = temp.getStringExtra("gamemode");
+        final String playermode = temp.getStringExtra("playermode");
+
         small.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             Intent i = new Intent(ChoseBoundary.this, Controller1.class);
-            i.putExtra("Boundary", "Small Boundary");
+            i.putExtra("Boundary", "Small");
+            i.putExtra("gamemode",gamemode);
+            i.putExtra("playermode",playermode);
+
+            Log.d("gamemode is 1",gamemode);
             Toast.makeText(ChoseBoundary.this,"Small Boundary chosen",Toast.LENGTH_SHORT).show();
             mediaPlayer.start();
 
@@ -74,12 +83,14 @@ public final class ChoseBoundary extends ActionBarActivity {
             public void onClick(View v) {
 
                 Intent i = new Intent(ChoseBoundary.this, Controller1.class);
-                i.putExtra("Boundary", "Medium Boundary");
+                i.putExtra("Boundary", "Medium");
+                i.putExtra("gamemode",gamemode);
+                i.putExtra("playermode",playermode);
                 Toast.makeText(ChoseBoundary.this,"Medium Boundary chosen",Toast.LENGTH_SHORT).show();
                 mediaPlayer.start();
-
+                Log.d("gamemode is ",gamemode);
                 startActivity(i);
-
+                finish();
 
             }
         });
@@ -89,7 +100,11 @@ public final class ChoseBoundary extends ActionBarActivity {
             public void onClick(View v) {
 
                 Intent i = new Intent(ChoseBoundary.this, Controller1.class);
-                i.putExtra("Boundary", "Large Boundary");
+                i.putExtra("Boundary", "Large");
+                i.putExtra("gamemode",gamemode);
+                i.putExtra("playermode",playermode);
+                Log.d("gamemode is 3",gamemode);
+
                 Toast.makeText(ChoseBoundary.this,"Large Boundary chosen",Toast.LENGTH_SHORT).show();
                 mediaPlayer.start();
 
