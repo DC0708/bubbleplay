@@ -74,7 +74,8 @@ public final class ChoseBoundary extends ActionBarActivity {
             mediaPlayer.start();
 
             startActivity(i);
-
+    //        finish();
+            return;
             }
         });
 
@@ -90,8 +91,8 @@ public final class ChoseBoundary extends ActionBarActivity {
                 mediaPlayer.start();
                 Log.d("gamemode is ",gamemode);
                 startActivity(i);
-                finish();
-
+  //              finish();
+                return;
             }
         });
 
@@ -109,7 +110,8 @@ public final class ChoseBoundary extends ActionBarActivity {
                 mediaPlayer.start();
 
                 startActivity(i);
-
+//                finish();
+                return;
             }
         });
 

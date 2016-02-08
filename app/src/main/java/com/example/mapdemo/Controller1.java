@@ -226,10 +226,10 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
                                     i.putExtra("totalscore", String.valueOf(totalscore));
                                     i.putExtra("gameresult","won");
                                     startActivity(i);
-                                    finish();
+//                                    finish();
                                     timer.cancel();
                                     timer.purge();
-
+                                    return;
 
                                 }
 
@@ -255,10 +255,10 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
                                     i.putExtra("totalscore", String.valueOf(totalscore));
                                     i.putExtra("gameresult","won");
                                     startActivity(i);
-                                    finish();
+  //                                  finish();
                                     timer.cancel();
                                     timer.purge();
-
+                                    return;
                                 }
 
                             }
@@ -267,31 +267,16 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
                             /** losing condition **/
                             if(gameover){
 
-//                                AlertDialog.Builder builder = new AlertDialog.Builder(Controller1.this);
-//                                builder.setTitle("YOU LOST!")
-//                                        .setMessage("Ooopss!!...You Lost!!")
-//                                        .setCancelable(false)
-//                                        .setNegativeButton("Start Again!",new DialogInterface.OnClickListener(){
-//                                            public void onClick(DialogInterface dialog, int id) {
-//
-//                                                //destroy activity
-//
-//                                                startActivity(new Intent(Controller1.this, MainActivity.class));
-//                                                dialog.cancel();
-//                                            }
-//                                        });
-//                                AlertDialog alert = builder.create();
-//                                alert.show();
 
                                 Intent i = new Intent(Controller1.this, EndGame.class);
                                 i.putExtra("totalscore",String.valueOf(totalscore));
                                 i.putExtra("gameresult","lost");
 
                                 startActivity(i);
-                                finish();
+    //                            finish();
                                 timer.cancel();
                                 timer.purge();
-
+                                return;
 
                             }
 

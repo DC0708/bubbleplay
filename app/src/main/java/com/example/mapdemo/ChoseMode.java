@@ -44,7 +44,8 @@ public class ChoseMode extends ActionBarActivity {
                 i1.putExtra("playermode",s);
                 i1.putExtra("gamemode","biggest");
                 startActivity(i1);
-                finish();
+ //               finish();
+                return;
             }
         });
 
@@ -65,7 +66,8 @@ public class ChoseMode extends ActionBarActivity {
                 i1.putExtra("playermode",s);
                 i1.putExtra("gamemode","repulsor");
                 startActivity(i1);
-                finish();
+   //             finish();
+                return;
             }
         });
 

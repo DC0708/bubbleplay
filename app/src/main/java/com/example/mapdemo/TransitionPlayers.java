@@ -69,7 +69,8 @@ public final class TransitionPlayers extends ActionBarActivity {
                 myIntent.putExtra("playermode","single");
 
                 startActivity(myIntent);
-                finish();
+ //               finish();
+                return;
             }
         });
 

@@ -49,7 +49,8 @@ public class EndGame extends ActionBarActivity {
                 //mediaPlayer.start();
 
                 startActivity(new Intent(EndGame.this, MainActivity.class));
-                finish();
+         //       finish();
+                return;
             }
         });
     }
