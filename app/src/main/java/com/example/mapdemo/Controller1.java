@@ -790,7 +790,7 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
                     speedx = repeller.speed;
                     speedy = speedx;
                 } else {
-                    if (speedx<1.2E-5 && speedy < 1.2E-5) {
+                    if (speedx<0.8E-5 && speedy < 0.8E-5) {
                         speedx += ((1 / (dist * dist)) * Math.sin(Math.toRadians(angle))) / 25000;
                         speedy += ((1 / (dist * dist)) * Math.cos(Math.toRadians(angle))) / 25000;
                     }
@@ -1127,7 +1127,7 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
             repellerSafeDistance = 8.0;
 
             if (InitialLoc != null)
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(InitialLoc.latitude, InitialLoc.longitude), 19.5f));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(InitialLoc.latitude, InitialLoc.longitude), 19.8f));
 
         } else {
 
@@ -1136,7 +1136,7 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
             repellerSafeDistance = 6.0;
 
             if (InitialLoc != null)
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(InitialLoc.latitude, InitialLoc.longitude), 19.5f));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(InitialLoc.latitude, InitialLoc.longitude), 20.8f));
 
         }
 
