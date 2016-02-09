@@ -48,7 +48,7 @@ public class SnackBubble {
         int y = (r.nextInt(10)+0)%10;
         this.dir = (r.nextInt(360)+0)%360;
         this.boolTag = 1;
-        int check = r.nextInt(2);
+        int check = (r.nextInt(2))%2;
         if(check==0)
         this.radius =  defaultradius + (0.01 * (double)((r.nextInt(29)+1)%30));
         else{

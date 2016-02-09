@@ -63,6 +63,8 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
 
     double speedy = -1.0;
 
+    double repellerSafeDistance = 10.0;
+
     private static final double DEFAULT_RADIUS = 0.5;
     public int totalscore = 0;
 
@@ -180,7 +182,7 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
                 bestProvider=locationManager.NETWORK_PROVIDER;
             }
 
-            locationManager.requestLocationUpdates(bestProvider, 33, 0, this);
+            locationManager.requestLocationUpdates(bestProvider, 20, 0, this);
             onLocationChanged(location);
             FetchGps();
 
@@ -783,13 +785,18 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
             double angle = Math.toDegrees(Math.atan(dist2 / dist1));
 
             double dist = distFrom(repe.get(i).getCenter().latitude, repe.get(i).getCenter().longitude, Player.getCenter().latitude, Player.getCenter().longitude);
-            if (dist<10.0) {
+            if (dist<repellerSafeDistance) {
                 if (speedx == -1.0) {
                     speedx = repeller.speed;
                     speedy = speedx;
                 } else {
-                    speedx += ((1 / (dist * dist)) * Math.sin(Math.toRadians(angle))) / 25000;
-                    speedy += ((1 / (dist * dist)) * Math.cos(Math.toRadians(angle))) / 25000;
+                    if (speedx<1.2E-5 && speedy < 1.2E-5) {
+                        speedx += ((1 / (dist * dist)) * Math.sin(Math.toRadians(angle))) / 25000;
+                        speedy += ((1 / (dist * dist)) * Math.cos(Math.toRadians(angle))) / 25000;
+                    }
+                    Log.d("speedx:"," " + speedx);
+                    Log.d("speedy:"," " + speedy);
+
                 }
                 repLocation = new LatLng(repeller.center.x + (Math.sin(Math.toRadians(repeller.dir))) * (speedx), repeller.center.y + (Math.cos(Math.toRadians(repeller.dir))) * (speedy));
                 repe.get(0).setCenter(repLocation);
@@ -1107,6 +1114,8 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
 
             Log.d("boundary is", "Large" + BoundaryType);
 
+            repellerSafeDistance = 10.0;
+
 
             if(InitialLoc != null)
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(InitialLoc.latitude, InitialLoc.longitude), 19.5f));
@@ -1115,12 +1124,16 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
 
             Log.d("boundary is", "medium" + BoundaryType);
 
+            repellerSafeDistance = 8.0;
+
             if (InitialLoc != null)
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(InitialLoc.latitude, InitialLoc.longitude), 19.5f));
 
         } else {
 
             Log.d("boundary is", "small" + BoundaryType);
+
+            repellerSafeDistance = 6.0;
 
             if (InitialLoc != null)
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(InitialLoc.latitude, InitialLoc.longitude), 19.5f));

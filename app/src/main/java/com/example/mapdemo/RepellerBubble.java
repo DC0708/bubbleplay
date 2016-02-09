@@ -36,8 +36,17 @@ public class RepellerBubble {
         int y = (r.nextInt(10)+0)%10;
         this.dir = (r.nextInt(360)+0)%360;
         this.boolTag = 3;
-        this.radius = 1 + (0.01 * (double)((r.nextInt(100)+0)%100));
-
+        if (gamemodel.boundarytype.equals("Small")){
+            this.radius = 0.4 + (0.01 * (double)((r.nextInt(39)+0)%40));
+            System.out.println("Small bpundary repeller");
+        }
+        else if (gamemodel.boundarytype.equals("Medium")) {
+            this.radius = 0.5 + (0.01 * (double) ((r.nextInt(49) + 0) % 50));
+            System.out.println("Medium bpundary repeller");
+        }else {
+            this.radius = 0.6 + (0.01 * (double) ((r.nextInt(59) + 0) % 60));
+            System.out.println("Large bpundary repeller");
+        }
         //   Log.d("checkValue",String.valueOf(x)+" " +y+" "+dir);
         while(isPlacedBubble[x][y]) {
 
