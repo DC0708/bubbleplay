@@ -204,5 +204,8 @@
     <string name="title_activity_instructions">Instructions</string>
     <string name="title_activity_end_game">EndGame</string>
     <string name="title_activity_chose_mode">ChoseMode</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_register">Register</string>
+    <string name="title_activity_logout">Logout</string>
 
 </resources>
