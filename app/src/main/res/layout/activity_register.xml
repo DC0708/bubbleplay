@@ -1,0 +1,80 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+android:paddingRight="@dimen/activity_horizontal_margin"
+android:paddingTop="@dimen/activity_vertical_margin"
+android:paddingBottom="@dimen/activity_vertical_margin"
+tools:context="com.example.mapdemo.Register"
+    android:background="@drawable/bubbbles">
+
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BubblePlay"
+        android:id="@+id/game_name"
+        android:layout_marginTop="10dp"
+        android:textColor="#ffffff"
+        android:textSize="90dp"
+        android:layout_gravity="center_horizontal" />
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:id="@+id/reg_username"
+        android:hint="Username"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#ffffff"
+        android:layout_marginTop="40dp" />
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:id="@+id/reg_email"
+        android:hint="Email"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#ffffff" />
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/reg_password"
+        android:hint="Password"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#ffffff" />
+
+    <FrameLayout
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_weight="0"
+        android:background="@color/white"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp" >
+
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/reg_submit"
+            android:background="@color/white" />
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:clickable="false"
+            android:text="REGISTER"
+            android:textColor="#008B8B"
+            android:textSize="20dp" />
+    </FrameLayout>
+
+</LinearLayout>
+</RelativeLayout>
+

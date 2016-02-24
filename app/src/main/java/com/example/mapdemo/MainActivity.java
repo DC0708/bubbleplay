@@ -17,6 +17,7 @@
 package com.example.mapdemo;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -64,11 +65,15 @@ public final class MainActivity extends ActionBarActivity{
     ImageButton FAB;
     ImageButton FAB1;
     ImageButton FAB2;
+    ImageButton login;
+    ImageButton register;
+    ImageButton logout;
     private TextView info;
     private LoginButton loginButton;
     private CallbackManager callbackManager;
     String username;
     LinearLayout linearLayout;
+    LinearLayout lr,ul;
     TextView user;
 
 
@@ -100,8 +105,8 @@ public final class MainActivity extends ActionBarActivity{
         Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/GoodDog.otf");
         user.setTypeface(custom_font);
 
-        linearLayout = (LinearLayout)findViewById(R.id.user_content);
-        linearLayout.setVisibility(View.INVISIBLE);
+        //linearLayout = (LinearLayout)findViewById(R.id.user_content);
+        //linearLayout.setVisibility(View.INVISIBLE);
 
         mediaPlayer = MediaPlayer.create(this, R.raw.gamebubble);
 
@@ -111,9 +116,42 @@ public final class MainActivity extends ActionBarActivity{
         FAB = (ImageButton) findViewById(R.id.imageButton);
         FAB1 = (ImageButton) findViewById(R.id.imageButton1);
         FAB2 = (ImageButton) findViewById(R.id.imageButton2);
+        login = (ImageButton) findViewById(R.id.imageButton5);
+        register = (ImageButton) findViewById(R.id.imageButton4);
+        lr = (LinearLayout) findViewById(R.id.loginRegister);
+        ul = (LinearLayout) findViewById(R.id.userLogout);
+        logout = (ImageButton) findViewById(R.id.imageButton3);
 
         TextView tx = (TextView)findViewById(R.id.textView);
         tx.setTypeface(custom_font);
+
+        SharedPreferences sp;
+
+        TextView username = (TextView) findViewById(R.id.username);
+        //TextView email = (TextView) findViewById(R.id.email);
+        //ImageButton register = (ImageButton) findViewById(R.id.reg_button);
+        //ImageButton login = (ImageButton) findViewById(R.id.login_button);
+
+        sp = getApplicationContext().getSharedPreferences("UserSession", 0);
+
+        if (sp.getBoolean("IsLoggedIn",false))
+        {
+            System.out.println("Logged in!");
+            username.setText(sp.getString("username","username"));
+            //      email.setText(sp.getString("email","email"));
+            lr.setVisibility(View.GONE);
+
+        }
+        else
+        {
+            System.out.println("not Logged in!");
+            //username.setVisibility(View.GONE);
+            //email.setVisibility(View.INVISIBLE);
+            //login.setVisibility(View.VISIBLE);
+            //register.setVisibility(View.VISIBLE);
+            ul.setVisibility(View.GONE);
+        }
+
 
         Log.d("hyugf", "fgdfgdrtsgrf");
 
@@ -122,65 +160,90 @@ public final class MainActivity extends ActionBarActivity{
   //      info = (TextView)findViewById(R.id.info);
         loginButton = (LoginButton)findViewById(R.id.login_button);
 
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        loginButton.setReadPermissions("user_friends");
+
+     //   loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
 
 
 
-            @Override
-            public void onSuccess(final LoginResult loginResult) {
-/*                info.setText(
-                        "User ID: "
-                                + loginResult.getAccessToken().getUserId()
-                                + "\n" +
-                                "Auth Token: "
-                                + loginResult.getAccessToken().getToken()
-                );
-*/              username = loginResult.getAccessToken().getToken();
+//            @Override
+//            public void onSuccess(final LoginResult loginResult) {
+///*                info.setText(
+//                        "User ID: "
+//                                + loginResult.getAccessToken().getUserId()
+//                                + "\n" +
+//                                "Auth Token: "
+//                                + loginResult.getAccessToken().getToken()
+//                );
+//*/              username = loginResult.getAccessToken().getToken();
+//
+//                ProfilePictureView profilePictureView;
+//                profilePictureView = (ProfilePictureView) findViewById(R.id.ProfilePicture);
+//                profilePictureView.setProfileId(loginResult.getAccessToken().getUserId());
+//
+//                linearLayout.setVisibility(View.VISIBLE);
+//
+//                new GraphRequest(
+//                        AccessToken.getCurrentAccessToken(),
+//                        "/me",
+//                        null,
+//                        HttpMethod.GET,
+//                        new GraphRequest.Callback() {
+//                            public void onCompleted(GraphResponse response) {
+//                                 /* handle the result */
+//                                try {
+//
+//                                    user.setText("Hi " + response.getJSONObject().get("name") + "!");
+////                                    System.out.println(response.getJSONObject().get("name"));
+//                                }
+//                                catch(JSONException e)
+//                                {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                        }
+//                ).executeAsync();
+//
+//                new GraphRequest(
+//                        AccessToken.getCurrentAccessToken(),
+//                        "/me/friends",
+//                        null,
+//                        HttpMethod.GET,
+//                        new GraphRequest.Callback() {
+//                            public void onCompleted(GraphResponse response) {
+//                                 /* handle the result */
+//                                try {
+//
+//                                      //System.out.println(response);
+//                                      System.out.println(response.getJSONObject());
+//                                }
+//                                catch(Exception e)
+//                                {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                        }
+//                ).executeAsync();
+//
+// //               Log.d("fb status",);
+//
+//
+//            }
+//                @Override
+//                public void onCancel () {
+//    //                info.setText("Login attempt canceled.");
+//                    Log.d("Cancel","sffds");
+//                }
+//
+//                @Override
+//                public void onError (FacebookException err){
+//      //              info.setText("Login attempt failed.");
+//                    Log.d("Error","sffds");
+//                }
+//
+//      //      });
 
-                ProfilePictureView profilePictureView;
-                profilePictureView = (ProfilePictureView) findViewById(R.id.ProfilePicture);
-                profilePictureView.setProfileId(loginResult.getAccessToken().getUserId());
 
-                linearLayout.setVisibility(View.VISIBLE);
-
-                new GraphRequest(
-                        AccessToken.getCurrentAccessToken(),
-                        "/me",
-                        null,
-                        HttpMethod.GET,
-                        new GraphRequest.Callback() {
-                            public void onCompleted(GraphResponse response) {
-                                 /* handle the result */
-                                try {
-
-                                    user.setText("Hi " + response.getJSONObject().get("name") + "!");
-//                                    System.out.println(response.getJSONObject().get("name"));
-                                }
-                                catch(JSONException e)
-                                {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                ).executeAsync();
-
- //               Log.d("fb status",);
-
-
-            }
-                @Override
-                public void onCancel () {
-    //                info.setText("Login attempt canceled.");
-                    Log.d("Cancel","sffds");
-                }
-
-                @Override
-                public void onError (FacebookException err){
-      //              info.setText("Login attempt failed.");
-                    Log.d("Error","sffds");
-                }
-
-            });
 
         FAB.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -197,6 +260,36 @@ public final class MainActivity extends ActionBarActivity{
 //                finish();
                 return;
             }
+        });
+
+        login.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, Login.class));
+            }
+
+
+        });
+
+        register.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, Register.class));
+            }
+
+
+        });
+
+        logout.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, Logout.class));
+            }
+
+
         });
 
         Log.d("lol",FAB.hasOnClickListeners()+" ");

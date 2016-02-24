@@ -31,27 +31,128 @@
         android:paddingBottom="50dp">
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/user_content"
-            android:layout_gravity="right">
+            android:id="@+id/loginRegister">
 
-            <TextView
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hi Username!"
-                android:id="@+id/username"
-                android:textColor="#ffffff"
-                android:textSize="30dp"
-                android:layout_gravity="center_vertical" />
+                android:id="@+id/user_content"
+                android:layout_gravity="center">
 
-            <com.facebook.login.widget.ProfilePictureView
-                android:id="@+id/ProfilePicture"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:gravity="center_horizontal"
-                android:padding="5sp" />
+                <FrameLayout
+                    android:layout_width="120dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0"
+                    android:background="@color/white"
+                    android:layout_gravity="center_horizontal">
+
+                    <ImageButton
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:id="@+id/imageButton5"
+                        android:background="@color/white" />
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:clickable="false"
+                        android:text="LOGIN"
+                        android:textColor="#008B8B"
+                        android:textSize="20dp" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="120dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0"
+                    android:background="@color/white"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="5dp">
+
+                    <ImageButton
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:id="@+id/imageButton4"
+                        android:background="@color/white" />
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:clickable="false"
+                        android:text="REGISTER"
+                        android:textColor="#008B8B"
+                        android:textSize="20dp" />
+                </FrameLayout>
+
+                <!--<com.facebook.login.widget.ProfilePictureView
+                    android:id="@+id/ProfilePicture"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:gravity="center_horizontal"
+                    android:padding="5sp"
+                    android:visibility="gone" />-->
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/userLogout">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/userLogout1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hi Username!"
+                    android:id="@+id/username"
+                    android:textColor="#ffffff"
+                    android:textSize="30dp"
+                    android:layout_gravity="center_horizontal" />
+
+                <FrameLayout
+                    android:layout_width="200dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0"
+                    android:background="@color/white"
+                    android:layout_gravity="center_horizontal">
+
+                    <ImageButton
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:id="@+id/imageButton3"
+                        android:background="@color/white" />
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:clickable="false"
+                        android:text="LOGOUT"
+                        android:textColor="#008B8B"
+                        android:textSize="20dp" />
+                </FrameLayout>
+
+            </LinearLayout>
+
         </LinearLayout>
 
         <TextView
@@ -159,7 +260,8 @@
             android:layout_height="60dp"
 
             android:layout_marginTop="30dp"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone" />
 
 
     </LinearLayout>
