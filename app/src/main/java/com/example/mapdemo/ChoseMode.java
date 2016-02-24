@@ -13,6 +13,21 @@ import android.widget.TextView;
 public class ChoseMode extends ActionBarActivity {
 
     @Override
+    protected void onStart(){
+
+        super.onStart();
+        Log.d("mode on","start");
+    }
+
+    @Override
+    protected void onRestart(){
+
+        super.onRestart();
+    }
+
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chose_mode);
@@ -80,11 +95,6 @@ public class ChoseMode extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.menu_chose_mode, menu);
         return true;
     }
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        //   Toast.makeText(getApplicationContext(),"16. onDestroy()", Toast.LENGTH_SHORT).show();
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -100,4 +110,34 @@ public class ChoseMode extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause(){
+
+        Log.d("mode on","pause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop(){
+
+        Log.d("mode on","stop");
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy(){
+
+        Log.d("mode on","destroy");
+        super.onDestroy();
+    }
+
+
+
 }

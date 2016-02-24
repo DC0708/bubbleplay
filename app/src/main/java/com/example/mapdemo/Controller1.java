@@ -5,6 +5,9 @@ import com.example.mapdemo.GeolocationService;
 import com.example.mapdemo.Model;
 import com.example.mapdemo.PermissionUtils;
 import com.example.mapdemo.R;
+
+import android.content.Context;
+import android.os.Vibrator;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -47,6 +50,23 @@ import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
  * Created by DC0708 on 31-Jan-16.
  */
 public class Controller1 extends AppCompatActivity implements LocationListener, GoogleMap.OnMapLongClickListener, OnMapReadyCallback, OnRequestPermissionsResultCallback {
+
+
+    @Override
+    protected void onStart(){
+
+        super.onStart();
+        Log.d("controller on","start");
+    }
+
+    @Override
+    protected void onRestart(){
+
+        Log.d("controller on", "restart");
+        super.onRestart();
+    }
+
+
 
     private LatLng InitialLoc;
     GoogleMap googleMap;
@@ -121,6 +141,7 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
 
         score.setText("  SCORE :" + String.valueOf(totalscore));
 
+        Vibrator vib = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
 
         if(gps.canGetLocation){
             Log.d("Isin","if");
@@ -301,11 +322,7 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
 
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-     //   Toast.makeText(getApplicationContext(),"16. onDestroy()", Toast.LENGTH_SHORT).show();
-    }
+
 
     @Override
     public void onMapReady(GoogleMap map) {
@@ -1238,5 +1255,34 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
         }
     }
 */
+
+    @Override
+    protected void onResume(){
+
+        Log.d("controller on","resume");
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause(){
+
+        Log.d("controller on","pause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop(){
+
+        Log.d("controller on","stop");
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy(){
+
+        Log.d("controller on","destroy");
+        super.onDestroy();
+    }
+
 
 }

@@ -40,6 +40,19 @@ public final class ChoseBoundary extends ActionBarActivity {
     private MediaPlayer mediaPlayer;
 
     @Override
+    protected void onStart(){
+
+        super.onStart();
+    }
+
+    @Override
+    protected void onRestart(){
+
+        super.onRestart();
+    }
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chose_boundary);
@@ -117,5 +130,30 @@ public final class ChoseBoundary extends ActionBarActivity {
 
 
     }
+
+
+    @Override
+    protected void onResume(){
+
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause(){
+
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop(){
+
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+    }
+
 
 }

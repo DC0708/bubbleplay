@@ -71,6 +71,20 @@ public final class MainActivity extends ActionBarActivity{
     LinearLayout linearLayout;
     TextView user;
 
+
+    @Override
+    protected void onStart(){
+
+        Log.d("On :","Start!");
+        super.onStart();
+    }
+
+    @Override
+    protected void onRestart(){
+        super.onRestart();
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -223,12 +237,6 @@ public final class MainActivity extends ActionBarActivity{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        //   Toast.makeText(getApplicationContext(),"16. onDestroy()", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -434,4 +442,31 @@ public final class MainActivity extends ActionBarActivity{
     }
 
 */
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause(){
+
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop(){
+
+        Log.d("On :","Stop!!");
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy(){
+
+        Log.d("On :","Destroy!");
+        super.onDestroy();
+    }
+
+
 }
