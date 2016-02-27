@@ -77,7 +77,7 @@ public class Login extends ActionBarActivity {
                             {
 
                                 // Defined URL  where to send data
-                                URL url = new URL("http://10.1.13.10/BubblePlayServer/login.php");
+                                URL url = new URL("http://10.20.3.98/login.php");
 
                                 // Send POST data request
 

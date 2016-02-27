@@ -19,6 +19,9 @@ package com.example.mapdemo;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -45,15 +48,15 @@ import com.facebook.login.LoginResult;
 
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONException;
-
 
 /**
  * The main activity of the API library demo gallery.
  * <p>
  * The main layout lists the demonstrated features, with buttons to launch them.
- */
+ **/
 public final class MainActivity extends ActionBarActivity{
 
     private RadioGroup radioBoundaryGroup;
@@ -76,6 +79,11 @@ public final class MainActivity extends ActionBarActivity{
     LinearLayout lr,ul;
     TextView user;
 
+    private LatLng InitialLoc;
+
+    public String bestProvider = LocationManager.GPS_PROVIDER;
+    public Boolean isGPSEnabled = false;
+    public Location location;
 
     @Override
     protected void onStart(){
@@ -109,6 +117,7 @@ public final class MainActivity extends ActionBarActivity{
         //linearLayout.setVisibility(View.INVISIBLE);
 
         mediaPlayer = MediaPlayer.create(this, R.raw.gamebubble);
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         //     toolbar = (Toolbar) findViewById(R.id.toolbar);
         //     setSupportActionBar(toolbar);
@@ -136,11 +145,60 @@ public final class MainActivity extends ActionBarActivity{
 
         if (sp.getBoolean("IsLoggedIn",false))
         {
+            Criteria criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_FINE);
+
+            if(locationManager!=null)
+                isGPSEnabled = locationManager
+                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+            bestProvider = locationManager.getBestProvider(criteria, true);
+
+            //Log.d("hererer",location+" ");
+            location = locationManager.getLastKnownLocation(bestProvider);
+
+            if (location==null){
+                location=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                bestProvider=locationManager.GPS_PROVIDER;
+            }
+
+            while(location==null){
+                location=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                bestProvider=locationManager.NETWORK_PROVIDER;
+            }
+
+
+            if(isGPSEnabled ) {
+
+//            String bestProvider = locationManager.getBestProvider(criteria, true);
+//            location = locationManager.getLastKnownLocation(bestProvider);
+
+                if (location != null) {
+                    //onLocationChanged()
+                    InitialLoc = new LatLng(location.getLatitude(), location.getLongitude());
+                    Log.d(" lat "+ location.getLatitude()," lon " + location.getLongitude());
+                } else {
+                    Log.d("location error", "location is not enabled!!");
+
+                }
+                if (location != null) {
+                   // onLocationChanged(location);
+                    Log.d(" initial location set ", location.getLatitude() + " " + location.getLongitude());
+
+                    Log.d("Location is if changed ", location.getLatitude() + " " + location.getLongitude());
+                }
+
+            }
+            else{
+                Log.d("Gps","is not onn!!!");
+             //   gps.showSettingsAlert(Controller1.this);
+            }
+
             System.out.println("Logged in!");
             username.setText(sp.getString("username","username"));
-            //      email.setText(sp.getString("email","email"));
-            lr.setVisibility(View.GONE);
+           //email.setText(sp.getString("email","email"));
 
+            lr.setVisibility(View.GONE);
         }
         else
         {
@@ -560,6 +618,8 @@ public final class MainActivity extends ActionBarActivity{
         Log.d("On :","Destroy!");
         super.onDestroy();
     }
+
+
 
 
 }

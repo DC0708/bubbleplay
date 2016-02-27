@@ -49,10 +49,10 @@ public class ChoseMode extends ActionBarActivity {
 
                 Log.d("gjygyf", "fhfdhtct");
 
-                //               Intent myIntent = new Intent(MainActivity.this, TransitionPlayers.class);
+                //              Intent myIntent = new Intent(MainActivity.this, TransitionPlayers.class);
                 //              myIntent.putExtra("name",username);
                 //              Toast.makeText(MainActivity.this,"Play button chosen",Toast.LENGTH_SHORT).show();
-                //mediaPlayer.start();
+                //              mediaPlayer.start();
                 Intent i = getIntent();
                 String s = i.getStringExtra("playermode");
                 Intent i1 = new Intent(ChoseMode.this, ChoseBoundary.class);
@@ -63,7 +63,6 @@ public class ChoseMode extends ActionBarActivity {
                 return;
             }
         });
-
 
         repulsor.setOnClickListener(new android.view.View.OnClickListener(){
             @Override

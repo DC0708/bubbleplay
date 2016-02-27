@@ -207,7 +207,6 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
             onLocationChanged(location);
             FetchGps();
 
-
             gamemodel = new Model(BoundaryType);
 
             if(isGPSEnabled){
@@ -1203,7 +1202,6 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
     }
 
     public void FetchGps(){
-
 
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_FINE);

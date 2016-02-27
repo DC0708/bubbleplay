@@ -81,7 +81,7 @@ public class Register extends ActionBarActivity {
                             {
 
                                 // Defined URL  where to send data
-                                URL url = new URL("http://10.1.13.10/BubblePlayServer/register.php");
+                                URL url = new URL("http://10.20.3.98/register.php");
 
                                 // Send POST data request
 
