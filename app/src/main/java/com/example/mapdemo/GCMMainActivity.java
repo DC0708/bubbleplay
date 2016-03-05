@@ -74,7 +74,7 @@ public class GCMMainActivity extends Activity {
         final String regId = GCMRegistrar.getRegistrationId(this);
 
         // Check if regid already presents
-        if (regId.equals("")) {
+        if (regId.equals("")){
             // Registration is not present, register now with GCM
             GCMRegistrar.register(this, SENDER_ID);
         } else {

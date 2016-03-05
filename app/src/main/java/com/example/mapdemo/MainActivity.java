@@ -16,6 +16,8 @@
 
 package com.example.mapdemo;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -25,6 +27,7 @@ import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -49,15 +52,24 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
 import com.google.android.gms.maps.model.LatLng;
-
+import static com.example.mapdemo.CommonUtilities.EXTRA_MESSAGE;
 import org.json.JSONException;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 
 /**
  * The main activity of the API library demo gallery.
  * <p>
  * The main layout lists the demonstrated features, with buttons to launch them.
  **/
-public final class MainActivity extends ActionBarActivity{
+public final class MainActivity extends AppCompatActivity {
 
     private RadioGroup radioBoundaryGroup;
     private RadioButton radioBoundaryButton;
@@ -102,8 +114,7 @@ public final class MainActivity extends ActionBarActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
+        Log.d("Main activity ","crested!!!!!");
 
         FacebookSdk.sdkInitialize(getApplicationContext());
 
@@ -148,57 +159,71 @@ public final class MainActivity extends ActionBarActivity{
             Criteria criteria = new Criteria();
             criteria.setAccuracy(Criteria.ACCURACY_FINE);
 
-            if(locationManager!=null)
+            if(locationManager!=null) {
+
+                Log.d("hererer", bestProvider + " ");
+
                 isGPSEnabled = locationManager
-                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
+                        .isProviderEnabled(LocationManager.GPS_PROVIDER);
+                Log.d("hererer", isGPSEnabled + " ");
 
-            bestProvider = locationManager.getBestProvider(criteria, true);
+                bestProvider = locationManager.getBestProvider(criteria, true);
+                Log.d("best provider", bestProvider + " ");
+                if (bestProvider == null || location == null){
 
-            //Log.d("hererer",location+" ");
-            location = locationManager.getLastKnownLocation(bestProvider);
+                    location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    bestProvider = locationManager.GPS_PROVIDER;
+                }
 
-            if (location==null){
-                location=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                bestProvider=locationManager.GPS_PROVIDER;
-            }
-
-            while(location==null){
-                location=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                bestProvider=locationManager.NETWORK_PROVIDER;
-            }
+                while (location == null) {
+                    location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    bestProvider = locationManager.NETWORK_PROVIDER;
+                }
 
 
-            if(isGPSEnabled ) {
+                if (isGPSEnabled) {
 
 //            String bestProvider = locationManager.getBestProvider(criteria, true);
 //            location = locationManager.getLastKnownLocation(bestProvider);
 
-                if (location != null) {
-                    //onLocationChanged()
-                    InitialLoc = new LatLng(location.getLatitude(), location.getLongitude());
-                    Log.d(" lat "+ location.getLatitude()," lon " + location.getLongitude());
+                    if (location != null) {
+                        //onLocationChanged()
+                        InitialLoc = new LatLng(location.getLatitude(), location.getLongitude());
+
+                        Log.d(" lat " + location.getLatitude(), " lon " + location.getLongitude());
+
+                        if (InitialLoc != null) {
+                            Log.d("user is : ",sp.getString("username","username") + " ");
+                            sendpostrequest(InitialLoc, sp.getString("username","username"));
+                            //String idds;
+                            checkpush("Hi!..DC and CR7 are here!!");
+                        }
+
+                    } else {
+                        Log.d("location error", "location is not enabled!!");
+
+                    }
+                    if (location != null) {
+                        // onLocationChanged(location);
+                        Log.d(" initial location set ", location.getLatitude() + " " + location.getLongitude());
+
+                        Log.d("Location is if changed ", location.getLatitude() + " " + location.getLongitude());
+
+
+                    }
+
                 } else {
-                    Log.d("location error", "location is not enabled!!");
-
-                }
-                if (location != null) {
-                   // onLocationChanged(location);
-                    Log.d(" initial location set ", location.getLatitude() + " " + location.getLongitude());
-
-                    Log.d("Location is if changed ", location.getLatitude() + " " + location.getLongitude());
+                    Log.d("Gps", "is not onn!!!");
+                    //   gps.showSettingsAlert(Controller1.this);
                 }
 
-            }
-            else{
-                Log.d("Gps","is not onn!!!");
-             //   gps.showSettingsAlert(Controller1.this);
-            }
 
+            }
             System.out.println("Logged in!");
             username.setText(sp.getString("username","username"));
            //email.setText(sp.getString("email","email"));
-
             lr.setVisibility(View.GONE);
+
         }
         else
         {
@@ -378,9 +403,6 @@ public final class MainActivity extends ActionBarActivity{
             }
         });
 
-
-
-
     }
 
 
@@ -390,6 +412,225 @@ public final class MainActivity extends ActionBarActivity{
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
+    public void checkpush( final String msg){
+
+        new Thread(new Runnable() {
+            public void run() {
+                String [] ids = new String[1];
+                ids[0] = "APA91bF8HLq-lp6Z7eVwQY6l8JLzd70CaKNOobna3ioqnPOooj-bAHYgjEa5Nchsqk5nt354jmmgYitEjcWMfW77lRFhle6fwUjWQyzcAOhDJ69-Z_BNeKsQyLVBUAPC5B7qRqS67e5T";
+                // Get user defined values
+                //System.out.println("Trying to connect!");
+                String data = "";
+                // Create data variable for sent values to server
+                try {
+
+                    data += "&" + URLEncoder.encode("regIds", "UTF-8")
+                            + "=" + URLEncoder.encode(java.util.Arrays.toString(ids), "UTF-8");
+                    data += "&" + URLEncoder.encode("message", "UTF-8")
+                            + "=" + URLEncoder.encode(msg , "UTF-8");
+                }
+                catch(UnsupportedEncodingException e){
+                    e.printStackTrace();
+                }
+
+                BufferedReader reader=null;
+
+                // Send data
+                try
+                {
+                    // Defined URL  where to send data
+                    URL url = new URL("http://10.1.35.160/BubblePlayServer/send_message.php");
+
+                    // Send POST data request
+                    Log.d("its pushh:","notification !!");
+                    URLConnection conn = url.openConnection();
+                    conn.setDoOutput(true);
+                    OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                    wr.write(data);
+                    wr.flush();
+
+                    // Get the server response
+
+                    reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder sb = new StringBuilder();
+                    String line = null;
+                    String builder = "";
+
+                    // Read Server Response
+                    while((line = reader.readLine()) != null)
+                    {
+                        // Append server response in string
+                        System.out.println(builder);
+                        System.out.println(builder.length());
+                        //sb.append(line + "\n");
+                        builder+=line;
+
+                    }
+
+
+                    final String text = builder;
+                    System.out.println("Text: "+text);
+                    System.out.println("len: "+text.length());
+                    if (text.equals("success"))
+                    {
+                        Log.d("updated location","yoo!!");
+                        /*    SharedPreferences pref;
+                            SharedPreferences.Editor editor;
+                          .  pref = getApplicationContext()getSharedPreferences("UserSession",0);
+                            editor = pref.edit();
+                            editor.putBoolean("IsLoggedIn",true);
+                            editor.putString("username",user);
+                            editor.putString("email",email.getText().toString());
+                            editor.commit();
+
+                            startActivity(new Intent(Register.this, MainActivity.class));
+                        */
+                    }
+                    else
+                    {
+                        MainActivity.this.runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(MainActivity.this, "Error: " + text, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+                catch(Exception ex)
+                {
+                    ex.printStackTrace();
+                }
+                finally
+                {
+                    try
+                    {
+
+                        reader.close();
+                    }
+
+                    catch(Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
+            }
+        }).start();
+
+
+
+    }
+
+    public void sendpostrequest(final LatLng initialLoc,final String user){
+
+
+            new Thread(new Runnable() {
+                public void run() {
+
+
+
+                    // Get user defined values
+                    //System.out.println("Trying to connect!");
+                    String data = "";
+                    // Create data variable for sent values to server
+                    try {
+
+                        data = URLEncoder.encode("latitude", "UTF-8")
+                                + "=" + URLEncoder.encode(String.valueOf(initialLoc.latitude), "UTF-8");
+
+                        data += "&" + URLEncoder.encode("longitude", "UTF-8") + "="
+                                + URLEncoder.encode(String.valueOf(initialLoc.longitude), "UTF-8");
+
+                        data += "&" + URLEncoder.encode("username", "UTF-8")
+                                + "=" + URLEncoder.encode(user, "UTF-8");
+                    }
+                    catch(UnsupportedEncodingException e)
+                    {
+                        e.printStackTrace();
+                    }
+
+                    BufferedReader reader=null;
+
+                    // Send data
+                    try
+                    {
+
+                        // Defined URL  where to send data
+                        URL url = new URL("http://10.1.35.160/BubblePlayServer/updateiniloc.php");
+
+                        // Send POST data request
+
+                        URLConnection conn = url.openConnection();
+                        conn.setDoOutput(true);
+                        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                        wr.write( data );
+                        wr.flush();
+
+                        // Get the server response
+
+                        reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        StringBuilder sb = new StringBuilder();
+                        String line = null;
+                        String builder = "";
+
+                        // Read Server Response
+                        while((line = reader.readLine()) != null)
+                        {
+                            // Append server response in string
+                            System.out.println(builder);
+                            System.out.println(builder.length());
+                            //sb.append(line + "\n");
+                            builder+=line;
+
+                        }
+
+
+                        final String text = builder;
+                        System.out.println("Text: "+text);
+                        System.out.println("len: "+text.length());
+                        if (text.equals("success"))
+                        {
+                            Log.d("updated location","yoo!!");
+                        /*    SharedPreferences pref;
+                            SharedPreferences.Editor editor;
+                          .  pref = getApplicationContext()getSharedPreferences("UserSession",0);
+                            editor = pref.edit();
+                            editor.putBoolean("IsLoggedIn",true);
+                            editor.putString("username",user);
+                            editor.putString("email",email.getText().toString());
+                            editor.commit();
+
+                            startActivity(new Intent(Register.this, MainActivity.class));
+                        */
+                        }
+                        else
+                        {
+                            MainActivity.this.runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Toast.makeText(MainActivity.this, "Error: " + text, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
+                    catch(Exception ex)
+                    {
+                        ex.printStackTrace();
+                    }
+                    finally
+                    {
+                        try
+                        {
+
+                            reader.close();
+                        }
+
+                        catch(Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+
+                }
+            }).start();
+
+    }
 
 /*
     @Override
@@ -593,6 +834,31 @@ public final class MainActivity extends ActionBarActivity{
     }
 
 */
+    /**
+     * Receiving push messages
+     * */
+    private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String newMessage = intent.getExtras().getString(EXTRA_MESSAGE);
+            // Waking up mobile if it is sleeping
+            WakeLocker.acquire(getApplicationContext());
+
+            /**
+             * Take appropriate action on this message
+             * depending upon your app requirement
+             * For now i am just displaying it on the screen
+             * */
+
+            // Showing received message
+//            lblMessage.append(newMessage + "\n");
+            Toast.makeText(getApplicationContext(), "New Message: " + newMessage, Toast.LENGTH_LONG).show();
+
+            // Releasing wake lock
+            WakeLocker.release();
+        }
+    };
+
 
     @Override
     protected void onResume(){

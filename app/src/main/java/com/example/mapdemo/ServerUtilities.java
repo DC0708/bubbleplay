@@ -37,6 +37,7 @@ public final class ServerUtilities {
         Log.i(TAG, "registering device (regId = " + regId + ")");
         String serverUrl = SERVER_URL;
         Map<String, String> params = new HashMap<String, String>();
+       // params.put("password",passwd);
         params.put("regId", regId);
         params.put("name", name);
         params.put("email", email);

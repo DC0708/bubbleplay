@@ -1,15 +1,23 @@
 package com.example.mapdemo;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.*;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gcm.GCMRegistrar;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -19,8 +27,19 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 
+import static com.example.mapdemo.CommonUtilities.DISPLAY_MESSAGE_ACTION;
+import static com.example.mapdemo.CommonUtilities.EXTRA_MESSAGE;
 
-public class Login extends ActionBarActivity {
+
+public class Login extends AppCompatActivity {
+
+    AsyncTask<Void, Void, Void> mRegisterTask;
+
+    // Alert dialog manager
+    AlertDialogManager alert = new AlertDialogManager();
+
+    // Connection detector
+    ConnectionDetector cd;
 
 
     TextView user;
@@ -39,6 +58,37 @@ public class Login extends ActionBarActivity {
         Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/GoodDog.otf");
         user.setTypeface(custom_font);
 
+
+        cd = new ConnectionDetector(getApplicationContext());
+
+        // Check if Internet present
+        if (!cd.isConnectingToInternet()) {
+            // Internet Connection is not present
+            alert.showAlertDialog(Login.this,
+                    "Internet Connection Error",
+                    "Please connect to working Internet connection", false);
+            // stop executing code by return
+            return;
+        }
+
+
+        // Make sure the device has the proper dependencies.
+        GCMRegistrar.checkDevice(this);
+
+        // Make sure the manifest was properly set - comment out this line
+        // while developing the app, then uncomment it when it's ready.
+        GCMRegistrar.checkManifest(this);
+
+        //  lblMessage = (TextView) findViewById(R.id.lblMessage);
+
+        registerReceiver(mHandleMessageReceiver, new IntentFilter(
+                DISPLAY_MESSAGE_ACTION));
+
+        // Get GCM registration id
+        final String regId = GCMRegistrar.getRegistrationId(this);
+
+
+        Log.d("registration id : ",regId);
 
         submit.setOnClickListener(new android.view.View.OnClickListener() {
 
@@ -77,7 +127,7 @@ public class Login extends ActionBarActivity {
                             {
 
                                 // Defined URL  where to send data
-                                URL url = new URL("http://10.20.3.98/login.php");
+                                URL url = new URL("http://10.1.35.160/BubblePlayServer/login.php");
 
                                 // Send POST data request
 
@@ -112,11 +162,14 @@ public class Login extends ActionBarActivity {
                                 System.out.println("len: "+text.length());
                                 if (response[0].equals("success"))
                                 {
+
+
                                     SharedPreferences pref;
                                     SharedPreferences.Editor editor;
                                     pref = getApplicationContext().getSharedPreferences("UserSession",0);
                                     editor = pref.edit();
                                     editor.putBoolean("IsLoggedIn",true);
+                                    editor.putString("appid",regId);
                                     editor.putString("username",response[1].toString());
                                     editor.putString("email",email.getText().toString());
                                     editor.commit();
@@ -197,4 +250,42 @@ public class Login extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String newMessage = intent.getExtras().getString(EXTRA_MESSAGE);
+            // Waking up mobile if it is sleeping
+            WakeLocker.acquire(getApplicationContext());
+
+            /**
+             * Take appropriate action on this message
+             * depending upon your app requirement
+             * For now i am just displaying it on the screen
+             * */
+
+            // Showing received message
+            Log.d("message ", " is " + newMessage);
+//            lblMessage.append(newMessage + "\n");
+            Toast.makeText(getApplicationContext(), "New Message: " + newMessage, Toast.LENGTH_LONG).show();
+
+            // Releasing wake lock
+            WakeLocker.release();
+        }
+    };
+    @Override
+    protected void onDestroy() {
+        if (mRegisterTask != null) {
+            mRegisterTask.cancel(true);
+        }
+        try {
+            unregisterReceiver(mHandleMessageReceiver);
+            GCMRegistrar.onDestroy(this);
+        } catch (Exception e) {
+            Log.e("UnRegister Receiver Error", "> " + e.getMessage());
+        }
+        super.onDestroy();
+    }
+
 }

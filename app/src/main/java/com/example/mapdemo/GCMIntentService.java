@@ -32,7 +32,7 @@ public class GCMIntentService extends GCMBaseIntentService {
         Log.i(TAG, "Device registered: regId = " + registrationId);
         displayMessage(context, "Your device registred with GCM");
     //    Log.d("NAME", GCMMainActivity.name);
-        ServerUtilities.register(context, GCMMainActivity.name, GCMMainActivity.email, registrationId);
+    //    ServerUtilities.register(context, GCMMainActivity.name, GCMMainActivity.email, registrationId,);
     }
 
     /**
@@ -96,9 +96,16 @@ public class GCMIntentService extends GCMBaseIntentService {
         long when = System.currentTimeMillis();
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = new Notification(icon, message, when);
-
+//      Notification notification = new Notification(icon, message, when);
         String title = context.getString(R.string.app_name);
+
+        Log.d("notification is : ","generated");
+
+        Notification notification = new Notification.Builder(context)
+                .setContentText(message)
+                .setSmallIcon(icon)
+                .setWhen(when)
+                .build();
 
         Intent notificationIntent = new Intent(context, MainActivity.class);
         // set intent so it does not start a new activity
@@ -107,10 +114,7 @@ public class GCMIntentService extends GCMBaseIntentService {
         PendingIntent intent =
                 PendingIntent.getActivity(context, 0, notificationIntent, 0);
 //        notification.setLatestEventInfo(context, title, message, intent);
-            notification = new Notification.Builder(context)
-                .setContentTitle(title)
-                .setContentText(message)
-                .build();
+
 
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
