@@ -106,6 +106,7 @@ public class SelectPlayers extends ActionBarActivity {
                         String[] result = text.split(",");
                         if (!text.equals("failure"))
                         {
+                            System.out.println("adding players");
                             for (int j = 0; j<result.length;j++)
                             {
                                 players.add(new PlayerDetails(result[j]));
@@ -136,6 +137,35 @@ public class SelectPlayers extends ActionBarActivity {
                             ex.printStackTrace();
                         }
                     }
+                    System.out.println("size is: " + players.size());
+
+                    Button bt = (Button) findViewById(R.id.selectAll);
+                    boxAdapter = new ListAdapter(getApplicationContext(), players);
+
+                    ListView lvMain = (ListView) findViewById(R.id.lvMain);
+                    lvMain.setAdapter(boxAdapter);
+
+                    bt.setOnClickListener(
+                            new android.view.View.OnClickListener() {
+
+
+                                @Override
+                                public void onClick(android.view.View arg0) {
+                                    String result = "Selected Product are :";
+                                    int count=0;
+                                    ArrayList<PlayerDetails> ChosenPlayers = new ArrayList<PlayerDetails>(boxAdapter.getCount());
+
+                                    for (PlayerDetails p : boxAdapter.getBox()) {
+                                        if (p.box){
+                                            ChosenPlayers.add(p);
+                                        }
+                                    }
+                                    Intent intent = new Intent(SelectPlayers.this,Timer.class);
+                                    intent.putExtra("chosenPlayers",ChosenPlayers);
+                                    startActivity(intent);
+                                    //Toast.makeText(getApplicationContext(), result+"\n"+"Total Amount:="+totalAmount, Toast.LENGTH_LONG).show();
+                                }
+                            });
 
                 }
 
@@ -143,33 +173,7 @@ public class SelectPlayers extends ActionBarActivity {
             }).start();
         }
 
-        Button bt = (Button) findViewById(R.id.selectAll);
-        boxAdapter = new ListAdapter(this, players);
 
-        ListView lvMain = (ListView) findViewById(R.id.lvMain);
-        lvMain.setAdapter(boxAdapter);
-
-        bt.setOnClickListener(
-                new android.view.View.OnClickListener() {
-
-
-                    @Override
-                    public void onClick(android.view.View arg0) {
-                        String result = "Selected Product are :";
-                        int count=0;
-                        ArrayList<PlayerDetails> ChosenPlayers = new ArrayList<PlayerDetails>(boxAdapter.getCount());
-
-                        for (PlayerDetails p : boxAdapter.getBox()) {
-                            if (p.box){
-                                ChosenPlayers.add(p);
-                            }
-                        }
-                        Intent intent = new Intent(SelectPlayers.this,Timer.class);
-                        intent.putExtra("chosenPlayers",ChosenPlayers);
-                        startActivity(intent);
-                        //Toast.makeText(getApplicationContext(), result+"\n"+"Total Amount:="+totalAmount, Toast.LENGTH_LONG).show();
-                    }
-            });
 
     }
 
