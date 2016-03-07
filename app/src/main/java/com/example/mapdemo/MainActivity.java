@@ -246,9 +246,6 @@ public final class MainActivity extends AppCompatActivity {
         loginButton.setReadPermissions("user_friends");
 
      //   loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-
-
-
 //            @Override
 //            public void onSuccess(final LoginResult loginResult) {
 ///*                info.setText(
