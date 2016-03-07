@@ -10,7 +10,7 @@ import android.content.Intent;
 public final class CommonUtilities {
 
     // give your server registration url here
-    static final String SERVER_URL = "http://10.1.35.160/BubblePlayServer/register1.php";
+    static final String SERVER_URL = "http://192.168.1.6/BubblePlayServer/register1.php";
 
     // Google project id
     static final String SENDER_ID = "531446716538";

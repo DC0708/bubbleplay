@@ -164,7 +164,7 @@ public class Register extends ActionBarActivity {
                                 // Defined URL  where to send data
                                 Log.d("yoo:","in try for register!" + username.getText().toString() +
                                         email.getText().toString() + password.getText().toString());
-                                URL url = new URL("http://10.1.35.160/BubblePlayServer/register.php");
+                                URL url = new URL("http://192.168.1.6/BubblePlayServer/register.php");
 
                                 // Send POST data request
 

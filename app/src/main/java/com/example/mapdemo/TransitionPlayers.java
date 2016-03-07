@@ -17,6 +17,7 @@
 package com.example.mapdemo;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ public final class TransitionPlayers extends ActionBarActivity {
 
     ImageButton FAB;
     ImageButton FAB1;
+    SharedPreferences sp;
 
     private MediaPlayer mediaPlayer;
 
@@ -57,6 +59,8 @@ public final class TransitionPlayers extends ActionBarActivity {
         final Intent myintent = getIntent();
         mediaPlayer = MediaPlayer.create(this, R.raw.gamebubble);
 
+        sp = getApplicationContext().getSharedPreferences("UserSession", 0);
+
         TextView tx = (TextView)findViewById(R.id.title);
         Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/GoodDog.otf");
         tx.setTypeface(custom_font);
@@ -74,10 +78,10 @@ public final class TransitionPlayers extends ActionBarActivity {
 
                 mediaPlayer.start();
 
-                String username = myintent.getStringExtra("name");
+                //String username = myintent.getStringExtra("name");
 
                 Intent myIntent = new Intent(TransitionPlayers.this, ChoseMode.class);
-                myIntent.putExtra("name",username);
+                //myIntent.putExtra("name",username);
                 myIntent.putExtra("playermode","single");
 
                 startActivity(myIntent);
@@ -92,9 +96,18 @@ public final class TransitionPlayers extends ActionBarActivity {
 
                 mediaPlayer.start();
 
-                Toast.makeText(TransitionPlayers.this,"To be coded!!",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(TransitionPlayers.this,"To be coded!!",Toast.LENGTH_SHORT).show();
+                if (sp.getBoolean("isLoggedIn",false))
+                {
+                    Intent myIntent = new Intent(TransitionPlayers.this,Login.class);
+                }
+                else {
+                    Intent myIntent = new Intent(TransitionPlayers.this, SelectPlayers.class);
+                    //myIntent.putExtra("name",username);
+                    myIntent.putExtra("playermode", "multiple");
+                    startActivity(myIntent);
 
-
+                }
             }
         });
 
