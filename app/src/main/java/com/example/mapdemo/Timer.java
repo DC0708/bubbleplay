@@ -20,18 +20,14 @@ public class Timer extends ActionBarActivity {
 
         System.out.println("ENtered timer Activity");
 
-        ArrayList<PlayerDetails> chosenPlayers = (ArrayList<PlayerDetails>) getIntent().getSerializableExtra("chosenPlayers");
+        //ArrayList<PlayerDetails> chosenPlayers = (ArrayList<PlayerDetails>) getIntent().
 
         TextView tv = (TextView) findViewById(R.id.textView);
-        String chosenOnes = "";
+        String chosenOnes = getIntent().getExtras().getString("chosenPlayers");
+
+        System.out.println(chosenOnes);
 
 
-
-        for (int i=0;i<chosenPlayers.size();i++)
-        {
-            chosenOnes+=chosenPlayers.get(i).name;
-            chosenOnes+="\n";
-        }
 
         tv.setText(chosenOnes);
     }

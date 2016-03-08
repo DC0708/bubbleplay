@@ -439,7 +439,7 @@ public final class MainActivity extends AppCompatActivity {
                 try
                 {
                     // Defined URL  where to send data
-                    URL url = new URL("http://192.168.1.6/BubblePlayServer/send_message.php");
+                    URL url = new URL("http://10.1.33.78/BubblePlayServer/send_message.php");
 
                     // Send POST data request
                     Log.d("its pushh:","notification !!");
@@ -554,7 +554,7 @@ public final class MainActivity extends AppCompatActivity {
                     {
 
                         // Defined URL  where to send data
-                        URL url = new URL("http://192.168.1.6/BubblePlayServer/updateiniloc.php");
+                        URL url = new URL("http://10.1.33.78/BubblePlayServer/updateiniloc.php");
 
                         // Send POST data request
 

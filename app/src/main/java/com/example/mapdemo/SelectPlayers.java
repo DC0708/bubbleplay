@@ -34,6 +34,10 @@ public class SelectPlayers extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_players);
 
+        Button bt = (Button) findViewById(R.id.selectAll);
+
+        Thread thread;
+
         sp  = getApplicationContext().getSharedPreferences("UserSession",0);
 
         if (sp.getBoolean("isLoggedIn",false)) {
@@ -41,7 +45,7 @@ public class SelectPlayers extends ActionBarActivity {
         }
         else
         {
-            new Thread(new Runnable() {
+            Thread t = new Thread(new Runnable() {
                 public void run() {
 
                     String data = "";
@@ -67,7 +71,7 @@ public class SelectPlayers extends ActionBarActivity {
                         // Defined URL  where to send data
                         //Log.d("yoo:", "in try for register!" + username.getText().toString() +
                           //      email.getText().toString() + password.getText().toString());
-                        URL url = new URL("http://192.168.1.6/BubblePlayServer/getAppID.php");
+                        URL url = new URL("http://10.1.33.78/BubblePlayServer/getAppID.php");
 
                         // Send POST data request
 
@@ -139,39 +143,58 @@ public class SelectPlayers extends ActionBarActivity {
                     }
                     System.out.println("size is: " + players.size());
 
-                    Button bt = (Button) findViewById(R.id.selectAll);
-                    boxAdapter = new ListAdapter(getApplicationContext(), players);
-
-                    ListView lvMain = (ListView) findViewById(R.id.lvMain);
-                    lvMain.setAdapter(boxAdapter);
-
-                    bt.setOnClickListener(
-                            new android.view.View.OnClickListener() {
 
 
-                                @Override
-                                public void onClick(android.view.View arg0) {
-                                    String result = "Selected Product are :";
-                                    int count=0;
-                                    ArrayList<PlayerDetails> ChosenPlayers = new ArrayList<PlayerDetails>(boxAdapter.getCount());
 
-                                    for (PlayerDetails p : boxAdapter.getBox()) {
-                                        if (p.box){
-                                            ChosenPlayers.add(p);
-                                        }
-                                    }
-                                    Intent intent = new Intent(SelectPlayers.this,Timer.class);
-                                    intent.putExtra("chosenPlayers",ChosenPlayers);
-                                    startActivity(intent);
-                                    //Toast.makeText(getApplicationContext(), result+"\n"+"Total Amount:="+totalAmount, Toast.LENGTH_LONG).show();
-                                }
-                            });
+
 
                 }
 
 
-            }).start();
+            });
+
+            t.start();
+
+            try{
+                t.join();
+            }
+            catch(InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+
+            boxAdapter = new ListAdapter(getApplicationContext(), players);
+
+            ListView lvMain = (ListView) findViewById(R.id.lvMain);
+            lvMain.setAdapter(boxAdapter);
+
+            bt.setOnClickListener(
+                    new android.view.View.OnClickListener() {
+
+
+                        @Override
+                        public void onClick(android.view.View arg0) {
+                            String result = "Selected Product are :";
+                            int count=0;
+                            String ChosenPlayers = "";
+
+                            for (PlayerDetails p : boxAdapter.getBox()) {
+                                if (p.box){
+                                    if (count==0)
+                                        ChosenPlayers+=p.name;
+                                    else
+                                        ChosenPlayers+=","+p.name;
+                                    count++;
+                                }
+                            }
+                            Intent intent = new Intent(SelectPlayers.this,Timer.class);
+                            intent.putExtra("chosenPlayers",ChosenPlayers);
+                            startActivity(intent);
+                            //Toast.makeText(getApplicationContext(), result+"\n"+"Total Amount:="+totalAmount, Toast.LENGTH_LONG).show();
+                        }
+                    });
         }
+
 
 
 
