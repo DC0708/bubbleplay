@@ -11,17 +11,20 @@ public class PlayerDetails {
         String email;
         double distance;
         boolean box;
+        String appID;
 
+        PlayerDetails(String _name, String _email, double _distance, boolean _box, String _appID) {
 
-        PlayerDetails(String _name, String _email, double _distance, boolean _box) {
+            appID = _appID;
             name = _name;
             email = _email;
             distance = _distance;
             box = _box;
         }
 
-        PlayerDetails(String _name)
+        PlayerDetails(String _name, String _appID)
         {
+            appID = _appID;
             name = _name;
             email = "email";
             distance = 5.0;

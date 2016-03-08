@@ -87,8 +87,11 @@ public class Register extends ActionBarActivity {
                 DISPLAY_MESSAGE_ACTION));
 
         // Get GCM registration id
-        final String regId = GCMRegistrar.getRegistrationId(this);
+        String regId1="";
+        while(regId1.length()==0)
+             regId1 = GCMRegistrar.getRegistrationId(this);
 
+        final String regId = regId1;
         GCMRegistrar.register(this, SENDER_ID);
         Log.d("registration id : ",regId);
         submit.setOnClickListener(new android.view.View.OnClickListener() {
@@ -118,7 +121,7 @@ public class Register extends ActionBarActivity {
                                     protected Void doInBackground(Void... params) {
                                         // Register on our server
                                         // On server creates a new user
-                                      //  ServerUtilities.register(context, name, email, regId);
+                                        //  ServerUtilities.register(context, name, email, regId);
                                         return null;
                                     }
 
@@ -204,7 +207,7 @@ public class Register extends ActionBarActivity {
                                 {
                                     SharedPreferences pref;
                                     SharedPreferences.Editor editor;
-                                   // GCMRegistrar.setRegisteredOnServer(getApplicationContext(), true);
+                                    // GCMRegistrar.setRegisteredOnServer(getApplicationContext(), true);
 
                                     pref = getApplicationContext().getSharedPreferences("UserSession",0);
                                     editor = pref.edit();

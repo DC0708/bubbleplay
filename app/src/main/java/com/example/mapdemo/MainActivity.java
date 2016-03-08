@@ -409,7 +409,7 @@ public final class MainActivity extends AppCompatActivity {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    public void checkpush( final String msg){
+    public void checkpush(final String msg){
 
         new Thread(new Runnable() {
             public void run() {

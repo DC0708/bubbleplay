@@ -28,7 +28,6 @@ public class SelectPlayers extends ActionBarActivity {
     SharedPreferences sp;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +38,8 @@ public class SelectPlayers extends ActionBarActivity {
         Thread thread;
 
         sp  = getApplicationContext().getSharedPreferences("UserSession",0);
+
+        Log.d("sp ",sp + " ");
 
         if (sp.getBoolean("isLoggedIn",false)) {
             startActivity(new Intent(SelectPlayers.this, Login.class));
@@ -54,7 +55,6 @@ public class SelectPlayers extends ActionBarActivity {
 
                         data += "&" + URLEncoder.encode("email", "UTF-8") + "="
                                 + URLEncoder.encode(sp.getString("email","email"), "UTF-8");
-
 
                     }
                     catch(UnsupportedEncodingException e)
@@ -102,18 +102,22 @@ public class SelectPlayers extends ActionBarActivity {
                             builder+=line;
 
                         }
-
-
+                        Log.d("builder is ",builder);
                         final String text = builder;
                         System.out.println("Text: "+text);
                         System.out.println("len: "+text.length());
                         String[] result = text.split(",");
+
                         if (!text.equals("failure"))
                         {
                             System.out.println("adding players");
                             for (int j = 0; j<result.length;j++)
                             {
-                                players.add(new PlayerDetails(result[j]));
+                                String[] playr = result[j].split("\\.");
+                                System.out.println("player size: " + playr.length);
+                                Log.d("result is :", result[j]);
+                                players.add(new PlayerDetails(playr[0],playr[1]));
+
                             }
                         }
                         else
@@ -177,18 +181,24 @@ public class SelectPlayers extends ActionBarActivity {
                             String result = "Selected Product are :";
                             int count=0;
                             String ChosenPlayers = "";
+                            String appids = "";
 
                             for (PlayerDetails p : boxAdapter.getBox()) {
                                 if (p.box){
-                                    if (count==0)
-                                        ChosenPlayers+=p.name;
-                                    else
-                                        ChosenPlayers+=","+p.name;
+                                    if (count==0) {
+                                        ChosenPlayers += p.name;
+                                        appids +=p.appID;
+                                    }
+                                    else {
+                                        ChosenPlayers += "," + p.name;
+                                        appids +="," + p.appID;
+                                    }
                                     count++;
                                 }
                             }
                             Intent intent = new Intent(SelectPlayers.this,Timer.class);
                             intent.putExtra("chosenPlayers",ChosenPlayers);
+                            intent.putExtra("appID",appids);
                             startActivity(intent);
                             //Toast.makeText(getApplicationContext(), result+"\n"+"Total Amount:="+totalAmount, Toast.LENGTH_LONG).show();
                         }
