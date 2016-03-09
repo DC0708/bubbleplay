@@ -1,5 +1,6 @@
 package com.example.mapdemo;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -101,6 +102,13 @@ public class Register extends ActionBarActivity {
 
                 if (username.getText().length()!=0 && email.getText().length()!=0 && password.getText().length()!=0)
                 {
+
+                    ProgressDialog dialog = new ProgressDialog(Register.this); // this = YourActivity
+                    dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    dialog.setMessage("Registering. Please wait...");
+                    dialog.setIndeterminate(true);
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.show();
 
                     new Thread(new Runnable() {
                         public void run() {
