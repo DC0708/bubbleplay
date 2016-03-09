@@ -61,7 +61,6 @@ public class Register extends ActionBarActivity {
 
         final EditText password = (EditText) findViewById(R.id.reg_password);
 
-
         cd = new ConnectionDetector(getApplicationContext());
 
         // Check if Internet present
@@ -89,8 +88,8 @@ public class Register extends ActionBarActivity {
 
         // Get GCM registration id
         String regId1="";
-        while(regId1.length()==0)
-             regId1 = GCMRegistrar.getRegistrationId(this);
+        //while(regId1.length()==0)
+        regId1 = GCMRegistrar.getRegistrationId(this);
 
         final String regId = regId1;
         GCMRegistrar.register(this, SENDER_ID);
@@ -113,7 +112,6 @@ public class Register extends ActionBarActivity {
                     new Thread(new Runnable() {
                         public void run() {
 
-
                             if (GCMRegistrar.isRegisteredOnServer(getApplicationContext())) {
                                 // Skips registration.
                                 Toast.makeText(getApplicationContext(), "Already registered with GCM", Toast.LENGTH_LONG).show();
@@ -127,6 +125,7 @@ public class Register extends ActionBarActivity {
                                     @Override
                                     protected Void doInBackground(Void... params) {
                                         // Register on our server
+                                        Log.d("aaloo33","bukhaara33");
                                         // On server creates a new user
                                         //  ServerUtilities.register(context, name, email, regId);
                                         return null;
@@ -134,7 +133,9 @@ public class Register extends ActionBarActivity {
 
                                     @Override
                                     protected void onPostExecute(Void result) {
+                                        Log.d("aaloo","bukhaara");
                                         mRegisterTask = null;
+                                        Log.d("aaloo11","bukhaara22");
                                     }
 
                                 };
@@ -210,8 +211,8 @@ public class Register extends ActionBarActivity {
                                 final String text = builder;
                                 System.out.println("Text: "+text);
                                 System.out.println("len: "+text.length());
-                                if (text.equals("success"))
-                                {
+                                //if (text.equals("success"))
+                                if(true){
                                     SharedPreferences pref;
                                     SharedPreferences.Editor editor;
                                     // GCMRegistrar.setRegisteredOnServer(getApplicationContext(), true);

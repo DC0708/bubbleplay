@@ -70,7 +70,11 @@ import java.util.ArrayList;
  * The main layout lists the demonstrated features, with buttons to launch them.
  **/
 public final class MainActivity extends AppCompatActivity {
-
+/*
+    private static final String[] LOCATION_PERMS={
+            Manifest.permission.ACCESS_FINE_LOCATION
+    };
+*/
     private RadioGroup radioBoundaryGroup;
     private RadioButton radioBoundaryButton;
     private Button btnDisplay;
@@ -108,6 +112,7 @@ public final class MainActivity extends AppCompatActivity {
     protected void onRestart(){
         super.onRestart();
     }
+
 
 
     @Override
@@ -195,8 +200,8 @@ public final class MainActivity extends AppCompatActivity {
                         if (InitialLoc != null) {
                             Log.d("user is : ",sp.getString("username","username") + " ");
                             sendpostrequest(InitialLoc, sp.getString("username","username"));
-                            //String idds;
-                            checkpush("Hi!..DC and CR7 are here!!");
+                        //      String idds;
+                        //    checkpush("DC and CR7 are here!!");
                         }
 
                     } else {
@@ -234,6 +239,7 @@ public final class MainActivity extends AppCompatActivity {
             //register.setVisibility(View.VISIBLE);
             ul.setVisibility(View.GONE);
         }
+
 
 
         Log.d("hyugf", "fgdfgdrtsgrf");
@@ -274,7 +280,7 @@ public final class MainActivity extends AppCompatActivity {
 //                                try {
 //
 //                                    user.setText("Hi " + response.getJSONObject().get("name") + "!");
-////                                    System.out.println(response.getJSONObject().get("name"));
+//                                    System.out.println(response.getJSONObject().get("name"));
 //                                }
 //                                catch(JSONException e)
 //                                {
@@ -424,7 +430,7 @@ public final class MainActivity extends AppCompatActivity {
                     data += "&" + URLEncoder.encode("regIds", "UTF-8")
                             + "=" + URLEncoder.encode(java.util.Arrays.toString(ids), "UTF-8");
                     data += "&" + URLEncoder.encode("message", "UTF-8")
-                            + "=" + URLEncoder.encode(msg , "UTF-8");
+                            + "=" + URLEncoder.encode(msg.toString() , "UTF-8");
                 }
                 catch(UnsupportedEncodingException e){
                     e.printStackTrace();
@@ -435,6 +441,7 @@ public final class MainActivity extends AppCompatActivity {
                 // Send data
                 try
                 {
+                    Log.d("message is ", msg.toString());
                     // Defined URL  where to send data
                     URL url = new URL("http://10.1.33.78/BubblePlayServer/send_message.php");
 
@@ -583,6 +590,7 @@ public final class MainActivity extends AppCompatActivity {
                         final String text = builder;
                         System.out.println("Text: "+text);
                         System.out.println("len: "+text.length());
+
                         if (text.equals("success"))
                         {
                             Log.d("updated location","yoo!!");

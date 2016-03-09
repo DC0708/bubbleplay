@@ -47,8 +47,8 @@ public class GCMIntentService extends GCMBaseIntentService {
     }
 
     /**
-     * Method called on device un registred
-     * */
+     * Method called on device unregistred
+     **/
     @Override
     protected void onUnregistered(Context context, String registrationId) {
         Log.i(TAG, "Device unregistered");
@@ -58,7 +58,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
     /**
      * Method called on Receiving a new message
-     * */
+     **/
     @Override
     protected void onMessage(Context context, Intent intent) {
         Log.i(TAG, "Received message");
@@ -83,7 +83,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
     /**
      * Method called on Error
-     * */
+     **/
     @Override
     public void onError(Context context, String errorId) {
         Log.i(TAG, "Received error: " + errorId);

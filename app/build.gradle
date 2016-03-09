@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "com.example.mapdemo"
         minSdkVersion 17
-        targetSdkVersion 23
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
     }
@@ -27,5 +27,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.google.android.gms:play-services:8.1.0'
     compile 'com.facebook.android:facebook-android-sdk:4.6.0'
-    compile files('/home/aniket-cr/Desktop/droid/bubbleplay/libs/gcm.jar')
+    compile files('C:/Users/DC0708/Desktop/Backup/android-samples-master/ApiDemos/libs/gcm.jar')
 }
