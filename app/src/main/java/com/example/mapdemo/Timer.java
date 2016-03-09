@@ -34,7 +34,7 @@ public class Timer extends AppCompatActivity {
 
         TextView tv = (TextView) findViewById(R.id.textView);
         String chosenOnes = getIntent().getExtras().getString("chosenPlayers");
-        String deviceids = getIntent().getExtras().getString("chosenPlayers");
+        String deviceids = getIntent().getExtras().getString("appID");
 
         checkpush("Challenge is here!!",deviceids);
 

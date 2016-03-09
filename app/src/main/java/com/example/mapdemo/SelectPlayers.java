@@ -1,5 +1,6 @@
 package com.example.mapdemo;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
@@ -46,6 +47,13 @@ public class SelectPlayers extends ActionBarActivity {
         }
         else
         {
+            final ProgressDialog dialog = new ProgressDialog(this); // this = YourActivity
+            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            dialog.setMessage("Loading. Please wait...");
+            dialog.setIndeterminate(true);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+
             Thread t = new Thread(new Runnable() {
                 public void run() {
 
@@ -147,7 +155,17 @@ public class SelectPlayers extends ActionBarActivity {
                     }
                     System.out.println("size is: " + players.size());
 
+                    SelectPlayers.this.runOnUiThread(new Runnable() {
 
+                        @Override
+                        public void run() {
+                            try {
+                                dialog.dismiss();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
 
 
 
