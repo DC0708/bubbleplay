@@ -96,7 +96,6 @@ public class Register extends ActionBarActivity {
         Log.d("registration id : ",regId);
         submit.setOnClickListener(new android.view.View.OnClickListener() {
 
-
             @Override
             public void onClick(android.view.View arg0) {
 
