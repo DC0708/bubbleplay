@@ -79,7 +79,7 @@ public class SelectPlayers extends ActionBarActivity {
                         // Defined URL  where to send data
                         //Log.d("yoo:", "in try for register!" + username.getText().toString() +
                           //      email.getText().toString() + password.getText().toString());
-                        URL url = new URL("http://10.1.33.78/BubblePlayServer/getAppID.php");
+                        URL url = new URL("http://10.1.42.193/BubblePlayServer/getAppID.php");
 
                         // Send POST data request
 

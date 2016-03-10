@@ -150,7 +150,7 @@ public class Timer extends AppCompatActivity {
                 try
                 {
                     // Defined URL  where to send data
-                    URL url = new URL("http://10.1.33.78/BubblePlayServer/send_message.php");
+                    URL url = new URL("http://10.1.42.193/BubblePlayServer/send_message.php");
 
                     // Send POST data request
                     Log.d("its pushh:", "notification !!");
@@ -287,7 +287,7 @@ public class Timer extends AppCompatActivity {
                 try
                 {
                     // Defined URL  where to send data
-                    URL url = new URL("http://10.1.33.78/BubblePlayServer/send_message.php");
+                    URL url = new URL("http://10.1.42.193/BubblePlayServer/send_message.php");
 
                     // Send POST data request
                     Log.d("its pushh:", "notification !!");
