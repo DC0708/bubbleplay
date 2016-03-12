@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -87,7 +88,7 @@ public class Timer extends AppCompatActivity {
         //ArrayList<PlayerDetails> chosenPlayers = (ArrayList<PlayerDetails>) getIntent().
 
         TextView tv = (TextView) findViewById(R.id.textView);
-        String chosenOnes = getIntent().getExtras().getString("chosenPlayers");
+        final String chosenOnes = getIntent().getExtras().getString("chosenPlayers");
         final String deviceids = getIntent().getExtras().getString("appID");
 
         System.out.println("Thread de uttteeeeee!!!");
@@ -128,6 +129,101 @@ public class Timer extends AppCompatActivity {
 
                 String [] ids = deviceids.split(",");
                 Log.d(" devices are", ids[0]);
+
+
+
+                String data1 = "";
+
+                SharedPreferences sp = getApplicationContext().getSharedPreferences("UserSession",0);
+
+                // Create data variable for sent values to server
+                try {
+
+                    data1 += "&" + URLEncoder.encode("name", "UTF-8")
+                            + "=" + URLEncoder.encode(sp.getString("username","username"), "UTF-8");
+
+                    data1 += "&" + URLEncoder.encode("chosenOnes", "UTF-8")
+                            + "=" + URLEncoder.encode(chosenOnes, "UTF-8");
+
+                }
+                catch(UnsupportedEncodingException e){
+                    e.printStackTrace();
+                }
+
+                BufferedReader reader1=null;
+
+                try
+                {
+                    // Defined URL  where to send data
+                    URL url = new URL("http://10.1.13.102/BubblePlayServer/insert_challenge.php");
+
+                    // Send POST data request
+                    URLConnection conn = url.openConnection();
+                    conn.setDoOutput(true);
+                    OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                    wr.write(data1);
+                    wr.flush();
+
+                    // Get the server response
+
+                    reader1 = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder sb = new StringBuilder();
+                    String line = null;
+                    String builder = "";
+
+                    // Read Server Response
+                    while((line = reader1.readLine()) != null)
+                    {
+                        // Append server response in string
+                        System.out.println(builder);
+                        System.out.println(builder.length());
+                        //sb.append(line + "\n");
+                        builder+=line;
+
+                    }
+
+
+                    final String challengeID = builder;
+                    System.out.println("Chaallgeid: "+challengeID);
+                    System.out.println("len: "+challengeID.length());
+
+
+                    SharedPreferences.Editor edit;
+                    edit = sp.edit();
+                    edit.putString("challengeID",challengeID);
+                    edit.commit();
+
+                }
+                catch(Exception ex)
+                {
+                    ex.printStackTrace();
+                }
+                finally
+                {
+                    try
+                    {
+
+                        reader1.close();
+                    }
+
+                    catch(Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 //ids[0] = "APA91bF8HLq-lp6Z7eVwQY6l8JLzd70CaKNOobna3ioqnPOooj-bAHYgjEa5Nchsqk5nt354jmmgYitEjcWMfW77lRFhle6fwUjWQyzcAOhDJ69-Z_BNeKsQyLVBUAPC5B7qRqS67e5T";
                 // Get user defined values
                 //System.out.println("Trying to connect!");
@@ -150,7 +246,7 @@ public class Timer extends AppCompatActivity {
                 try
                 {
                     // Defined URL  where to send data
-                    URL url = new URL("http://10.1.42.193/BubblePlayServer/send_message.php");
+                    URL url = new URL("http://10.1.13.102/BubblePlayServer/send_message.php");
 
                     // Send POST data request
                     Log.d("its pushh:", "notification !!");
@@ -225,6 +321,12 @@ public class Timer extends AppCompatActivity {
                 }
 
 
+
+
+
+
+
+
             }
 
         }).start();
@@ -287,7 +389,7 @@ public class Timer extends AppCompatActivity {
                 try
                 {
                     // Defined URL  where to send data
-                    URL url = new URL("http://10.1.42.193/BubblePlayServer/send_message.php");
+                    URL url = new URL("http://10.1.13.102/BubblePlayServer/send_message.php");
 
                     // Send POST data request
                     Log.d("its pushh:", "notification !!");
