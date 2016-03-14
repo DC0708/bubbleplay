@@ -10,6 +10,7 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.*;
 import android.widget.EditText;
@@ -32,7 +33,7 @@ import static com.example.mapdemo.CommonUtilities.EXTRA_MESSAGE;
 import static com.example.mapdemo.CommonUtilities.SENDER_ID;
 
 
-public class Register extends ActionBarActivity {
+public class Register extends AppCompatActivity {
 
     AsyncTask<Void, Void, Void> mRegisterTask;
 
@@ -41,7 +42,6 @@ public class Register extends ActionBarActivity {
 
     // Connection detector
     ConnectionDetector cd;
-
 
     TextView user;
     @Override
