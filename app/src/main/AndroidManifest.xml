@@ -128,8 +128,6 @@
         <receiver
             android:name="com.google.android.gcm.GCMBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
-
-
             <intent-filter>
 
                 <!-- Receives the actual messages. -->
@@ -154,6 +152,10 @@
         <activity
             android:name=".Timer"
             android:label="@string/title_activity_timer" >
+        </activity>
+        <activity
+            android:name=".pregame"
+            android:label="@string/title_activity_pregame" >
         </activity>
     </application>
 

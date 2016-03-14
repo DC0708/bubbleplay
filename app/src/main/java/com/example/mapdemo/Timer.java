@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.os.CountDownTimer;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -40,11 +42,22 @@ public class Timer extends AppCompatActivity {
     // Connection detector
     ConnectionDetector cd;
 
+    String challengeID = "";
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer);
+
+        Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/GoodDog.otf");
+
+
+        final TextView timer = (TextView) findViewById(R.id.timer);
+        timer.setTypeface(custom_font);
+
 
 
 
@@ -92,7 +105,11 @@ public class Timer extends AppCompatActivity {
         final String deviceids = getIntent().getExtras().getString("appID");
 
         System.out.println("Thread de uttteeeeee!!!");
-        new Thread(new Runnable() {
+
+
+
+
+        Thread t = new Thread(new Runnable() {
             public void run(){
 
                 System.out.println("Thread de andar !!!!");
@@ -155,7 +172,7 @@ public class Timer extends AppCompatActivity {
                 try
                 {
                     // Defined URL  where to send data
-                    URL url = new URL("http://10.1.13.102/BubblePlayServer/insert_challenge.php");
+                    URL url = new URL("http://10.1.33.78/BubblePlayServer/insert_challenge.php");
 
                     // Send POST data request
                     URLConnection conn = url.openConnection();
@@ -183,7 +200,7 @@ public class Timer extends AppCompatActivity {
                     }
 
 
-                    final String challengeID = builder;
+                    challengeID = builder;
                     System.out.println("Chaallgeid: "+challengeID);
                     System.out.println("len: "+challengeID.length());
 
@@ -224,6 +241,9 @@ public class Timer extends AppCompatActivity {
 
 
 
+
+
+
                 //ids[0] = "APA91bF8HLq-lp6Z7eVwQY6l8JLzd70CaKNOobna3ioqnPOooj-bAHYgjEa5Nchsqk5nt354jmmgYitEjcWMfW77lRFhle6fwUjWQyzcAOhDJ69-Z_BNeKsQyLVBUAPC5B7qRqS67e5T";
                 // Get user defined values
                 //System.out.println("Trying to connect!");
@@ -246,7 +266,7 @@ public class Timer extends AppCompatActivity {
                 try
                 {
                     // Defined URL  where to send data
-                    URL url = new URL("http://10.1.13.102/BubblePlayServer/send_message.php");
+                    URL url = new URL("http://10.1.33.78/BubblePlayServer/send_message.php");
 
                     // Send POST data request
                     Log.d("its pushh:", "notification !!");
@@ -329,7 +349,108 @@ public class Timer extends AppCompatActivity {
 
             }
 
-        }).start();
+        });
+
+        t.start();
+        try {
+            t.join();
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+
+
+
+                new CountDownTimer(60000, 1000) {
+
+                    public void onTick(long millisUntilFinished) {
+                        timer.setText("seconds remaining: " + millisUntilFinished / 1000);
+                    }
+
+                    public void onFinish() {
+
+                        new Thread(new Runnable() {
+                            public void run() {
+
+
+
+                                String data2 = "";
+                        // Create data variable for sent values to server
+                        try {
+
+                            data2 += "&" + URLEncoder.encode("challengeID", "UTF-8")
+                                    + "=" + URLEncoder.encode(challengeID, "UTF-8");
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+
+                        BufferedReader reader2 = null;
+
+                        // Send data
+                        try {
+                            // Defined URL  where to send data
+                            URL url = new URL("http://10.1.33.78/BubblePlayServer/pre_game_screen.php");
+
+                            // Send POST data request
+                            Log.d("its pushh:", "notification !!");
+                            URLConnection conn = url.openConnection();
+                            conn.setDoOutput(true);
+                            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                            wr.write(data2);
+                            wr.flush();
+
+                            // Get the server response
+
+                            reader2 = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                            StringBuilder sb = new StringBuilder();
+                            String line = null;
+                            String builder = "";
+
+                            // Read Server Response
+                            while ((line = reader2.readLine()) != null) {
+                                // Append server response in string
+                                System.out.println(builder);
+                                System.out.println(builder.length());
+                                //sb.append(line + "\n");
+                                builder += line;
+
+                            }
+
+
+                            final String text = builder;
+                            System.out.println("Texter: " + text);
+                            System.out.println("len: " + text.length());
+                            if (!text.equals("failure")) {
+                                Intent inte = new Intent(Timer.this, pregame.class);
+                                inte.putExtra("accepted", text);
+                                startActivity(inte);
+
+                            } else {
+                                Timer.this.runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        Toast.makeText(Timer.this, "Error: " + text, Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        } finally {
+                            try {
+
+                                reader2.close();
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+
+                            }
+                        }).start();
+                    }
+                }.start();
+
+
+
 
         System.out.println("Thread de thalllllleeeee");
 
@@ -389,7 +510,7 @@ public class Timer extends AppCompatActivity {
                 try
                 {
                     // Defined URL  where to send data
-                    URL url = new URL("http://10.1.13.102/BubblePlayServer/send_message.php");
+                    URL url = new URL("http://10.1.33.78/BubblePlayServer/send_message.php");
 
                     // Send POST data request
                     Log.d("its pushh:", "notification !!");

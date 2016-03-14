@@ -127,7 +127,7 @@ public class Login extends AppCompatActivity {
                             {
 
                                 // Defined URL  where to send data
-                                URL url = new URL("http://10.1.13.102/BubblePlayServer/login.php");
+                                URL url = new URL("http://10.1.33.78/BubblePlayServer/login.php");
 
                                 // Send POST data request
 

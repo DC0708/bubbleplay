@@ -229,5 +229,6 @@
     <string name="title_activity_challenge">Challenge</string>
     <string name="title_activity_select_players">SelectPlayers</string>
     <string name="title_activity_timer">Timer</string>
+    <string name="title_activity_pregame">pregame</string>
 
 </resources>
