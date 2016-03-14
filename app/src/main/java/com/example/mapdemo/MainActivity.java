@@ -558,7 +558,7 @@ public final class MainActivity extends AppCompatActivity {
                     {
 
                         // Defined URL  where to send data
-                        URL url = new URL("http://10.1.42.193/BubblePlayServer/updateiniloc.php");
+                        URL url = new URL("http://10.1.33.78/BubblePlayServer/updateiniloc.php");
 
                         // Send POST data request
 

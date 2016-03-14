@@ -103,6 +103,9 @@ public class GCMIntentService extends GCMBaseIntentService {
      * Issues a notification to inform the user that server has sent a message.
      */
     private void generateNotification(Context context, String message) {
+
+        SharedPreferences sp = getApplicationContext().getSharedPreferences("UserSession",0);
+
         int icon = R.drawable.icon;
 
         //Bitmap bd = (((Bitmap)c.getResources().getDrawable(R.drawable.ic_launcher)).getBitmap());
@@ -117,8 +120,13 @@ public class GCMIntentService extends GCMBaseIntentService {
         String username = "USERNAME!";
 
         Intent intent = new Intent(getApplicationContext(), Challenge.class);
+
+
+
+        intent.putExtra("challengeID",sp.getString("challengeID","challengeID"));
         // use System.currentTimeMillis() to have a unique ID for the pending intent
         PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
+
 
 
         Notification notification = new Notification.Builder(context)
