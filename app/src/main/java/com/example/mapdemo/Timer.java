@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.support.v7.app.ActionBarActivity;
@@ -18,6 +21,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gcm.GCMRegistrar;
+import com.google.android.gms.games.Player;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -27,6 +34,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.example.mapdemo.CommonUtilities.DISPLAY_MESSAGE_ACTION;
 import static com.example.mapdemo.CommonUtilities.EXTRA_MESSAGE;
@@ -45,23 +53,17 @@ public class Timer extends AppCompatActivity {
     String challengeID = "";
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer);
 
-        Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/GoodDog.otf");
-
+        Typeface custom_font = Typeface.createFromAsset(getAssets(),"fonts/GoodDog.otf");
 
         final TextView timer = (TextView) findViewById(R.id.timer);
         timer.setTypeface(custom_font);
 
-
-
-
-        System.out.println("ENtered timer Activity");
+        System.out.println("Entered timer Activity");
 
         cd = new ConnectionDetector(getApplicationContext());
 
@@ -96,8 +98,6 @@ public class Timer extends AppCompatActivity {
         final String regId = regId1;
         GCMRegistrar.register(this, SENDER_ID);
 
-
-
         //ArrayList<PlayerDetails> chosenPlayers = (ArrayList<PlayerDetails>) getIntent().
 
         TextView tv = (TextView) findViewById(R.id.textView);
@@ -105,9 +105,6 @@ public class Timer extends AppCompatActivity {
         final String deviceids = getIntent().getExtras().getString("appID");
 
         System.out.println("Thread de uttteeeeee!!!");
-
-
-
 
         Thread t = new Thread(new Runnable() {
             public void run(){
@@ -172,7 +169,7 @@ public class Timer extends AppCompatActivity {
                 try
                 {
                     // Defined URL  where to send data
-                    URL url = new URL("http://10.1.33.78/BubblePlayServer/insert_challenge.php");
+                    URL url = new URL(CommonUtilities.SERVER_URL + "insert_challenge.php");
 
                     // Send POST data request
                     URLConnection conn = url.openConnection();
@@ -229,21 +226,6 @@ public class Timer extends AppCompatActivity {
                 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 //ids[0] = "APA91bF8HLq-lp6Z7eVwQY6l8JLzd70CaKNOobna3ioqnPOooj-bAHYgjEa5Nchsqk5nt354jmmgYitEjcWMfW77lRFhle6fwUjWQyzcAOhDJ69-Z_BNeKsQyLVBUAPC5B7qRqS67e5T";
                 // Get user defined values
                 //System.out.println("Trying to connect!");
@@ -266,7 +248,7 @@ public class Timer extends AppCompatActivity {
                 try
                 {
                     // Defined URL  where to send data
-                    URL url = new URL("http://10.1.33.78/BubblePlayServer/send_message.php");
+                    URL url = new URL(CommonUtilities.SERVER_URL + "send_message.php");
 
                     // Send POST data request
                     Log.d("its pushh:", "notification !!");
@@ -390,7 +372,7 @@ public class Timer extends AppCompatActivity {
                         // Send data
                         try {
                             // Defined URL  where to send data
-                            URL url = new URL("http://10.1.33.78/BubblePlayServer/pre_game_screen.php");
+                            URL url = new URL(CommonUtilities.SERVER_URL + "pre_game_screen.php");
 
                             // Send POST data request
                             Log.d("its pushh:", "notification !!");
@@ -459,6 +441,51 @@ public class Timer extends AppCompatActivity {
         tv.setText(chosenOnes);
     }
 
+/*
+    public void createsnackbubbles(){
+
+        for(int i=0;i<gamemodel.sizeSnackBubble;i++){
+            createsnack(i);
+
+        }
+    }
+    public void createsnack(int i){
+
+        SnackBubble tempsnack = new SnackBubble(gamemodel.isPlacedBubble,i,gamemodel,InitialLoc, Player.getRadius());
+        initialsnacks.add(tempsnack);
+
+        CircleOptions temp = new CircleOptions()
+                .center(new LatLng(tempsnack.center.x,tempsnack.center.y))
+                .radius(tempsnack.radius)
+                .strokeWidth(tempsnack.mWidth)
+                .strokeColor(tempsnack.mStrokeColor)
+                .fillColor(tempsnack.mFillColor);
+
+    }
+
+    public void createjunkbubbles(){
+
+        for(int i=0;i<gamemodel.sizeJunkBubbles;i++){
+            createjunk(i);
+        }
+    }
+    public void createjunk(int i){
+
+        JunkBubble tempjunk = new JunkBubble(gamemodel.isPlacedBubble,i,gamemodel,InitialLoc,Player.getRadius());
+        initialjunks.add(tempjunk);
+
+
+    }
+
+    public void createwormholes(){
+
+        for(int i=0;i<gamemodel.sizeWormHoles;i++){
+            WormHole temphole = new WormHole(gamemodel.xCoordinate,gamemodel.yCoordinate,i,gamemodel,InitialLoc);
+            initialholes.add(temphole);
+        }
+    }
+
+*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

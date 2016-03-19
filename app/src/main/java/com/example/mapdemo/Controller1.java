@@ -66,8 +66,6 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
         super.onRestart();
     }
 
-
-
     private LatLng InitialLoc;
     GoogleMap googleMap;
     public LatLng gpsLocation;
@@ -126,11 +124,10 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
 
     public Boolean isGPSEnabled = false;
 
-
     public Boolean isNetworkEnabled = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.basic_demo);
@@ -158,7 +155,6 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
             Gamemode = extras.getString("gamemode");
             Playermode = extras.getString("playermode");
         }
-
 
         Log.d("Game mode is", Gamemode);
 
@@ -344,10 +340,6 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
 
         totalscore = totalscore + 3;
         score.setText(" SCORE : " + totalscore);
-
-        //    Log.d("location",latitude+ " ");
-//        totalscore+=0;
-  //      score.setText("  SCORE :" + String.valueOf(totalscore));
 
 
         googleMap.setOnMapLongClickListener(this);
@@ -766,9 +758,6 @@ public class Controller1 extends AppCompatActivity implements LocationListener, 
                     }
                     break;
                 }
-
-
-
 
             }
 

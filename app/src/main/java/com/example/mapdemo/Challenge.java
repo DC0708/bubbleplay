@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.example.mapdemo.CommonUtilities;
 
 import org.w3c.dom.Text;
 
@@ -83,7 +84,7 @@ public class Challenge extends ActionBarActivity {
                         try
                         {
                             // Defined URL  where to send data
-                            URL url = new URL("http://10.1.33.78/BubblePlayServer/accept_challenge.php");
+                            URL url = new URL(CommonUtilities.SERVER_URL + "accept_challenge.php");
 
                             // Send POST data request
                             Log.d("its pushh:", "notification !!");

@@ -14,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Icon;
+import android.os.Bundle;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
@@ -62,8 +63,17 @@ public class GCMIntentService extends GCMBaseIntentService {
     @Override
     protected void onMessage(Context context, Intent intent) {
         Log.i(TAG, "Received message");
-        String message = intent.getExtras().getString("price");
+        Bundle xtra = intent.getExtras();
+        String message = intent.getExtras().getString("message");
 
+
+        for (String key: xtra.keySet())
+        {
+            Log.d("values ", xtra.get(key)+ "volaa");
+            Log.d ("myApplication", key + " is a key in the bundle");
+        }
+
+        Log.d("Message is ",message + "!!!!!!!!!!!!!!!!!!!");
         displayMessage(context, message);
         // notifies user
         generateNotification(context, message);
@@ -103,6 +113,8 @@ public class GCMIntentService extends GCMBaseIntentService {
      * Issues a notification to inform the user that server has sent a message.
      */
     private void generateNotification(Context context, String message) {
+
+        Log.d("in generate notification","yooo!!!");
 
         SharedPreferences sp = getApplicationContext().getSharedPreferences("UserSession",0);
 

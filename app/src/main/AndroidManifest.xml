@@ -126,7 +126,7 @@
         </activity>
 
         <receiver
-            android:name="com.google.android.gcm.GCMBroadcastReceiver"
+            android:name="com.google.android.gcm.GCMBroadcastReceiver" android:exported="true"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
 

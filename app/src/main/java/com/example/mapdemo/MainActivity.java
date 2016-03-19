@@ -153,6 +153,7 @@ public final class MainActivity extends AppCompatActivity {
         SharedPreferences sp;
 
         TextView username = (TextView) findViewById(R.id.username);
+
         //TextView email = (TextView) findViewById(R.id.email);
         //ImageButton register = (ImageButton) findViewById(R.id.reg_button);
         //ImageButton login = (ImageButton) findViewById(R.id.login_button);
@@ -170,7 +171,7 @@ public final class MainActivity extends AppCompatActivity {
 
                 isGPSEnabled = locationManager
                         .isProviderEnabled(LocationManager.GPS_PROVIDER);
-                Log.d("hererer", isGPSEnabled + " ");
+                Log.d("hererer",isGPSEnabled + " ");
 
                 bestProvider = locationManager.getBestProvider(criteria, true);
                 Log.d("best provider", bestProvider + " ");
@@ -443,7 +444,7 @@ public final class MainActivity extends AppCompatActivity {
                 {
                     Log.d("message is ", msg.toString());
                     // Defined URL  where to send data
-                    URL url = new URL("http://10.1.33.78/BubblePlayServer/send_message.php");
+                    URL url = new URL(CommonUtilities.SERVER_URL + "send_message.php");
 
                     // Send POST data request
                     Log.d("its pushh:","notification !!");
@@ -558,7 +559,7 @@ public final class MainActivity extends AppCompatActivity {
                     {
 
                         // Defined URL  where to send data
-                        URL url = new URL("http://10.1.33.78/BubblePlayServer/updateiniloc.php");
+                        URL url = new URL(CommonUtilities.SERVER_URL + "updateiniloc.php");
 
                         // Send POST data request
 
@@ -847,6 +848,7 @@ public final class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             String newMessage = intent.getExtras().getString(EXTRA_MESSAGE);
             // Waking up mobile if it is sleeping
+            Log.d("dsfssfsfsdfsdfsd","sdffsffsdfsdfsdf");
             WakeLocker.acquire(getApplicationContext());
 
             /**

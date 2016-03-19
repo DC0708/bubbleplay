@@ -6,11 +6,12 @@ package com.example.mapdemo;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 public final class CommonUtilities {
 
     // give your server registration url here
-    static final String SERVER_URL = "http://10.1.33.78/BubblePlayServer/register1.php";
+    static final String SERVER_URL = "http://192.168.1.7/BubblePlayServer/";
 
     // Google project id
     static final String SENDER_ID = "531446716538";
@@ -23,7 +24,7 @@ public final class CommonUtilities {
     static final String DISPLAY_MESSAGE_ACTION =
             "com.example.mapdemo.DISPLAY_MESSAGE";
 
-    static final String EXTRA_MESSAGE = "message";
+    static final String EXTRA_MESSAGE = "price";
 
     /**
      * Notifies UI to display a message.
@@ -37,6 +38,7 @@ public final class CommonUtilities {
     static void displayMessage(Context context, String message) {
         Intent intent = new Intent(DISPLAY_MESSAGE_ACTION);
         intent.putExtra(EXTRA_MESSAGE, message);
+        Log.d("sending broadcast", " in common utilities");
         context.sendBroadcast(intent);
     }
 }

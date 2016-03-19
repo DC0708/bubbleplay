@@ -175,7 +175,7 @@ public class Register extends AppCompatActivity {
                                 // Defined URL  where to send data
                                 Log.d("yoo:","in try for register!" + username.getText().toString() +
                                         email.getText().toString() + password.getText().toString());
-                                URL url = new URL("http://10.1.33.78/BubblePlayServer/register.php");
+                                URL url = new URL(CommonUtilities.SERVER_URL + "register.php");
 
                                 // Send POST data request
 
@@ -306,16 +306,22 @@ public class Register extends AppCompatActivity {
     private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+
+            Bundle extrass = intent.getExtras();
             String newMessage = intent.getExtras().getString(EXTRA_MESSAGE);
             // Waking up mobile if it is sleeping
             WakeLocker.acquire(getApplicationContext());
-
+            Log.d("dsfssfsfsdfsdfs244234324d","sdffsffsdfsdfsdf3232" + extrass.toString());
             /**
              * Take appropriate action on this message
              * depending upon your app requirement
              * For now i am just displaying it on the screen
              * */
-
+            for (String key: extrass.keySet())
+            {
+                Log.d("values ", extrass.get(key)+ "volaa");
+                Log.d ("myApplication", key + " is a key in the bundle");
+            }
             // Showing received message
             Log.d("message ", " is " + newMessage);
 //            lblMessage.append(newMessage + "\n");
