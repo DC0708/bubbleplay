@@ -858,9 +858,26 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
 
 
                     final String text = builder;
+
+
+
+                    // Object is a single row of the json array.
+                    // you can fetch all the details like snack iDs are fetched below.
+
+                    JSONArray jsonArray = new JSONArray(text);
+                    System.out.println("total: " + jsonArray.length());
+                    for (int pq = 0; pq<jsonArray.length();pq++)
+                        System.out.println("snackid: " + jsonArray.getJSONObject(pq).getInt("snackid"));
+
+                    //till here
+
+
+
+
+
                     String[] response = text.split("-");
-                    System.out.println("Text: "+text);
-                    System.out.println("len: "+text.length());
+                    //System.out.println("Text: "+text);
+                    //System.out.println("len: "+text.length());
                     if (response[0].equals("success"))
                     {
 
