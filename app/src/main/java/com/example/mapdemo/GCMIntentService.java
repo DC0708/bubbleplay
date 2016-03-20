@@ -42,7 +42,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     @Override
     protected void onRegistered(Context context, String registrationId) {
         Log.i(TAG, "Device registered: regId = " + registrationId);
-        displayMessage(context, "Your device registred with GCM");
+        displayMessage(context, "Your device registred with GCM","NULL", "NULL");
     //    Log.d("NAME", GCMMainActivity.name);
     //    ServerUtilities.register(context, GCMMainActivity.name, GCMMainActivity.email, registrationId,);
     }
@@ -53,7 +53,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     @Override
     protected void onUnregistered(Context context, String registrationId) {
         Log.i(TAG, "Device unregistered");
-        displayMessage(context, getString(R.string.gcm_unregistered));
+        displayMessage(context, getString(R.string.gcm_unregistered),"NULL", "NULL");
         ServerUtilities.unregister(context, registrationId);
     }
 
@@ -65,6 +65,8 @@ public class GCMIntentService extends GCMBaseIntentService {
         Log.i(TAG, "Received message");
         Bundle xtra = intent.getExtras();
         String message = intent.getExtras().getString("message");
+        String challengeID = intent.getExtras().getString("challengeID");
+        String user = intent.getExtras().getString("user");
 
 
         for (String key: xtra.keySet())
@@ -74,9 +76,9 @@ public class GCMIntentService extends GCMBaseIntentService {
         }
 
         Log.d("Message is ",message + "!!!!!!!!!!!!!!!!!!!");
-        displayMessage(context, message);
+        displayMessage(context, message, challengeID, user);
         // notifies user
-        generateNotification(context, message);
+        generateNotification(context, message, challengeID, user);
     }
 
     /**
@@ -86,9 +88,13 @@ public class GCMIntentService extends GCMBaseIntentService {
     protected void onDeletedMessages(Context context, int total) {
         Log.i(TAG, "Received deleted messages notification");
         String message = getString(R.string.gcm_deleted, total);
-        displayMessage(context, message);
+
+        String challengeID = "NULL";
+        String user = "NULL";
+        displayMessage(context, message, challengeID, user);
+
         // notifies user
-        generateNotification(context, message);
+        generateNotification(context, message, challengeID, user);
     }
 
     /**
@@ -97,7 +103,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     @Override
     public void onError(Context context, String errorId) {
         Log.i(TAG, "Received error: " + errorId);
-        displayMessage(context, getString(R.string.gcm_error, errorId));
+        displayMessage(context, getString(R.string.gcm_error, errorId),"NULL", "NULL");
     }
 
     @Override
@@ -105,14 +111,14 @@ public class GCMIntentService extends GCMBaseIntentService {
         // log message
         Log.i(TAG, "Received recoverable error: " + errorId);
         displayMessage(context, getString(R.string.gcm_recoverable_error,
-                errorId));
+                errorId),"NULL", "NULL");
         return super.onRecoverableError(context, errorId);
     }
 
     /**
      * Issues a notification to inform the user that server has sent a message.
      */
-    private void generateNotification(Context context, String message) {
+    private void generateNotification(Context context, String message, String challengeID, String user) {
 
         Log.d("in generate notification","yooo!!!");
 
@@ -135,7 +141,8 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 
 
-        intent.putExtra("challengeID",sp.getString("challengeID","challengeID"));
+        intent.putExtra("challengeID",challengeID);
+        intent.putExtra("user",user);
         // use System.currentTimeMillis() to have a unique ID for the pending intent
         PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
 

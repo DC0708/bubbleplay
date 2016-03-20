@@ -27,5 +27,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.google.android.gms:play-services:8.1.0'
     compile 'com.facebook.android:facebook-android-sdk:4.6.0'
-    compile files('C:/Users/DC0708/Desktop/Backup/android-samples-master/ApiDemos/libs/gcm.jar')
+    compile files('/home/aniket-cr/Desktop/droid/bubbleplay/libs/gcm.jar')
 }

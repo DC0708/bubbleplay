@@ -194,7 +194,7 @@ public class Challenge extends ActionBarActivity {
                         try
                         {
                             // Defined URL  where to send data
-                            URL url = new URL("http://10.1.33.78/BubblePlayServer/get_timer_time_left.php");
+                            URL url = new URL(CommonUtilities.SERVER_URL + "get_timer_time_left.php");
 
                             // Send POST data request
                             Log.d("its pushh:", "notification !!");

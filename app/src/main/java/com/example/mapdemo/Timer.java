@@ -235,6 +235,10 @@ public class Timer extends AppCompatActivity {
 
                     data += "&" + URLEncoder.encode("regId", "UTF-8")
                             + "=" + URLEncoder.encode(java.util.Arrays.toString(ids), "UTF-8");
+                    data += "&" + URLEncoder.encode("username", "UTF-8")
+                            + "=" + URLEncoder.encode(sp.getString("username","username"), "UTF-8");
+                    data += "&" + URLEncoder.encode("challengeID", "UTF-8")
+                            + "=" + URLEncoder.encode(challengeID, "UTF-8");
                     data += "&" + URLEncoder.encode("message", "UTF-8")
                             + "=" + URLEncoder.encode("I am fucking tired!!!" , "UTF-8");
                 }

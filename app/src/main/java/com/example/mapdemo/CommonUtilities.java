@@ -11,7 +11,7 @@ import android.util.Log;
 public final class CommonUtilities {
 
     // give your server registration url here
-    static final String SERVER_URL = "http://192.168.1.7/BubblePlayServer/";
+    static final String SERVER_URL = "http://10.1.13.68/BubblePlayServer/";
 
     // Google project id
     static final String SENDER_ID = "531446716538";
@@ -35,8 +35,10 @@ public final class CommonUtilities {
      * @param context application's context.
      * @param message message to be displayed.
      */
-    static void displayMessage(Context context, String message) {
+    static void displayMessage(Context context, String message, String challengeID, String user) {
         Intent intent = new Intent(DISPLAY_MESSAGE_ACTION);
+        intent.putExtra("challengeID",challengeID);
+        intent.putExtra("user",user);
         intent.putExtra(EXTRA_MESSAGE, message);
         Log.d("sending broadcast", " in common utilities");
         context.sendBroadcast(intent);
