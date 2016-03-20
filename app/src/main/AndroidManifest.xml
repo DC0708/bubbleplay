@@ -96,6 +96,10 @@
         <activity
             android:name=".Controller1"
             android:label="Catch Bubble" />
+
+        <activity
+            android:name=".Controller2"
+            android:label="Catch Bubble" />
         <activity
             android:name=".About"
             android:label="@string/title_activity_about" >

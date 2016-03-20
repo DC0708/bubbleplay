@@ -1,6 +1,7 @@
 package com.example.mapdemo;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -16,6 +17,13 @@ import com.google.android.gms.games.Player;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,8 +54,7 @@ public class pregame extends ActionBarActivity {
     GeolocationService gps;
 
     public String Playermode;
-    public int challenger=0;
-
+    public String challengeid;
     private LatLng InitialLoc;
 
     public String BoundaryType;
@@ -60,11 +67,13 @@ public class pregame extends ActionBarActivity {
 
         String accepted = "";
 
+        String challenger_chk = "";
+
         final TextView names = (TextView) findViewById(R.id.names);
         final Bundle extr = getIntent().getExtras();
         if (extr.containsKey("accepted"))
         {
-            challenger=1;
+            challenger_chk="yes";
             accepted = getIntent().getExtras().getString("accepted");
             names.setText(accepted);
         }
@@ -73,97 +82,104 @@ public class pregame extends ActionBarActivity {
             names.setText("");
         }
 
-        final TextView tim = (TextView) findViewById(R.id.tim);;
+        final TextView tim = (TextView) findViewById(R.id.tim);
 
            //tim.setText(getIntent().getExtras().getString("challengeID"));
 
 
 
+
         new CountDownTimer(10000, 1000) {
 
-/*            if( challenger==1 ){
 
-                final Bundle extras = getIntent().getExtras();
-
-
-
-                if (extras != null) {
-                    BoundaryType = extras.getString("Boundary");
-                    Gamemode = extras.getString("gamemode");
-                    Playermode = extras.getString("playermode");
-                }
-
-                playerradii = DEFAULT_RADIUS;
-                if(BoundaryType.equals("Small")){
-                    playerradii = DEFAULT_RADIUS;
-                }
-                else if(BoundaryType.equals("Medium")){
-                    playerradii = mediumfactor * DEFAULT_RADIUS;
-                }
-                else{
-                    playerradii = largefactor * DEFAULT_RADIUS;
-                }
-                LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-                Criteria criteria = new Criteria();
-                criteria.setAccuracy(Criteria.ACCURACY_FINE);
-
-                // Getting GPS status
-                if (locationManager != null) {
-
-                    isGPSEnabled = locationManager
-                            .isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-                    if (!isGPSEnabled) {
-                        //                Log.d("in GPS settings","show settings");
-                        gps.showSettingsAlert(pregame.this);
-                    }
-
-                    bestProvider = locationManager.getBestProvider(criteria, true);
-
-                    //Log.d("hererer",location+" ");
-                    location = locationManager.getLastKnownLocation(bestProvider);
-
-                    if (location == null) {
-                        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                        bestProvider = locationManager.GPS_PROVIDER;
-                    }
-
-                    while (location == null) {
-                        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                        bestProvider = locationManager.NETWORK_PROVIDER;
-                    }
-
-                    if (isGPSEnabled && location != null) {
-
-                        InitialLoc = new LatLng(location.getLatitude(), location.getLongitude());
-
-                    }
-
-                    gamemodel = new Model(BoundaryType);
-
-                    createsnackbubbles();
-                    createjunkbubbles();
-                    createwormholes();
-
-
-                }
-
-            }
-*/
             public void onTick(long millisUntilFinished) {
+
                 tim.setText("Game will start in: " + millisUntilFinished / 1000);
             }
 
             public void onFinish() {
 
                 Toast.makeText(pregame.this, "Start the game!", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(pregame.this,MainActivity.class));
+                Intent in = new Intent(pregame.this,Controller2.class);
+                in.putExtra("challengeid",challengeid);
+                startActivity(in);
 
 
             }
 
         }.start();
+
+        if(challenger_chk.equals("yes")){
+
+            final Bundle extras = getIntent().getExtras();
+
+
+
+            if (extras != null) {
+                BoundaryType = "Large";//extras.getString("Boundary");
+                Gamemode = extras.getString("gamemode");
+                Playermode = extras.getString("playermode");
+                challengeid = extras.getString("challengeid");
+            }
+
+            playerradii = DEFAULT_RADIUS;
+            if(BoundaryType.equals("Small")){
+                playerradii = DEFAULT_RADIUS;
+            }
+            else if(BoundaryType.equals("Medium")){
+                playerradii = mediumfactor * DEFAULT_RADIUS;
+            }
+            else{
+                playerradii = largefactor * DEFAULT_RADIUS;
+            }
+            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+            Criteria criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_FINE);
+
+            // Getting GPS status
+            if (locationManager != null) {
+
+                isGPSEnabled = locationManager
+                        .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+                if (!isGPSEnabled) {
+                    //                Log.d("in GPS settings","show settings");
+                    gps.showSettingsAlert(pregame.this);
+                }
+
+                bestProvider = locationManager.getBestProvider(criteria, true);
+
+                //Log.d("hererer",location+" ");
+                location = locationManager.getLastKnownLocation(bestProvider);
+
+                if (location == null) {
+                    location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    bestProvider = locationManager.GPS_PROVIDER;
+                }
+
+                while (location == null) {
+                    location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    bestProvider = locationManager.NETWORK_PROVIDER;
+                }
+
+                if (isGPSEnabled && location != null) {
+
+                    InitialLoc = new LatLng(location.getLatitude(), location.getLongitude());
+
+                }
+
+                gamemodel = new Model(BoundaryType);
+
+                createsnackbubbles();
+                createjunkbubbles();
+                createwormholes();
+
+
+            }
+
+        }
+
 
 
     }
@@ -179,6 +195,120 @@ public class pregame extends ActionBarActivity {
 
         SnackBubble tempsnack = new SnackBubble(gamemodel.isPlacedBubble,i,gamemodel,InitialLoc, playerradii);
         initialsnacks.add(tempsnack);
+        final int index = i;
+
+        new Thread(new Runnable() {
+            public void run() {
+
+                // Get user defined values
+                //System.out.println("Trying to connect!");
+                String data = "";
+                // Create data variable for sent values to server
+                try {
+
+                    data += "&" + URLEncoder.encode("challengeid", "UTF-8") + "="
+                            + URLEncoder.encode(challengeid, "UTF-8");
+
+                    data += "&" + URLEncoder.encode("radius", "UTF-8") + "="
+                            + URLEncoder.encode(String.valueOf(initialsnacks.get(index).radius), "UTF-8");
+
+                    data += "&" + URLEncoder.encode("direction", "UTF-8")
+                            + "=" + URLEncoder.encode(String.valueOf(initialsnacks.get(index).dir), "UTF-8");
+
+                    data += "&" + URLEncoder.encode("lat", "UTF-8")
+                            + "=" + URLEncoder.encode(String.valueOf(initialsnacks.get(index).center.x), "UTF-8");
+
+                    data += "&" + URLEncoder.encode("longi", "UTF-8")
+                            + "=" + URLEncoder.encode(String.valueOf(initialsnacks.get(index).center.y), "UTF-8");
+
+                    data += "&" + URLEncoder.encode("speed", "UTF-8")
+                            + "=" + URLEncoder.encode(String.valueOf(initialsnacks.get(index).speed), "UTF-8");
+
+                }
+                catch(UnsupportedEncodingException e)
+                {
+                    e.printStackTrace();
+                }
+
+                BufferedReader reader=null;
+
+                // Send data
+                try
+                {
+
+                    // Defined URL  where to send data
+                    URL url = new URL(CommonUtilities.SERVER_URL +"snackupdate.php");
+
+                    // Send POST data request
+
+                    URLConnection conn = url.openConnection();
+                    conn.setDoOutput(true);
+                    OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                    wr.write( data );
+                    wr.flush();
+
+                    // Get the server response
+
+                    reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder sb = new StringBuilder();
+                    String line = null;
+                    String builder = "";
+
+                    // Read Server Response
+                    while((line = reader.readLine()) != null)
+                    {
+                        // Append server response in string
+                        System.out.println(builder);
+                        System.out.println(builder.length());
+                        //sb.append(line + "\n");
+                        builder+=line;
+
+                    }
+
+
+                    final String text = builder;
+                    String[] response = text.split("-");
+                    System.out.println("Text: "+text);
+                    System.out.println("len: "+text.length());
+                    if (response[0].equals("success"))
+                    {
+
+
+                        SharedPreferences pref;
+                        SharedPreferences.Editor editor;
+                        pref = getApplicationContext().getSharedPreferences("UserSession",0);
+                        System.out.println(response[0].toString());
+                        System.out.println("Logging in!");
+                    }
+                    else
+                    {
+                        pregame.this.runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(pregame.this, "Error: " + text, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+                catch(Exception ex)
+                {
+                    ex.printStackTrace();
+                }
+                finally
+                {
+                    try
+                    {
+
+                        reader.close();
+                    }
+
+                    catch(Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
+            }
+        }).start();
+
 
 
     }
@@ -188,11 +318,131 @@ public class pregame extends ActionBarActivity {
         for(int i=0;i<gamemodel.sizeJunkBubbles;i++){
             createjunk(i);
         }
+
+
+
     }
     public void createjunk(int i){
 
         JunkBubble tempjunk = new JunkBubble(gamemodel.isPlacedBubble,i,gamemodel,InitialLoc,playerradii);
         initialjunks.add(tempjunk);
+        final int index = i;
+
+        new Thread(new Runnable() {
+            public void run() {
+
+
+
+                // Get user defined values
+                //System.out.println("Trying to connect!");
+                String data = "";
+                // Create data variable for sent values to server
+                try {
+
+                    data += "&" + URLEncoder.encode("challengeid", "UTF-8") + "="
+                            + URLEncoder.encode(challengeid, "UTF-8");
+
+                    data += "&" + URLEncoder.encode("radius", "UTF-8") + "="
+                            + URLEncoder.encode(String.valueOf(initialjunks.get(index).radius), "UTF-8");
+
+                    data += "&" + URLEncoder.encode("direction", "UTF-8")
+                            + "=" + URLEncoder.encode(String.valueOf(initialjunks.get(index).dir), "UTF-8");
+
+                    data += "&" + URLEncoder.encode("lat", "UTF-8")
+                            + "=" + URLEncoder.encode(String.valueOf(initialjunks.get(index).center.x), "UTF-8");
+
+                    data += "&" + URLEncoder.encode("longi", "UTF-8")
+                            + "=" + URLEncoder.encode(String.valueOf(initialjunks.get(index).center.y), "UTF-8");
+
+                    data += "&" + URLEncoder.encode("speed", "UTF-8")
+                            + "=" + URLEncoder.encode(String.valueOf(initialjunks.get(index).speed), "UTF-8");
+
+                }
+                catch(UnsupportedEncodingException e)
+                {
+                    e.printStackTrace();
+                }
+
+                BufferedReader reader=null;
+
+                // Send data
+                try
+                {
+
+                    // Defined URL  where to send data
+                    URL url = new URL(CommonUtilities.SERVER_URL +"junkupdate.php");
+
+                    // Send POST data request
+
+                    URLConnection conn = url.openConnection();
+                    conn.setDoOutput(true);
+                    OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                    wr.write( data );
+                    wr.flush();
+
+                    // Get the server response
+
+                    reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder sb = new StringBuilder();
+                    String line = null;
+                    String builder = "";
+
+                    // Read Server Response
+                    while((line = reader.readLine()) != null)
+                    {
+                        // Append server response in string
+                        System.out.println(builder);
+                        System.out.println(builder.length());
+                        //sb.append(line + "\n");
+                        builder+=line;
+
+                    }
+
+
+                    final String text = builder;
+                    String[] response = text.split("-");
+                    System.out.println("Text: "+text);
+                    System.out.println("len: "+text.length());
+                    if (response[0].equals("success"))
+                    {
+
+
+                        SharedPreferences pref;
+                        SharedPreferences.Editor editor;
+                        pref = getApplicationContext().getSharedPreferences("UserSession",0);
+                        System.out.println(response[0].toString());
+                        System.out.println("Logging in!");
+                    }
+                    else
+                    {
+                        pregame.this.runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(pregame.this, "Error: " + text, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+                catch(Exception ex)
+                {
+                    ex.printStackTrace();
+                }
+                finally
+                {
+                    try
+                    {
+
+                        reader.close();
+                    }
+
+                    catch(Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
+            }
+        }).start();
+
+
 
 
     }
@@ -202,6 +452,117 @@ public class pregame extends ActionBarActivity {
         for(int i=0;i<gamemodel.sizeWormHoles;i++){
             WormHole temphole = new WormHole(gamemodel.xCoordinate,gamemodel.yCoordinate,i,gamemodel,InitialLoc);
             initialholes.add(temphole);
+
+            final int index = i;
+
+            new Thread(new Runnable() {
+                public void run() {
+
+
+
+                    // Get user defined values
+                    //System.out.println("Trying to connect!");
+                    String data = "";
+                    // Create data variable for sent values to server
+                    try {
+
+                        data += "&" + URLEncoder.encode("challengeid", "UTF-8") + "="
+                                + URLEncoder.encode(challengeid, "UTF-8");
+
+                        data += "&" + URLEncoder.encode("radius", "UTF-8") + "="
+                                + URLEncoder.encode(String.valueOf(initialholes.get(index).radius), "UTF-8");
+
+                        data += "&" + URLEncoder.encode("lat", "UTF-8")
+                                + "=" + URLEncoder.encode(String.valueOf(initialholes.get(index).center.x), "UTF-8");
+
+                        data += "&" + URLEncoder.encode("longi", "UTF-8")
+                                + "=" + URLEncoder.encode(String.valueOf(initialholes.get(index).center.y), "UTF-8");
+
+                    }
+                    catch(UnsupportedEncodingException e)
+                    {
+                        e.printStackTrace();
+                    }
+
+                    BufferedReader reader=null;
+
+                    // Send data
+                    try
+                    {
+
+                        // Defined URL  where to send data
+                        URL url = new URL(CommonUtilities.SERVER_URL +"holeupdate.php");
+
+                        // Send POST data request
+
+                        URLConnection conn = url.openConnection();
+                        conn.setDoOutput(true);
+                        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                        wr.write( data );
+                        wr.flush();
+
+                        // Get the server response
+
+                        reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        StringBuilder sb = new StringBuilder();
+                        String line = null;
+                        String builder = "";
+
+                        // Read Server Response
+                        while((line = reader.readLine()) != null)
+                        {
+                            // Append server response in string
+                            System.out.println(builder);
+                            System.out.println(builder.length());
+                            //sb.append(line + "\n");
+                            builder+=line;
+
+                        }
+
+
+                        final String text = builder;
+                        String[] response = text.split("-");
+                        System.out.println("Text: "+text);
+                        System.out.println("len: "+text.length());
+                        if (response[0].equals("success"))
+                        {
+
+
+                            SharedPreferences pref;
+                            SharedPreferences.Editor editor;
+                            pref = getApplicationContext().getSharedPreferences("UserSession",0);
+                            System.out.println(response[0].toString());
+                            System.out.println("Logging in!");
+                        }
+                        else
+                        {
+                            pregame.this.runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Toast.makeText(pregame.this, "Error: " + text, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
+                    catch(Exception ex)
+                    {
+                        ex.printStackTrace();
+                    }
+                    finally
+                    {
+                        try
+                        {
+
+                            reader.close();
+                        }
+
+                        catch(Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+
+                }
+            }).start();
+
         }
     }
 
