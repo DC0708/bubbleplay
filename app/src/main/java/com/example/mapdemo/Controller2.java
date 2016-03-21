@@ -114,6 +114,11 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
     public String bestProvider = LocationManager.GPS_PROVIDER;
 
     public Circle Player;
+
+    double playerradii = DEFAULT_RADIUS;
+
+    public List<Circle> otherPlayers = new ArrayList<Circle>(10);
+
     public List<SnackBubble> snacks = new ArrayList<SnackBubble>(20);
 
     public List<JunkBubble> junks = new ArrayList<JunkBubble>(20);
@@ -140,11 +145,16 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
 
     public Boolean isNetworkEnabled = false;
 
+    SharedPreferences shrd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.basic_demo);
+
+        shrd = getApplicationContext().getSharedPreferences("UserSession",0);
+
 
         gps = new GeolocationService(Controller2.this);
 
@@ -232,10 +242,11 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
             createsnackbubbles();
             createjunkbubbles();
             createwormholes();
+            createOtherPlayers();
             if(Gamemode.equals("repulsor"))
                 createrepeller();
 
-/*
+
             final Timer timer = new Timer();
 
             timer.scheduleAtFixedRate(new TimerTask() {
@@ -250,10 +261,11 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
                             CollisionNonPlayerBubbles();
                             CollisionPlayerNonplayer();
                             CollisionWormHole();
+                            updatePlayerLocations();
                             if(Gamemode.equals("repulsor"))
                                 RepellerPhysics();
 
-                            /** repeller winning condition **
+                            // repeller winning condition
 
                             if (Gamemode.equals("repulsor")) {
                                 if (Player.getRadius() + repeller.radius >= Math.abs(distFrom(Player.getCenter().latitude, Player.getCenter().longitude, repeller.center.x, repeller.center.y))) {
@@ -272,9 +284,9 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
                             }
 
                             else {
-                                /** ************** **
 
-                                /** biggest bubble condition **
+
+                                // biggest bubble condition
                                 double maxRadius = -1;
 
                                 for (int i = 0; i < snac.size(); i++) {
@@ -298,9 +310,9 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
                                 }
 
                             }
-                            /** ************** **
 
-                            /** losing condition **
+
+                            // losing condition **
                             if(gameover){
 
 
@@ -321,7 +333,7 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
                 }
             }, 1000, 200);
 
-        */
+
 
 
         }
@@ -365,7 +377,7 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
         Log.d(" location on changed is called ", gpsLocation.latitude + " lat " );
         //   PlayerBubble play = new PlayerBubble(gpsLocation, DEFAULT_RADIUS,mMap);
         if(gpschecker==1) {
-            double playerradii = DEFAULT_RADIUS;
+
             if(BoundaryType.equals("Small")){
                 playerradii = DEFAULT_RADIUS;
             }
@@ -389,6 +401,109 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
             //mCircles.get(mCircles.size()-1).circle.setCenter(new LatLng(gpsLocation.latitude,gpsLocation.longitude));
             Player.setCenter(gpsLocation);
         }
+
+        new Thread(new Runnable() {
+            public void run(){
+
+
+                String data1 = "";
+                // Create data variable for sent values to server
+                try {
+
+                    data1 += "&" + URLEncoder.encode("username", "UTF-8")
+                            + "=" + URLEncoder.encode(shrd.getString("username","username"), "UTF-8");
+                    data1 += "&" + URLEncoder.encode("latitude", "UTF-8")
+                            + "=" + URLEncoder.encode(String.valueOf(gpsLocation.latitude), "UTF-8");
+                    data1 += "&" + URLEncoder.encode("longitude", "UTF-8")
+                            + "=" + URLEncoder.encode(String.valueOf(gpsLocation.longitude), "UTF-8");
+                }
+                catch(UnsupportedEncodingException e){
+                    e.printStackTrace();
+                }
+
+                BufferedReader reader1=null;
+
+                // Send data
+                try
+                {
+                    // Defined URL  where to send data
+                    URL url = new URL(CommonUtilities.SERVER_URL + "updateiniloc.php");
+
+                    // Send POST data request
+                    Log.d("its pushh:", "notification !!");
+                    URLConnection conn = url.openConnection();
+                    conn.setDoOutput(true);
+                    OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                    wr.write(data1);
+                    wr.flush();
+
+                    // Get the server response
+
+                    reader1 = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder sb = new StringBuilder();
+                    String line = null;
+                    String builder = "";
+
+                    // Read Server Response
+                    while((line = reader1.readLine()) != null)
+                    {
+                        // Append server response in string
+                        System.out.println(builder);
+                        System.out.println(builder.length());
+                        //sb.append(line + "\n");
+                        builder+=line;
+
+                    }
+
+
+                    final String text = builder;
+                    System.out.println("Textii: "+text);
+                    System.out.println("len: "+text.length());
+                    if (!text.equals("failure"))
+                    {
+
+                        Controller2.this.runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(Controller2.this, "location in Controller2 " + text, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+
+
+                    }
+                    else
+                    {
+                        Controller2.this.runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(Controller2.this, "Error22: " + text, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+                catch(Exception ex)
+                {
+                    ex.printStackTrace();
+                }
+                finally
+                {
+                    try
+                    {
+
+                        reader1.close();
+                    }
+
+                    catch(Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
+
+            }
+
+
+
+        }).start();
+
 
     }
 
@@ -887,6 +1002,278 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
 
             }
         }
+
+    }
+
+    public void updatePlayerLocations()
+    {
+        new Thread (new Runnable() {
+
+            public void run() {
+
+                // Get user defined values
+                //System.out.println("Trying to connect!");
+                String data = "";
+                // Create data variable for sent values to server
+                try {
+
+                    data += "&" + URLEncoder.encode("challengeid", "UTF-8") + "="
+                            + URLEncoder.encode(Challengeid, "UTF-8");
+                    data += "&" + URLEncoder.encode("username", "UTF-8") + "="
+                            + URLEncoder.encode(shrd.getString("username","username"), "UTF-8");
+
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                BufferedReader reader = null;
+
+                // Send data
+                try {
+
+                    // Defined URL  where to send data
+                    URL url = new URL(CommonUtilities.SERVER_URL + "updateOtherPlayers.php");
+
+                    // Send POST data request
+
+                    URLConnection conn = url.openConnection();
+                    conn.setDoOutput(true);
+                    OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                    wr.write(data);
+                    wr.flush();
+
+                    // Get the server response
+
+                    reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder sb = new StringBuilder();
+                    String line = null;
+                    String builder = "";
+
+                    // Read Server Response
+                    while ((line = reader.readLine()) != null) {
+                        // Append server response in string
+                        System.out.println(builder);
+                        System.out.println(builder.length());
+                        //sb.append(line + "\n");
+                        builder += line;
+
+                    }
+
+
+                    final String text = builder;
+
+                    // Object is a single row of the json array.
+                    // you can fetch all the details like snack iDs are fetched below.
+
+                    final JSONArray jsonArray = new JSONArray(text);
+                    System.out.println("total: " + jsonArray.length());
+
+                    try {
+                        runOnUiThread(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                for (int pq = 0; pq < jsonArray.length(); pq++) {
+                                    try {
+                                        double centerlat = jsonArray.getJSONObject(pq).getDouble("latitude");
+
+                                        double centerlong = jsonArray.getJSONObject(pq).getDouble("longitude");
+
+                                        if (otherPlayers.size()>0)
+                                        otherPlayers.get(pq).setCenter(new LatLng(centerlat,centerlong));
+
+                                        System.out.println("All players location updated");
+                                    }
+                                    catch(JSONException e){
+                                        e.printStackTrace();
+                                    }
+
+                                }
+
+                            }
+                        });
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    //till here
+
+//                    String[] response = text.split("-");
+//                    //System.out.println("Text: "+text);
+//                    //System.out.println("len: "+text.length());
+//                    if (response[0].equals("success")) {
+//                        //    SharedPreferences pref;
+//                        //    SharedPreferences.Editor editor;
+//                        //    pref = getApplicationContext().getSharedPreferences("UserSession", 0);
+//                        System.out.println(response[0].toString());
+//                        System.out.println("Logging in!");
+//                    } else {
+//                    /*    JSONObject json_data = new JSONObject(text);
+//                        int userId = Integer.parseInt(json_data.getString("snackid"));
+//
+//                        System.out.println("json" + json_data.toString() + " Ahaa " + userId);
+//*/
+//                        Controller2.this.runOnUiThread(new Runnable() {
+//                            public void run() {
+//                                Toast.makeText(Controller2.this, "Error: " + text, Toast.LENGTH_SHORT).show();
+//                            }
+//                        });
+//                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                } finally {
+                    try {
+
+                        reader.close();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
+            }
+        }).start();
+
+    }
+
+    public void createOtherPlayers(){
+
+        new Thread (new Runnable() {
+
+            public void run() {
+
+                // Get user defined values
+                //System.out.println("Trying to connect!");
+                String data = "";
+                // Create data variable for sent values to server
+                try {
+
+                    data += "&" + URLEncoder.encode("challengeid", "UTF-8") + "="
+                            + URLEncoder.encode(Challengeid, "UTF-8");
+                    data += "&" + URLEncoder.encode("username", "UTF-8") + "="
+                            + URLEncoder.encode(shrd.getString("username","username"), "UTF-8");
+
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                BufferedReader reader = null;
+
+                // Send data
+                try {
+
+                    // Defined URL  where to send data
+                    URL url = new URL(CommonUtilities.SERVER_URL + "updateOtherPlayers.php");
+
+                    // Send POST data request
+
+                    URLConnection conn = url.openConnection();
+                    conn.setDoOutput(true);
+                    OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                    wr.write(data);
+                    wr.flush();
+
+                    // Get the server response
+
+                    reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder sb = new StringBuilder();
+                    String line = null;
+                    String builder = "";
+
+                    // Read Server Response
+                    while ((line = reader.readLine()) != null) {
+                        // Append server response in string
+                        System.out.println(builder);
+                        System.out.println(builder.length());
+                        //sb.append(line + "\n");
+                        builder += line;
+
+                    }
+
+
+                    final String text = builder;
+
+                    // Object is a single row of the json array.
+                    // you can fetch all the details like snack iDs are fetched below.
+
+                    final JSONArray jsonArray = new JSONArray(text);
+                    System.out.println("total: " + jsonArray.length());
+
+                    try {
+                        runOnUiThread(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                for (int pq = 0; pq < jsonArray.length(); pq++) {
+                                    try {
+                                        double centerlat = jsonArray.getJSONObject(pq).getDouble("latitude");
+
+                                        double centerlong = jsonArray.getJSONObject(pq).getDouble("longitude");
+
+                                        CircleOptions temp3 = new CircleOptions()
+                                                .center(gpsLocation)
+                                                .radius(playerradii)
+                                                .strokeWidth(2)
+                                                .strokeColor(Color.BLACK)
+                                                .fillColor(Color.GRAY);
+                                        Circle otherPlayer;
+                                        otherPlayer = googleMap.addCircle(temp3);
+                                        otherPlayers.add(otherPlayer);
+
+                                        Log.d("yooooooooooo", "i am heree@@@@@@@@@@@@");
+                                        System.out.println("snackid: " + jsonArray.getJSONObject(pq).getInt("snackid"));
+
+                                    }
+                                    catch(JSONException e){
+                                        e.printStackTrace();
+                                    }
+
+                                }
+
+                            }
+                        });
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    //till here
+
+                    String[] response = text.split("-");
+                    //System.out.println("Text: "+text);
+                    //System.out.println("len: "+text.length());
+                    if (response[0].equals("success")) {
+                        //    SharedPreferences pref;
+                        //    SharedPreferences.Editor editor;
+                        //    pref = getApplicationContext().getSharedPreferences("UserSession", 0);
+                        System.out.println(response[0].toString());
+                        System.out.println("Logging in!");
+                    } else {
+                    /*    JSONObject json_data = new JSONObject(text);
+                        int userId = Integer.parseInt(json_data.getString("snackid"));
+
+                        System.out.println("json" + json_data.toString() + " Ahaa " + userId);
+*/
+                        Controller2.this.runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(Controller2.this, "Error: " + text, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                } finally {
+                    try {
+
+                        reader.close();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
+            }
+        }).start();
+
 
     }
 
@@ -1417,6 +1804,91 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
             }
             if(gameover)
                 break;
+
+        }
+
+        for(int i=0;i<snac.size();i++){
+
+            for(int j=0;j<otherPlayers.size();j++) {
+
+                double distanceBwBubbles = distFrom(snacks.get(i).center.x, snacks.get(i).center.y, otherPlayers.get(j).getCenter().latitude, otherPlayers.get(j).getCenter().longitude);
+
+                Log.d("Snack", " and player");
+
+                if (otherPlayers.get(j).getRadius() + snacks.get(i).radius >= Math.abs(distanceBwBubbles)) {
+
+                    if (otherPlayers.get(j).getRadius() > snacks.get(i).radius) {
+                        double r1 = otherPlayers.get(j).getRadius();
+                        double r2 = snacks.get(i).radius;
+
+                        double newRadius = Math.pow((Math.pow(r1, 3) + Math.pow(r2, 3)), 1.0 / 3.0);
+                        totalscore = totalscore + (int) (30 * Math.abs(Math.pow((Math.pow(r1, 3) - Math.pow(r2, 3)), 1.0 / 3.0)));
+                        score.setText(" SCORE : " + totalscore);
+                        otherPlayers.get(j).setRadius(newRadius);
+                        snac.get(i).remove();
+                        snac.remove(i);
+                        snacks.remove(i);
+                        break;
+                    } else {
+                        double r1 = otherPlayers.get(j).getRadius();
+                        double r2 = snacks.get(i).radius;
+
+                        double newRadius = Math.pow((Math.pow(r1, 3) + Math.pow(r2, 3)), 1.0 / 3.0);
+                        //totalscore = totalscore + (int) (30 * Math.abs(Math.pow((Math.pow(r1, 3) - Math.pow(r2, 3)), 1.0 / 3.0)));
+                        //score.setText(" SCORE : " + totalscore);
+                        //snacks.get(i).setRadius(newRadius);
+
+                        Log.d("Snack", " and other 1 1 player!!..Game Over!!");
+                        otherPlayers.get(j).remove();
+                        otherPlayers.remove(j);
+                        //gameover = true;
+                    }
+
+                }
+                //if (gameover)
+                //    break;
+            }
+           // if (gameover)
+             //   break;
+        }
+
+        for(int i=0;i<jun.size();i++) {
+
+            for (int j = 0; j < otherPlayers.size(); j++) {
+
+                double distanceBwBubbles = distFrom(junks.get(i).center.x, junks.get(i).center.y, otherPlayers.get(j).getCenter().latitude, otherPlayers.get(j).getCenter().longitude);
+
+                if (otherPlayers.get(j).getRadius() + junks.get(i).radius >= Math.abs(distanceBwBubbles)) {
+                    Log.d("Junk", " and player");
+                    if (otherPlayers.get(j).getRadius() > junks.get(i).radius) {
+                        double r1 = otherPlayers.get(j).getRadius();
+                        double r2 = junks.get(i).radius;
+
+                        double newRadius = Math.pow((Math.pow(r1, 3) - Math.pow(r2, 3)), 1.0 / 3.0);
+
+
+                        totalscore = totalscore - (int) (30 * Math.abs(Math.pow((Math.pow(r1, 3) - Math.pow(r2, 3)), 1.0 / 3.0)));
+                        score.setText(" SCORE : " + totalscore);
+
+                        otherPlayers.get(j).setRadius(newRadius);
+                        jun.get(i).remove();
+                        jun.remove(i);
+                        junks.remove(i);
+                        break;
+                    } else {
+                        Log.d("Junk", " and other 1 1  player!!..Game Over!!");
+                        otherPlayers.get(j).remove();
+                        otherPlayers.remove(j);
+                        //gameover = true;
+                    }
+                }
+                //if (gameover)
+                //    break;
+
+            }
+
+          //  if (gameover)
+          //      break;
 
         }
 
