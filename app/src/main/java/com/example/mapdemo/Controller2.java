@@ -876,7 +876,6 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
                         JSONObject json_data= new JSONObject(text);
                         int userId = Integer.parseInt(json_data.getString("snackid"));
 
-
                         System.out.println("json" + json_data.toString() + " Ahaa " + userId);
 
                         Controller2.this.runOnUiThread(new Runnable() {
