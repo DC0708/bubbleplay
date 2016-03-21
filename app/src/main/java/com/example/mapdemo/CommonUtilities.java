@@ -11,7 +11,7 @@ import android.util.Log;
 public final class CommonUtilities {
 
     // give your server registration url here
-    static final String SERVER_URL = "http://10.1.13.112/BubblePlayServer/";
+    static final String SERVER_URL = "http://10.1.42.171/BubblePlayServer/";
 
     // Google project id
     static final String SENDER_ID = "531446716538";

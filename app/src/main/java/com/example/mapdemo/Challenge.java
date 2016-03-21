@@ -139,6 +139,7 @@ public class Challenge extends ActionBarActivity {
                                     }
                                 });
 
+
                             }
                             else
                             {
@@ -259,6 +260,7 @@ public class Challenge extends ActionBarActivity {
                                                 timer1.cancel(); //Terminate the timer thread
                                                 Intent inte = new Intent(Challenge.this,pregame.class);
                                                 inte.putExtra("accepted",challengeID);
+                                                //inte.putExtra("challengeid",challengeID);
                                                 startActivity(inte);
                                             }
                                         }

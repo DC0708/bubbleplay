@@ -409,7 +409,7 @@ public class Timer extends AppCompatActivity {
                             System.out.println("len: " + text.length());
                             if (!text.equals("failure")) {
                                 Intent inte = new Intent(Timer.this, pregame.class);
-                                inte.putExtra("accepted", text);
+                                inte.putExtra("accepted", challengeID);
                                 inte.putExtra("challengeid",challengeID);
                                 startActivity(inte);
 

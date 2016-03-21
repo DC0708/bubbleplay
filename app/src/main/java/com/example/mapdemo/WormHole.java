@@ -25,6 +25,15 @@ public class WormHole {
     public int mWidth;
 
 
+    public WormHole(double radii,LatLng loc ){
+
+
+        this.boolTag=3;
+        this.center = new Centre(loc.latitude,loc.longitude);
+        this.radius = radii;
+    }
+
+
     public WormHole(int[] xCoordinate, int[] yCoordinate,int count,Model gamemodel,LatLng initialloc){
 
         /**set up the constructor**/

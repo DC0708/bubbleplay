@@ -55,6 +55,7 @@ import java.util.TimerTask;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -227,14 +228,102 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
             else{
                 gps.showSettingsAlert(Controller2.this);
             }
-
+            Log.d("challenger  is : ", Challengeid);
             createsnackbubbles();
-     //       createjunkbubbles();
-     //       createwormholes();
+            createjunkbubbles();
+            createwormholes();
             if(Gamemode.equals("repulsor"))
                 createrepeller();
 
-            // Getting network status
+/*
+            final Timer timer = new Timer();
+
+            timer.scheduleAtFixedRate(new TimerTask() {
+
+                @Override
+                public void run(){
+                    runOnUiThread(new Runnable(){
+                        @Override
+                        public void run(){
+
+                            OnCollisionBoundary();
+                            CollisionNonPlayerBubbles();
+                            CollisionPlayerNonplayer();
+                            CollisionWormHole();
+                            if(Gamemode.equals("repulsor"))
+                                RepellerPhysics();
+
+                            /** repeller winning condition **
+
+                            if (Gamemode.equals("repulsor")) {
+                                if (Player.getRadius() + repeller.radius >= Math.abs(distFrom(Player.getCenter().latitude, Player.getCenter().longitude, repeller.center.x, repeller.center.y))) {
+
+                                    Intent i = new Intent(Controller2.this, EndGame.class);
+                                    i.putExtra("totalscore", String.valueOf(totalscore));
+                                    i.putExtra("gameresult","won");
+                                    startActivity(i);
+//                                    finish();
+                                    timer.cancel();
+                                    timer.purge();
+                                    return;
+
+                                }
+
+                            }
+
+                            else {
+                                /** ************** **
+
+                                /** biggest bubble condition **
+                                double maxRadius = -1;
+
+                                for (int i = 0; i < snac.size(); i++) {
+
+                                    if (snac.get(i).getRadius() > maxRadius)
+                                        maxRadius = snac.get(i).getRadius();
+
+                                }
+
+
+                                if (Player.getRadius() > maxRadius) {
+
+                                    Intent i = new Intent(Controller2.this, EndGame.class);
+                                    i.putExtra("totalscore", String.valueOf(totalscore));
+                                    i.putExtra("gameresult","won");
+                                    startActivity(i);
+                                    //                                  finish();
+                                    timer.cancel();
+                                    timer.purge();
+                                    return;
+                                }
+
+                            }
+                            /** ************** **
+
+                            /** losing condition **
+                            if(gameover){
+
+
+                                Intent i = new Intent(Controller2.this, EndGame.class);
+                                i.putExtra("totalscore",String.valueOf(totalscore));
+                                i.putExtra("gameresult","lost");
+
+                                startActivity(i);
+                                //                            finish();
+                                timer.cancel();
+                                timer.purge();
+                                return;
+
+                            }
+
+                        }
+                    });
+                }
+            }, 1000, 200);
+
+        */
+
+
         }
         else{
 
@@ -803,7 +892,9 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
 
     public void createsnackbubbles(){
 
-        new Thread(new Runnable() {
+
+        new Thread (new Runnable() {
+
             public void run() {
 
                 // Get user defined values
@@ -815,27 +906,24 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
                     data += "&" + URLEncoder.encode("challengeid", "UTF-8") + "="
                             + URLEncoder.encode(Challengeid, "UTF-8");
 
-                }
-                catch(UnsupportedEncodingException e)
-                {
+                } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
 
-                BufferedReader reader=null;
+                BufferedReader reader = null;
 
                 // Send data
-                try
-                {
+                try {
 
                     // Defined URL  where to send data
-                    URL url = new URL(CommonUtilities.SERVER_URL +"fetchsnack.php");
+                    URL url = new URL(CommonUtilities.SERVER_URL + "fetchsnack.php");
 
                     // Send POST data request
 
                     URLConnection conn = url.openConnection();
                     conn.setDoOutput(true);
                     OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-                    wr.write( data );
+                    wr.write(data);
                     wr.flush();
 
                     // Get the server response
@@ -846,75 +934,102 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
                     String builder = "";
 
                     // Read Server Response
-                    while((line = reader.readLine()) != null)
-                    {
+                    while ((line = reader.readLine()) != null) {
                         // Append server response in string
                         System.out.println(builder);
                         System.out.println(builder.length());
                         //sb.append(line + "\n");
-                        builder+=line;
+                        builder += line;
 
                     }
 
 
                     final String text = builder;
 
-
-
                     // Object is a single row of the json array.
                     // you can fetch all the details like snack iDs are fetched below.
 
-                    JSONArray jsonArray = new JSONArray(text);
+                    final JSONArray jsonArray = new JSONArray(text);
                     System.out.println("total: " + jsonArray.length());
-                    for (int pq = 0; pq<jsonArray.length();pq++)
-                        System.out.println("snackid: " + jsonArray.getJSONObject(pq).getInt("snackid"));
+
+                    try {
+                        runOnUiThread(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                for (int pq = 0; pq < jsonArray.length(); pq++) {
+                                    try {
+                                        int snackid = jsonArray.getJSONObject(pq).getInt("snackid");
+
+                                        int dir = jsonArray.getJSONObject(pq).getInt("dir");
+
+                                        double centerlat = jsonArray.getJSONObject(pq).getDouble("centerlat");
+
+                                        double centerlong = jsonArray.getJSONObject(pq).getDouble("centerlong");
+
+                                        double radius = jsonArray.getJSONObject(pq).getDouble("radius");
+
+                                        double speed = jsonArray.getJSONObject(pq).getDouble("speed");
+
+                                        Log.d("yooooooooooo", "i am heree@@@@@@@@@@@@");
+                                        System.out.println("snackid: " + jsonArray.getJSONObject(pq).getInt("snackid"));
+                                        SnackBubble tempsnack = new SnackBubble(radius, dir, speed, new LatLng(centerlat, centerlong));
+                                        snacks.add(tempsnack);
+
+                                        CircleOptions temp = new CircleOptions()
+                                                .center(new LatLng(tempsnack.center.x, tempsnack.center.y))
+                                                .radius(tempsnack.radius)
+                                                .strokeWidth(tempsnack.mWidth)
+                                                .strokeColor(tempsnack.mStrokeColor)
+                                                .fillColor(tempsnack.mFillColor);
+
+
+                                        Circle temp1 = googleMap.addCircle(temp);
+                                        snac.add(temp1);
+                                    }
+                                    catch(JSONException e){
+                                        e.printStackTrace();
+                                    }
+
+                                }
+
+                            }
+                        });
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
 
                     //till here
-
-
-
-
 
                     String[] response = text.split("-");
                     //System.out.println("Text: "+text);
                     //System.out.println("len: "+text.length());
-                    if (response[0].equals("success"))
-                    {
-
-
-                        SharedPreferences pref;
-                        SharedPreferences.Editor editor;
-                        pref = getApplicationContext().getSharedPreferences("UserSession",0);
+                    if (response[0].equals("success")) {
+                    //    SharedPreferences pref;
+                    //    SharedPreferences.Editor editor;
+                    //    pref = getApplicationContext().getSharedPreferences("UserSession", 0);
                         System.out.println(response[0].toString());
                         System.out.println("Logging in!");
-                    }
-                    else
-                    {
-                        JSONObject json_data= new JSONObject(text);
+                    } else {
+                    /*    JSONObject json_data = new JSONObject(text);
                         int userId = Integer.parseInt(json_data.getString("snackid"));
 
                         System.out.println("json" + json_data.toString() + " Ahaa " + userId);
-
+*/
                         Controller2.this.runOnUiThread(new Runnable() {
                             public void run() {
                                 Toast.makeText(Controller2.this, "Error: " + text, Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
-                }
-                catch(Exception ex)
-                {
+                } catch (Exception ex) {
                     ex.printStackTrace();
-                }
-                finally
-                {
-                    try
-                    {
+                } finally {
+                    try {
 
                         reader.close();
-                    }
-
-                    catch(Exception ex) {
+                    } catch (Exception ex) {
                         ex.printStackTrace();
                     }
                 }
@@ -922,61 +1037,302 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
             }
         }).start();
 
-    }
-    public void createsnack(int i){
-
-        SnackBubble tempsnack = new SnackBubble(gamemodel.isPlacedBubble,i,gamemodel,InitialLoc,Player.getRadius());
-        snacks.add(tempsnack);
-
-        CircleOptions temp = new CircleOptions()
-                .center(new LatLng(tempsnack.center.x,tempsnack.center.y))
-                .radius(tempsnack.radius)
-                .strokeWidth(tempsnack.mWidth)
-                .strokeColor(tempsnack.mStrokeColor)
-                .fillColor(tempsnack.mFillColor);
-
-
-
-        Circle temp1 = googleMap.addCircle(temp);
-        snac.add(temp1);
-
-
 
     }
+
+
+
     public void createjunkbubbles(){
 
-        for(int i=0;i<gamemodel.sizeJunkBubbles;i++){
-            createjunk(i);
-        }
-    }
-    public void createjunk(int i){
 
-        JunkBubble tempjunk = new JunkBubble(gamemodel.isPlacedBubble,i,gamemodel,InitialLoc,Player.getRadius());
-        junks.add(tempjunk);
-        Circle temp2 = googleMap.addCircle(new CircleOptions()
-                .center(new LatLng(tempjunk.center.x,tempjunk.center.y))
-                .radius(tempjunk.radius)
-                .strokeWidth(tempjunk.mWidth)
-                .strokeColor(tempjunk.mStrokeColor)
-                .fillColor(tempjunk.mFillColor));;
-        jun.add(temp2);
+        new Thread (new Runnable() {
+
+            public void run() {
+
+                // Get user defined values
+                //System.out.println("Trying to connect!");
+                String data = "";
+                // Create data variable for sent values to server
+                try {
+
+                    data += "&" + URLEncoder.encode("challengeid", "UTF-8") + "="
+                            + URLEncoder.encode(Challengeid, "UTF-8");
+
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                BufferedReader reader = null;
+
+                // Send data
+                try {
+
+                    // Defined URL  where to send data
+                    URL url = new URL(CommonUtilities.SERVER_URL + "fetchjunk.php");
+
+                    // Send POST data request
+
+                    URLConnection conn = url.openConnection();
+                    conn.setDoOutput(true);
+                    OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                    wr.write(data);
+                    wr.flush();
+
+                    // Get the server response
+
+                    reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder sb = new StringBuilder();
+                    String line = null;
+                    String builder = "";
+
+                    // Read Server Response
+                    while ((line = reader.readLine()) != null) {
+                        // Append server response in string
+                        System.out.println(builder);
+                        System.out.println(builder.length());
+                        //sb.append(line + "\n");
+                        builder += line;
+
+                    }
+
+
+                    final String text = builder;
+
+                    // Object is a single row of the json array.
+                    // you can fetch all the details like snack iDs are fetched below.
+
+                    final JSONArray jsonArray = new JSONArray(text);
+                    System.out.println("total: " + jsonArray.length());
+
+                    try {
+                        runOnUiThread(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                for (int pq = 0; pq < jsonArray.length(); pq++) {
+                                    try {
+                                        int snackid = jsonArray.getJSONObject(pq).getInt("junkid");
+
+                                        int dir = jsonArray.getJSONObject(pq).getInt("dir");
+
+                                        double centerlat = jsonArray.getJSONObject(pq).getDouble("centerlat");
+
+                                        double centerlong = jsonArray.getJSONObject(pq).getDouble("centerlong");
+
+                                        double radius = jsonArray.getJSONObject(pq).getDouble("radius");
+
+                                        double speed = jsonArray.getJSONObject(pq).getDouble("speed");
+
+                                        Log.d("yooooooooooo", "i am heree@@@@@@@@@@@@");
+                                        System.out.println("snackid: " + jsonArray.getJSONObject(pq).getInt("junkid"));
+                                        JunkBubble tempsnack = new JunkBubble(radius, dir, speed, new LatLng(centerlat, centerlong));
+                                        junks.add(tempsnack);
+
+                                        CircleOptions temp = new CircleOptions()
+                                                .center(new LatLng(tempsnack.center.x, tempsnack.center.y))
+                                                .radius(tempsnack.radius)
+                                                .strokeWidth(tempsnack.mWidth)
+                                                .strokeColor(tempsnack.mStrokeColor)
+                                                .fillColor(tempsnack.mFillColor);
+
+
+                                        Circle temp1 = googleMap.addCircle(temp);
+                                        jun.add(temp1);
+                                    }
+                                    catch(JSONException e){
+                                        e.printStackTrace();
+                                    }
+
+                                }
+
+                            }
+                        });
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    //till here
+
+                    String[] response = text.split("-");
+                    //System.out.println("Text: "+text);
+                    //System.out.println("len: "+text.length());
+                    if (response[0].equals("success")) {
+                        //    SharedPreferences pref;
+                        //    SharedPreferences.Editor editor;
+                        //    pref = getApplicationContext().getSharedPreferences("UserSession", 0);
+                        System.out.println(response[0].toString());
+                        System.out.println("Logging in!");
+                    } else {
+                    /*    JSONObject json_data = new JSONObject(text);
+                        int userId = Integer.parseInt(json_data.getString("snackid"));
+
+                        System.out.println("json" + json_data.toString() + " Ahaa " + userId);
+*/
+                        Controller2.this.runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(Controller2.this, "Error: " + text, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                } finally {
+                    try {
+
+                        reader.close();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
+            }
+        }).start();
 
 
     }
 
     public void createwormholes(){
 
-        for(int i=0;i<gamemodel.sizeWormHoles;i++){
-            WormHole temphole = new WormHole(gamemodel.xCoordinate,gamemodel.yCoordinate,i,gamemodel,InitialLoc);
-            holes.add(temphole);
-            googleMap.addCircle(new CircleOptions()
-                    .center(new LatLng(temphole.center.x,temphole.center.y))
-                    .radius(temphole.radius)
-                    .strokeWidth(temphole.mWidth)
-                    .strokeColor(temphole.mStrokeColor)
-                    .fillColor(temphole.mFillColor));;
 
-        }
+        new Thread (new Runnable() {
+
+            public void run() {
+
+                // Get user defined values
+                //System.out.println("Trying to connect!");
+                String data = "";
+                // Create data variable for sent values to server
+                try {
+
+                    data += "&" + URLEncoder.encode("challengeid", "UTF-8") + "="
+                            + URLEncoder.encode(Challengeid, "UTF-8");
+
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                BufferedReader reader = null;
+
+                // Send data
+                try {
+
+                    // Defined URL  where to send data
+                    URL url = new URL(CommonUtilities.SERVER_URL + "fetchhole.php");
+
+                    // Send POST data request
+
+                    URLConnection conn = url.openConnection();
+                    conn.setDoOutput(true);
+                    OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                    wr.write(data);
+                    wr.flush();
+
+                    // Get the server response
+
+                    reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder sb = new StringBuilder();
+                    String line = null;
+                    String builder = "";
+
+                    // Read Server Response
+                    while ((line = reader.readLine()) != null) {
+                        // Append server response in string
+                        System.out.println(builder);
+                        System.out.println(builder.length());
+                        //sb.append(line + "\n");
+                        builder += line;
+
+                    }
+
+
+                    final String text = builder;
+
+                    // Object is a single row of the json array.
+                    // you can fetch all the details like snack iDs are fetched below.
+
+                    final JSONArray jsonArray = new JSONArray(text);
+                    System.out.println("total: " + jsonArray.length());
+
+                    try {
+                        runOnUiThread(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                for (int pq = 0; pq < jsonArray.length(); pq++) {
+                                    try {
+
+                                        double centerlat = jsonArray.getJSONObject(pq).getDouble("centerlat");
+
+                                        double centerlong = jsonArray.getJSONObject(pq).getDouble("centerlong");
+
+                                        double radius = jsonArray.getJSONObject(pq).getDouble("radius");
+
+                                        Log.d("yooooooooooo", "i am heree@@@@@@@@@@@@");
+//                                        System.out.println("snackid: " + jsonArray.getJSONObject(pq).getInt("snackid"));
+                                        WormHole tempsnack = new WormHole(radius,  new LatLng(centerlat, centerlong));
+                                        holes.add(tempsnack);
+
+                                        CircleOptions temp = new CircleOptions()
+                                                .center(new LatLng(tempsnack.center.x, tempsnack.center.y))
+                                                .radius(tempsnack.radius)
+                                                .strokeWidth(tempsnack.mWidth)
+                                                .strokeColor(tempsnack.mStrokeColor)
+                                                .fillColor(tempsnack.mFillColor);
+
+
+                                        Circle temp1 = googleMap.addCircle(temp);
+                                    }
+                                    catch(JSONException e){
+                                        e.printStackTrace();
+                                    }
+
+                                }
+
+                            }
+                        });
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    //till here
+
+                    String[] response = text.split("-");
+                    //System.out.println("Text: "+text);
+                    //System.out.println("len: "+text.length());
+                    if (response[0].equals("success")) {
+                        //    SharedPreferences pref;
+                        //    SharedPreferences.Editor editor;
+                        //    pref = getApplicationContext().getSharedPreferences("UserSession", 0);
+                        System.out.println(response[0].toString());
+                        System.out.println("Logging in!");
+                    } else {
+                    /*    JSONObject json_data = new JSONObject(text);
+                        int userId = Integer.parseInt(json_data.getString("snackid"));
+
+                        System.out.println("json" + json_data.toString() + " Ahaa " + userId);
+*/
+                        Controller2.this.runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(Controller2.this, "Error: " + text, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                } finally {
+                    try {
+
+                        reader.close();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
+            }
+        }).start();
+
     }
 
 

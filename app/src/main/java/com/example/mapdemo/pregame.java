@@ -71,7 +71,7 @@ public class pregame extends ActionBarActivity {
 
         final TextView names = (TextView) findViewById(R.id.names);
         final Bundle extr = getIntent().getExtras();
-        if (extr.containsKey("accepted"))
+        if (extr.containsKey("challengeid"))
         {
             challenger_chk="yes";
             accepted = getIntent().getExtras().getString("accepted");
@@ -101,9 +101,12 @@ public class pregame extends ActionBarActivity {
 
                 Toast.makeText(pregame.this, "Start the game!", Toast.LENGTH_SHORT).show();
                 Intent in = new Intent(pregame.this,Controller2.class);
-                in.putExtra("challengeid",challengeid);
+                if(extr.containsKey("accepted"))
+                    in.putExtra("challengeid",extr.getString("accepted"));
+                else {
+                    in.putExtra("challengeid", extr.getString("challengeid"));
+                }
                 startActivity(in);
-
 
             }
 
