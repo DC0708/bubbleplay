@@ -1079,7 +1079,7 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
 
                                         double centerlong = jsonArray.getJSONObject(pq).getDouble("longitude");
 
-                                        if (otherPlayers.size()>0)
+                                        if (otherPlayers.size()>pq-1)
                                         otherPlayers.get(pq).setCenter(new LatLng(centerlat,centerlong));
 
                                         System.out.println("All players location updated");
