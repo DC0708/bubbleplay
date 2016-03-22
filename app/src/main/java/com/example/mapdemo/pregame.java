@@ -17,6 +17,9 @@ import com.google.android.gms.games.Player;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -57,6 +60,9 @@ public class pregame extends ActionBarActivity {
     public String challengeid;
     private LatLng InitialLoc;
 
+
+    Intent in ;
+
     public String BoundaryType;
     double playerradii;
 
@@ -64,7 +70,7 @@ public class pregame extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pregame);
-
+        in  = new Intent(pregame.this,Controller2.class);
         String accepted = "";
 
         String challenger_chk = "";
@@ -100,7 +106,6 @@ public class pregame extends ActionBarActivity {
             public void onFinish() {
 
                 Toast.makeText(pregame.this, "Start the game!", Toast.LENGTH_SHORT).show();
-                Intent in = new Intent(pregame.this,Controller2.class);
                 if(extr.containsKey("accepted"))
                     in.putExtra("challengeid",extr.getString("accepted"));
                 else {
@@ -123,8 +128,10 @@ public class pregame extends ActionBarActivity {
                 Gamemode = extras.getString("gamemode");
                 Playermode = extras.getString("playermode");
                 challengeid = extras.getString("challengeid");
+                if(extras.containsKey("accepted"))
+                challengeid = extras.getString("accepted");
             }
-
+            getSourceLoc(challengeid);
             playerradii = DEFAULT_RADIUS;
             if(BoundaryType.equals("Small")){
                 playerradii = DEFAULT_RADIUS;
@@ -315,6 +322,128 @@ public class pregame extends ActionBarActivity {
 
 
     }
+
+    public void getSourceLoc(final String Challengeid){
+
+
+        new Thread(new Runnable() {
+            public void run(){
+
+
+                String data1 = "";
+                // Create data variable for sent values to server
+                try {
+
+                    data1 += "&" + URLEncoder.encode("challengeid", "UTF-8")
+                            + "=" + URLEncoder.encode(Challengeid, "UTF-8");
+                }
+                catch(UnsupportedEncodingException e){
+                    e.printStackTrace();
+                }
+
+                BufferedReader reader1=null;
+
+                // Send data
+                try
+                {
+                    // Defined URL  where to send data
+                    URL url = new URL(CommonUtilities.SERVER_URL + "fetchsourcelocation.php");
+
+                    // Send POST data request
+                    URLConnection conn = url.openConnection();
+                    conn.setDoOutput(true);
+                    OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                    wr.write(data1);
+                    wr.flush();
+
+                    // Get the server response
+
+                    reader1 = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder sb = new StringBuilder();
+                    String line = null;
+                    String builder = "";
+
+                    // Read Server Response
+                    while((line = reader1.readLine()) != null)
+                    {
+                        // Append server response in string
+                        System.out.println(builder);
+                        System.out.println(builder.length());
+                        //sb.append(line + "\n");
+                        builder+=line;
+
+                    }
+
+
+                    final String text = builder;
+                    final JSONArray jsonArray = new JSONArray(text);
+                    System.out.println("total: " + jsonArray.length());
+
+                    for (int pq = 0; pq < jsonArray.length(); pq++) {
+                        try {
+                            double centerlat = jsonArray.getJSONObject(pq).getDouble("latitude");
+
+                            double centerlong = jsonArray.getJSONObject(pq).getDouble("longitude");
+
+                            in.putExtra("sourcelat",centerlat);
+
+                            in.putExtra("sourcelong",centerlong);
+
+                            System.out.println("All players location updated");
+                        }
+                        catch(JSONException e){
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    System.out.println("Textii: "+text);
+                    System.out.println("len: "+text.length());
+                    if (!text.equals("failure"))
+                    {
+                            pregame.this.runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(pregame.this, "location in Controller2 " + text, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                    }
+                    else
+                    {
+                        pregame.this.runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(pregame.this, "Error22: " + text, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+                catch(Exception ex)
+                {
+                    ex.printStackTrace();
+                }
+                finally
+                {
+                    try
+                    {
+
+                        reader1.close();
+                    }
+
+                    catch(Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
+
+            }
+
+
+
+        }).start();
+
+
+    }
+
 
     public void createjunkbubbles(){
 

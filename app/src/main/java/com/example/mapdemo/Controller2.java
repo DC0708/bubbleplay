@@ -79,6 +79,9 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
     }
 
     private LatLng InitialLoc;
+
+    private LatLng SourceLoc;
+
     GoogleMap googleMap;
     public LatLng gpsLocation;
 
@@ -180,6 +183,14 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
             BoundaryType = "Large";//extras.getString("Boundary");
             Gamemode = "biggest";//extras.getString("gamemode");
             Playermode = extras.getString("playermode");
+
+            if(extras.containsKey("sourcelat")){
+                Log.d("lat and long", " " + extras.getDouble("sourcelat") + extras.getDouble("sourcelong"));
+
+                SourceLoc = new LatLng(extras.getDouble("sourcelat"),extras.getDouble("sourcelong"));
+
+            }
+
         }
 
         Log.d("Game mode is", Gamemode);
@@ -230,7 +241,6 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
             FetchGps();
 
             gamemodel = new Model(BoundaryType);
-
             if(isGPSEnabled){
 
                 createboundary(BoundaryType);
@@ -285,7 +295,23 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
 
                             else {
 
+                                if(gameover==true){
 
+                                    updatePlayerLost();
+
+                                    //send to intent and player lost!!!..
+                                }
+                                else{
+
+                                    if(otherPlayers.size()<=0){
+
+                                        //send to intent with this player has won the game!!!..
+
+                                    }
+
+                                }
+
+/*
                                 // biggest bubble condition
                                 double maxRadius = -1;
 
@@ -293,9 +319,7 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
 
                                     if (snac.get(i).getRadius() > maxRadius)
                                         maxRadius = snac.get(i).getRadius();
-
                                 }
-
 
                                 if (Player.getRadius() > maxRadius) {
 
@@ -308,12 +332,12 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
                                     timer.purge();
                                     return;
                                 }
-
+*/
                             }
 
 
                             // losing condition **
-                            if(gameover){
+/*                            if(gameover){
 
 
                                 Intent i = new Intent(Controller2.this, EndGame.class);
@@ -327,7 +351,7 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
                                 return;
 
                             }
-
+*/
                         }
                     });
                 }
@@ -1002,6 +1026,122 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
 
             }
         }
+
+    }
+
+
+    public void updatePlayerLost(){
+
+        new Thread (new Runnable() {
+
+            public void run() {
+
+                // Get user defined values
+                //System.out.println("Trying to connect!");
+                String data = "";
+                // Create data variable for sent values to server
+                try {
+
+                    data += "&" + URLEncoder.encode("challengeid", "UTF-8") + "="
+                            + URLEncoder.encode(Challengeid, "UTF-8");
+                    data += "&" + URLEncoder.encode("username", "UTF-8") + "="
+                            + URLEncoder.encode(shrd.getString("username","username"), "UTF-8");
+
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                BufferedReader reader = null;
+
+                // Send data
+                try {
+
+                    // Defined URL  where to send data
+                    URL url = new URL(CommonUtilities.SERVER_URL + "updatePlayerLost.php");
+
+                    // Send POST data request
+
+                    URLConnection conn = url.openConnection();
+                    conn.setDoOutput(true);
+                    OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                    wr.write(data);
+                    wr.flush();
+
+                    // Get the server response
+
+                    reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder sb = new StringBuilder();
+                    String line = null;
+                    String builder = "";
+
+                    // Read Server Response
+                    while ((line = reader.readLine()) != null) {
+                        // Append server response in string
+                        System.out.println(builder);
+                        System.out.println(builder.length());
+                        //sb.append(line + "\n");
+                        builder += line;
+
+                    }
+
+
+                    final String text = builder;
+
+                    // Object is a single row of the json array.
+                    // you can fetch all the details like snack iDs are fetched below.
+
+                    final JSONArray jsonArray = new JSONArray(text);
+                    System.out.println("total: " + jsonArray.length());
+
+                    try {
+                        runOnUiThread(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                for (int pq = 0; pq < jsonArray.length(); pq++) {
+                                    try {
+                                        double centerlat = jsonArray.getJSONObject(pq).getDouble("latitude");
+
+                                        double centerlong = jsonArray.getJSONObject(pq).getDouble("longitude");
+
+                                        if (otherPlayers.size()>pq-1)
+                                            otherPlayers.get(pq).setCenter(new LatLng(centerlat,centerlong));
+
+                                        System.out.println("All players location updated");
+                                    }
+                                    catch(JSONException e){
+                                        e.printStackTrace();
+                                    }
+
+                                }
+
+                            }
+                        });
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                } finally {
+                    try {
+
+                        reader.close();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
+            }
+        }).start();
+
+
+
+
+
+
+
 
     }
 
@@ -2026,7 +2166,7 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
 
 
         googleMap.addPolygon(new PolygonOptions()
-                .addAll(createRectangle(new LatLng(InitialLoc.latitude, InitialLoc.longitude), gamemodel.boundaryWidth / 2, gamemodel.boundaryHeight / 2))
+                .addAll(createRectangle(new LatLng(SourceLoc.latitude, SourceLoc.longitude), gamemodel.boundaryWidth / 2, gamemodel.boundaryHeight / 2))
                 .strokeColor(Color.BLUE)
                 .strokeWidth(2));
         //  UpdateBubbles(InitialLoc.latitude, InitialLoc.longitude, BoundaryType);
