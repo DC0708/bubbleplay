@@ -1221,7 +1221,7 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
                                         otherPlayers.add(otherPlayer);
 
                                         Log.d("yooooooooooo", "i am heree@@@@@@@@@@@@");
-                                        System.out.println("snackid: " + jsonArray.getJSONObject(pq).getInt("snackid"));
+                                       // System.out.println("snackid: " + jsonArray.getJSONObject(pq).getInt("snackid"));
 
                                     }
                                     catch(JSONException e){
@@ -1833,11 +1833,11 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
                         double r1 = otherPlayers.get(j).getRadius();
                         double r2 = snacks.get(i).radius;
 
-                        double newRadius = Math.pow((Math.pow(r1, 3) + Math.pow(r2, 3)), 1.0 / 3.0);
+                        double newRadius = Math.pow((Math.pow(r2, 3) - Math.pow(r1, 3)), 1.0 / 3.0);
                         //totalscore = totalscore + (int) (30 * Math.abs(Math.pow((Math.pow(r1, 3) - Math.pow(r2, 3)), 1.0 / 3.0)));
                         //score.setText(" SCORE : " + totalscore);
-                        //snacks.get(i).setRadius(newRadius);
-
+                        snacks.get(i).radius = newRadius;
+                        snac.get(i).setRadius(newRadius);
                         Log.d("Snack", " and other 1 1 player!!..Game Over!!");
                         otherPlayers.get(j).remove();
                         otherPlayers.remove(j);
@@ -1877,6 +1877,15 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
                         break;
                     } else {
                         Log.d("Junk", " and other 1 1  player!!..Game Over!!");
+
+                        double r1 = otherPlayers.get(j).getRadius();
+                        double r2 = junks.get(i).radius;
+
+                        double newRadius = Math.pow((Math.pow(r2, 3) - Math.pow(r1, 3)), 1.0 / 3.0);
+
+                        junks.get(i).radius = newRadius;
+                        jun.get(i).setRadius(newRadius);
+
                         otherPlayers.get(j).remove();
                         otherPlayers.remove(j);
                         //gameover = true;
