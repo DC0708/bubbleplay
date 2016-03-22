@@ -1,5 +1,6 @@
 package com.example.mapdemo;
 
+import android.animation.ObjectAnimator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,7 +64,9 @@ public class Timer extends AppCompatActivity {
         Typeface custom_font = Typeface.createFromAsset(getAssets(),"fonts/GoodDog.otf");
 
         final TextView timer = (TextView) findViewById(R.id.timer);
-        timer.setTypeface(custom_font);
+
+        final TextView wait = (TextView) findViewById(R.id.textView9);
+        wait.setTypeface(custom_font);
 
         System.out.println("Entered timer Activity");
 
@@ -100,7 +105,7 @@ public class Timer extends AppCompatActivity {
 
         //ArrayList<PlayerDetails> chosenPlayers = (ArrayList<PlayerDetails>) getIntent().
 
-        TextView tv = (TextView) findViewById(R.id.textView);
+        //TextView tv = (TextView) findViewById(R.id.textView9);
         final String chosenOnes = getIntent().getExtras().getString("chosenPlayers");
         final String deviceids = getIntent().getExtras().getString("appID");
 
@@ -346,12 +351,17 @@ public class Timer extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        ObjectAnimator animation = ObjectAnimator.ofInt (progressBar, "progress", 0, 500); // see this max value coming back here, we animale towards that value
+        animation.setDuration (60000); //in milliseconds
+        animation.setInterpolator (new DecelerateInterpolator());
+        animation.start ();
 
                 new CountDownTimer(60000, 1000) {
 
                     public void onTick(long millisUntilFinished) {
-                        timer.setText("seconds remaining: " + millisUntilFinished / 1000);
+                        System.out.println("seconds remaining: " + millisUntilFinished / 1000);
+                        //timer.setText("seconds remaining: " + millisUntilFinished / 1000);
                     }
 
                     public void onFinish() {
@@ -443,7 +453,7 @@ public class Timer extends AppCompatActivity {
 
         System.out.println(chosenOnes);
 
-        tv.setText(chosenOnes);
+        //tv.setText(chosenOnes);
     }
 
 /*
