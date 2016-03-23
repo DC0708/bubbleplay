@@ -267,6 +267,8 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
                         @Override
                         public void run(){
 
+
+
                             OnCollisionBoundary();
                             CollisionNonPlayerBubbles();
                             CollisionPlayerNonplayer();
@@ -276,7 +278,6 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
                                 RepellerPhysics();
 
                             // repeller winning condition
-
                             if (Gamemode.equals("repulsor")) {
                                 if (Player.getRadius() + repeller.radius >= Math.abs(distFrom(Player.getCenter().latitude, Player.getCenter().longitude, repeller.center.x, repeller.center.y))) {
 
@@ -298,12 +299,18 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
                                 if(gameover==true){
 
                                     updatePlayerLost();
-
+                                    Intent i = new  Intent(Controller2.this,EndGame.class);
+                                    i.putExtra("gameresult","lost");
+                                    startActivity(i);
                                     //send to intent and player lost!!!..
                                 }
                                 else{
 
                                     if(otherPlayers.size()<=0){
+
+                                        Intent i = new  Intent(Controller2.this,EndGame.class);
+                                        i.putExtra("gameresult","won");
+                                        startActivity(i);
 
                                         //send to intent with this player has won the game!!!..
 
@@ -1090,37 +1097,7 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
                     // Object is a single row of the json array.
                     // you can fetch all the details like snack iDs are fetched below.
 
-                    final JSONArray jsonArray = new JSONArray(text);
-                    System.out.println("total: " + jsonArray.length());
 
-                    try {
-                        runOnUiThread(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                for (int pq = 0; pq < jsonArray.length(); pq++) {
-                                    try {
-                                        double centerlat = jsonArray.getJSONObject(pq).getDouble("latitude");
-
-                                        double centerlong = jsonArray.getJSONObject(pq).getDouble("longitude");
-
-                                        if (otherPlayers.size()>pq-1)
-                                            otherPlayers.get(pq).setCenter(new LatLng(centerlat,centerlong));
-
-                                        System.out.println("All players location updated");
-                                    }
-                                    catch(JSONException e){
-                                        e.printStackTrace();
-                                    }
-
-                                }
-
-                            }
-                        });
-                        Thread.sleep(300);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
 
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -1219,7 +1196,8 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
 
                                         double centerlong = jsonArray.getJSONObject(pq).getDouble("longitude");
 
-                                        if (otherPlayers.size()>pq-1)
+                                        Log.d("other players size"," "+ otherPlayers.size() +" " +  gameover);
+//                                        if (otherPlayers.size()>pq-1)
                                         otherPlayers.get(pq).setCenter(new LatLng(centerlat,centerlong));
 
                                         System.out.println("All players location updated");
@@ -1278,7 +1256,7 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
 
     public void createOtherPlayers(){
 
-        new Thread (new Runnable() {
+        Thread t = new Thread (new Runnable() {
 
             public void run() {
 
@@ -1412,9 +1390,17 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
                 }
 
             }
-        }).start();
+        });
 
+        t.start();
+        try {
+            t.join();
+        }
+        catch(InterruptedException e)
+        {
+            e.printStackTrace();
 
+        }
     }
 
     public void createsnackbubbles(){

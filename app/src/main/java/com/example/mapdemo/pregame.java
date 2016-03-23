@@ -8,6 +8,7 @@ import android.location.LocationManager;
 import android.os.CountDownTimer;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -88,6 +89,15 @@ public class pregame extends ActionBarActivity {
             names.setText("");
         }
 
+        if(extr.containsKey("accepted")) {
+            in.putExtra("challengeid", extr.getString("accepted"));
+            challengeid = extr.getString("accepted");
+        }        else {
+            in.putExtra("challengeid", extr.getString("challengeid"));
+            challengeid = extr.getString("accepted");
+        }
+        getSourceLoc(challengeid);
+
         final TextView tim = (TextView) findViewById(R.id.tim);
 
            //tim.setText(getIntent().getExtras().getString("challengeID"));
@@ -106,11 +116,8 @@ public class pregame extends ActionBarActivity {
             public void onFinish() {
 
                 Toast.makeText(pregame.this, "Start the game!", Toast.LENGTH_SHORT).show();
-                if(extr.containsKey("accepted"))
-                    in.putExtra("challengeid",extr.getString("accepted"));
-                else {
-                    in.putExtra("challengeid", extr.getString("challengeid"));
-                }
+                Log.d("starting ", "game");
+
                 startActivity(in);
 
             }
@@ -131,7 +138,8 @@ public class pregame extends ActionBarActivity {
                 if(extras.containsKey("accepted"))
                 challengeid = extras.getString("accepted");
             }
-            getSourceLoc(challengeid);
+
+
             playerradii = DEFAULT_RADIUS;
             if(BoundaryType.equals("Small")){
                 playerradii = DEFAULT_RADIUS;
@@ -325,7 +333,7 @@ public class pregame extends ActionBarActivity {
 
     public void getSourceLoc(final String Challengeid){
 
-
+        Log.d("getting source","location " + Challengeid);
         new Thread(new Runnable() {
             public void run(){
 
