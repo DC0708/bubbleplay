@@ -4,16 +4,48 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.example.mapdemo.pregame">
+    tools:context="com.example.mapdemo.pregame"
+    android:background="@drawable/bubbbles">
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/names" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/tim" />
+        <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/names"
+            android:textColor="#ffffff"
+            android:textSize="50dp" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Loading Game..."
+                android:id="@+id/tim"
+                android:textSize="50dp"
+                android:textColor="#ffffff"
+                android:gravity="center_horizontal" />
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_alignParentBottom="false"
+                android:layout_centerHorizontal="true"
+                android:max="500"
+                android:progress="0"
+                android:progressDrawable="@drawable/progressbar"
+                android:layout_gravity="center"
+                android:layout_marginTop="50dp" />
+        </LinearLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>

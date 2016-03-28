@@ -232,8 +232,10 @@ public class Challenge extends ActionBarActivity {
 
 
                                         //int millisInFuture = Integer.parseInt(text);
-                                        final long millisInFuture = Long.parseLong(text);
-                                        System.out.println("Time left: " + millisInFuture);
+
+                                        //final long microsInFuture = Long.parseLong(text);
+                                        final float microsInFuture = Float.parseFloat(text);
+                                        System.out.println("Time left: " + microsInFuture);
 
 //                                Challenge.this.runOnUiThread(new Runnable() {
 //                                    public void run() {
@@ -265,7 +267,7 @@ public class Challenge extends ActionBarActivity {
                                             }
                                         }
 
-                                        timer1.schedule(new RemindTask(), millisInFuture*1000);
+                                        timer1.schedule(new RemindTask(), (long)microsInFuture*1000000);
 
 
 

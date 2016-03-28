@@ -1,6 +1,7 @@
 package com.example.mapdemo;
 
 import android.animation.ObjectAnimator;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -111,8 +112,21 @@ public class Timer extends AppCompatActivity {
 
         System.out.println("Thread de uttteeeeee!!!");
 
+        final ProgressDialog dialog = new ProgressDialog(Timer.this); // this = YourActivity
+
         Thread t = new Thread(new Runnable() {
             public void run(){
+
+                Timer.this.runOnUiThread(new Runnable() {
+                    public void run() {
+
+                        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                        dialog.setMessage("Loading. Please wait...");
+                        dialog.setIndeterminate(true);
+                        dialog.setCanceledOnTouchOutside(false);
+                        dialog.show();
+                    }
+                });
 
                 System.out.println("Thread de andar !!!!");
 
@@ -332,6 +346,14 @@ public class Timer extends AppCompatActivity {
                 }
 
 
+                Timer.this.runOnUiThread(new Runnable() {
+                    public void run() {
+
+                        dialog.dismiss();
+                    }
+                });
+
+
 
 
 
@@ -345,11 +367,14 @@ public class Timer extends AppCompatActivity {
         t.start();
         try {
             t.join();
+
         }
         catch (InterruptedException e)
         {
             e.printStackTrace();
         }
+
+        //dialog.dismiss();
 
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
         ObjectAnimator animation = ObjectAnimator.ofInt (progressBar, "progress", 0, 500); // see this max value coming back here, we animale towards that value
@@ -421,6 +446,9 @@ public class Timer extends AppCompatActivity {
                                 Intent inte = new Intent(Timer.this, pregame.class);
                                 inte.putExtra("accepted", challengeID);
                                 inte.putExtra("challengeid",challengeID);
+                                inte.putExtra("Boundary", getIntent().getExtras().getString("Boundary"));
+                                inte.putExtra("gamemode", getIntent().getExtras().getString("gamemode"));
+                                inte.putExtra("playermode", getIntent().getExtras().getString("playermode"));
                                 startActivity(inte);
 
                             } else {

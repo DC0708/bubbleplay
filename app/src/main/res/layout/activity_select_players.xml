@@ -1,7 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="@drawable/bubbbles">
 
     <ListView
         android:id="@+id/lvMain"
@@ -16,7 +17,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="5dp"
         android:id="@+id/selectAll"
-        android:text="SHOW" >
+        android:text="SELECT" >
     </Button>
 
 </LinearLayout>

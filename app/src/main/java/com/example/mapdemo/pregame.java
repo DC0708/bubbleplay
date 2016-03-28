@@ -1,7 +1,9 @@
 package com.example.mapdemo;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -9,8 +11,10 @@ import android.os.CountDownTimer;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.*;
+import android.view.View;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -77,16 +81,22 @@ public class pregame extends ActionBarActivity {
         String challenger_chk = "";
 
         final TextView names = (TextView) findViewById(R.id.names);
+
+        Typeface custom_font = Typeface.createFromAsset(getAssets(),"fonts/GoodDog.otf");
+
+        names.setTypeface(custom_font);
+
         final Bundle extr = getIntent().getExtras();
         if (extr.containsKey("challengeid"))
         {
             challenger_chk="yes";
             accepted = getIntent().getExtras().getString("accepted");
-            names.setText(accepted);
+            names.setText("Challenge Accepted by: " + accepted);
         }
         else
         {
             names.setText("");
+            names.setVisibility(View.GONE);
         }
 
         if(extr.containsKey("accepted")) {
@@ -103,14 +113,18 @@ public class pregame extends ActionBarActivity {
            //tim.setText(getIntent().getExtras().getString("challengeID"));
 
 
-
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        ObjectAnimator animation = ObjectAnimator.ofInt (progressBar, "progress", 0, 500); // see this max value coming back here, we animale towards that value
+        animation.setDuration (10000); //in milliseconds
+        animation.setInterpolator (new DecelerateInterpolator());
+        animation.start ();
 
         new CountDownTimer(10000, 1000) {
 
 
             public void onTick(long millisUntilFinished) {
 
-                tim.setText("Game will start in: " + millisUntilFinished / 1000);
+                //tim.setText("Game will start in: " + millisUntilFinished / 1000);
             }
 
             public void onFinish() {
@@ -131,7 +145,7 @@ public class pregame extends ActionBarActivity {
 
 
             if (extras != null) {
-                BoundaryType = "Large";//extras.getString("Boundary");
+                BoundaryType = extras.getString("Boundary");
                 Gamemode = extras.getString("gamemode");
                 Playermode = extras.getString("playermode");
                 challengeid = extras.getString("challengeid");

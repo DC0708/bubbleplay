@@ -155,17 +155,17 @@ public class SelectPlayers extends ActionBarActivity {
                     }
                     System.out.println("size is: " + players.size());
 
-                    SelectPlayers.this.runOnUiThread(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            try {
-                                dialog.dismiss();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
+//                    SelectPlayers.this.runOnUiThread(new Runnable() {
+//
+//                        @Override
+//                        public void run() {
+//                            try {
+//                                dialog.dismiss();
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    });
 
 
 
@@ -179,6 +179,7 @@ public class SelectPlayers extends ActionBarActivity {
 
             try{
                 t.join();
+                dialog.dismiss();
             }
             catch(InterruptedException e)
             {
@@ -217,6 +218,9 @@ public class SelectPlayers extends ActionBarActivity {
                             Intent intent = new Intent(SelectPlayers.this,Timer.class);
                             intent.putExtra("chosenPlayers",ChosenPlayers);
                             intent.putExtra("appID",appids);
+                            intent.putExtra("Boundary", getIntent().getExtras().getString("Boundary"));
+                            intent.putExtra("gamemode", getIntent().getExtras().getString("Boundary"));
+                            intent.putExtra("playermode", getIntent().getExtras().getString("Boundary"));
                             startActivity(intent);
                             //Toast.makeText(getApplicationContext(), result+"\n"+"Total Amount:="+totalAmount, Toast.LENGTH_LONG).show();
                         }

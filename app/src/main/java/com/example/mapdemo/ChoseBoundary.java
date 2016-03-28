@@ -72,21 +72,29 @@ public final class ChoseBoundary extends ActionBarActivity {
         Intent temp = getIntent();
         final String gamemode = temp.getStringExtra("gamemode");
         final String playermode = temp.getStringExtra("playermode");
+        final Intent i1 = new Intent(ChoseBoundary.this, SelectPlayers.class);
+        final Intent i2 = new Intent(ChoseBoundary.this, Controller1.class);
 
         small.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-            Intent i = new Intent(ChoseBoundary.this, Controller1.class);
-            i.putExtra("Boundary", "Small");
-            i.putExtra("gamemode",gamemode);
-            i.putExtra("playermode",playermode);
+            if (playermode.equals("multiple")) {
+                i1.putExtra("Boundary", "Small");
+                i1.putExtra("gamemode", gamemode);
+                i1.putExtra("playermode", playermode);
+                startActivity(i1);
+            }
+            else {
+                i2.putExtra("Boundary", "Small");
+                i2.putExtra("gamemode", gamemode);
+                i2.putExtra("playermode", playermode);
+                startActivity(i2);
+            }
 
-            Log.d("gamemode is 1",gamemode);
-            Toast.makeText(ChoseBoundary.this,"Small Boundary chosen",Toast.LENGTH_SHORT).show();
-            mediaPlayer.start();
 
-            startActivity(i);
+
+
     //        finish();
             return;
             }
@@ -96,14 +104,19 @@ public final class ChoseBoundary extends ActionBarActivity {
             @Override
             public void onClick(View v) {
 
-                Intent i = new Intent(ChoseBoundary.this, Controller1.class);
-                i.putExtra("Boundary", "Medium");
-                i.putExtra("gamemode",gamemode);
-                i.putExtra("playermode",playermode);
-                Toast.makeText(ChoseBoundary.this,"Medium Boundary chosen",Toast.LENGTH_SHORT).show();
-                mediaPlayer.start();
-                Log.d("gamemode is ",gamemode);
-                startActivity(i);
+
+                if (playermode.equals("multiple")) {
+                    i1.putExtra("Boundary", "Medium");
+                    i1.putExtra("gamemode", gamemode);
+                    i1.putExtra("playermode", playermode);
+                    startActivity(i1);
+                }
+                else {
+                    i2.putExtra("Boundary", "Medium");
+                    i2.putExtra("gamemode", gamemode);
+                    i2.putExtra("playermode", playermode);
+                    startActivity(i2);
+                }
   //              finish();
                 return;
             }
@@ -113,16 +126,18 @@ public final class ChoseBoundary extends ActionBarActivity {
             @Override
             public void onClick(View v) {
 
-                Intent i = new Intent(ChoseBoundary.this, Controller1.class);
-                i.putExtra("Boundary", "Large");
-                i.putExtra("gamemode",gamemode);
-                i.putExtra("playermode",playermode);
-                Log.d("gamemode is 3",gamemode);
-
-                Toast.makeText(ChoseBoundary.this,"Large Boundary chosen",Toast.LENGTH_SHORT).show();
-                mediaPlayer.start();
-
-                startActivity(i);
+                if (playermode.equals("multiple")) {
+                    i1.putExtra("Boundary", "Large");
+                    i1.putExtra("gamemode", gamemode);
+                    i1.putExtra("playermode", playermode);
+                    startActivity(i1);
+                }
+                else {
+                    i2.putExtra("Boundary", "Large");
+                    i2.putExtra("gamemode", gamemode);
+                    i2.putExtra("playermode", playermode);
+                    startActivity(i2);
+                }
 //                finish();
                 return;
             }

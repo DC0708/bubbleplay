@@ -76,7 +76,7 @@ public final class TransitionPlayers extends ActionBarActivity {
 
                 Toast.makeText(TransitionPlayers.this,"Single Player Chosen",Toast.LENGTH_SHORT).show();
 
-                mediaPlayer.start();
+                //mediaPlayer.start();
 
                 //String username = myintent.getStringExtra("name");
 
@@ -102,7 +102,7 @@ public final class TransitionPlayers extends ActionBarActivity {
                     Intent myIntent = new Intent(TransitionPlayers.this,Login.class);
                 }
                 else {
-                    Intent myIntent = new Intent(TransitionPlayers.this, SelectPlayers.class);
+                    Intent myIntent = new Intent(TransitionPlayers.this, ChoseMode.class);
                     //myIntent.putExtra("name",username);
                     myIntent.putExtra("playermode", "multiple");
                     startActivity(myIntent);

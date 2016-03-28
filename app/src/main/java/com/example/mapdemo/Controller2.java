@@ -302,6 +302,8 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
                                     Intent i = new  Intent(Controller2.this,EndGame.class);
                                     i.putExtra("gameresult","lost");
                                     startActivity(i);
+                                    timer.cancel();
+                                    timer.purge();
                                     //send to intent and player lost!!!..
                                 }
                                 else{
@@ -311,6 +313,8 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
                                         Intent i = new  Intent(Controller2.this,EndGame.class);
                                         i.putExtra("gameresult","won");
                                         startActivity(i);
+                                        timer.cancel();
+                                        timer.purge();
 
                                         //send to intent with this player has won the game!!!..
 
