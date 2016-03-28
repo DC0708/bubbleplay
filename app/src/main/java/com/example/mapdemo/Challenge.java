@@ -32,6 +32,8 @@ public class Challenge extends ActionBarActivity {
 
     final java.util.Timer timer1 = new java.util.Timer();
 
+    double insert_time;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +51,7 @@ public class Challenge extends ActionBarActivity {
         final String challengeID = getIntent().getExtras().getString("challengeID");
 
         final TextView timer = (TextView) findViewById(R.id.timer);
+
 
 
         timer.setTypeface(custom_font);
@@ -227,64 +230,68 @@ public class Challenge extends ActionBarActivity {
                             final String text = builder;
                             System.out.println("Textii: "+text);
                             System.out.println("len: "+text.length());
-                            if (!text.equals("failure"))
-                            {
-
-
-                                        //int millisInFuture = Integer.parseInt(text);
-
-                                        //final long microsInFuture = Long.parseLong(text);
-                                        final float microsInFuture = Float.parseFloat(text);
-                                        System.out.println("Time left: " + microsInFuture);
-
-//                                Challenge.this.runOnUiThread(new Runnable() {
-//                                    public void run() {
-//                                        new CountDownTimer(millisInFuture, 1000) {
+                            insert_time = Double.parseDouble(text);
+//                            if (!text.equals("failure"))
+//                            {
 //
-//                                            public void onTick(long millisUntilFinished) {
-//                                                timer.setText("seconds remaining: " + millisUntilFinished / 1000);
-//                                            }
 //
-//                                            public void onFinish() {
+//                                        //int millisInFuture = Integer.parseInt(text);
 //
+//                                        //final long microsInFuture = Long.parseLong(text);
+//                                        final float microsInFuture = Float.parseFloat(text);
+//                                        System.out.println("Time left: " + microsInFuture);
+//
+////                                Challenge.this.runOnUiThread(new Runnable() {
+////                                    public void run() {
+////                                        new CountDownTimer(millisInFuture, 1000) {
+////
+////                                            public void onTick(long millisUntilFinished) {
+////                                                timer.setText("seconds remaining: " + millisUntilFinished / 1000);
+////                                            }
+////
+////                                            public void onFinish() {
+////
+////                                                Intent inte = new Intent(Challenge.this,pregame.class);
+////                                                inte.putExtra("accepted",challengeID);
+////                                                startActivity(inte);
+////
+////                                            }
+////                                        };
+////                                    }
+////                                });
+//                                        class RemindTask extends TimerTask {
+//                                            public void run() {
+//                                                System.out.println("Time's up!");
+//                                                //timer.setText();
+//                                                timer1.cancel(); //Terminate the timer thread
 //                                                Intent inte = new Intent(Challenge.this,pregame.class);
 //                                                inte.putExtra("accepted",challengeID);
+//                                                //inte.putExtra("challengeid",challengeID);
 //                                                startActivity(inte);
-//
 //                                            }
-//                                        };
+//                                        }
+//
+//                                        timer1.schedule(new RemindTask(), (long)microsInFuture/1000);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//                            }
+//                            else
+//                            {
+//                                Challenge.this.runOnUiThread(new Runnable() {
+//                                    public void run() {
+//                                        Toast.makeText(Challenge.this, "Error22: " + text, Toast.LENGTH_SHORT).show();
 //                                    }
 //                                });
-                                        class RemindTask extends TimerTask {
-                                            public void run() {
-                                                System.out.println("Time's up!");
-                                                //timer.setText();
-                                                timer1.cancel(); //Terminate the timer thread
-                                                Intent inte = new Intent(Challenge.this,pregame.class);
-                                                inte.putExtra("accepted",challengeID);
-                                                //inte.putExtra("challengeid",challengeID);
-                                                startActivity(inte);
-                                            }
-                                        }
-
-                                        timer1.schedule(new RemindTask(), (long)microsInFuture*1000000);
-
-
-
-
-
-
-
-
-                            }
-                            else
-                            {
-                                Challenge.this.runOnUiThread(new Runnable() {
-                                    public void run() {
-                                        Toast.makeText(Challenge.this, "Error22: " + text, Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
+//                            }
                         }
                         catch(Exception ex)
                         {
@@ -321,7 +328,37 @@ public class Challenge extends ActionBarActivity {
                     e.printStackTrace();
                 }
 
+                try {
+                    t2.join();
+                }
+                catch (InterruptedException e){
+                    e.printStackTrace();
+                }
 
+
+                System.out.println("times: " + insert_time + " " + System.currentTimeMillis());
+
+                final java.util.Timer timer1 = new java.util.Timer();
+                timer1.scheduleAtFixedRate(new TimerTask() {
+
+
+                    @Override
+                    public void run(){
+
+//                        if ((System.currentTimeMillis()-insert_time)<=10000.0 || (System.currentTimeMillis()-insert_time)>=50000.0)
+//                            System.out.println("time left: " + (System.currentTimeMillis()-insert_time));
+                        if ((System.currentTimeMillis()-insert_time)>=60000.0)
+                        {
+                            Intent inte = new Intent(Challenge.this,pregame.class);
+                            inte.putExtra("accepted",challengeID);
+                            timer1.purge();
+                            timer1.cancel();
+                            startActivity(inte);
+
+                        }
+
+                    }
+                }, 0, 1);
 
 
 

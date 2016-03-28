@@ -39,6 +39,7 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimerTask;
 
 import static com.example.mapdemo.CommonUtilities.DISPLAY_MESSAGE_ACTION;
 import static com.example.mapdemo.CommonUtilities.EXTRA_MESSAGE;
@@ -56,6 +57,15 @@ public class Timer extends AppCompatActivity {
 
     String challengeID = "";
 
+    String a = "";
+
+    String b = "";
+
+    String c = "";
+
+    String d = "";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,9 +79,13 @@ public class Timer extends AppCompatActivity {
         final TextView wait = (TextView) findViewById(R.id.textView9);
         wait.setTypeface(custom_font);
 
+
+
         System.out.println("Entered timer Activity");
 
         cd = new ConnectionDetector(getApplicationContext());
+
+        final double insert_time = System.currentTimeMillis();
 
         // Check if Internet present
         if (!cd.isConnectingToInternet()) {
@@ -169,6 +183,7 @@ public class Timer extends AppCompatActivity {
 
                 SharedPreferences sp = getApplicationContext().getSharedPreferences("UserSession",0);
 
+
                 // Create data variable for sent values to server
                 try {
 
@@ -177,6 +192,12 @@ public class Timer extends AppCompatActivity {
 
                     data1 += "&" + URLEncoder.encode("chosenOnes", "UTF-8")
                             + "=" + URLEncoder.encode(chosenOnes, "UTF-8");
+
+                    data1 += "&" + URLEncoder.encode("timestamp", "UTF-8")
+                            + "=" + URLEncoder.encode(String.valueOf(insert_time), "UTF-8");
+
+
+
 
                 }
                 catch(UnsupportedEncodingException e){
@@ -376,104 +397,221 @@ public class Timer extends AppCompatActivity {
 
         //dialog.dismiss();
 
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        ObjectAnimator animation = ObjectAnimator.ofInt (progressBar, "progress", 0, 500); // see this max value coming back here, we animale towards that value
-        animation.setDuration (60000); //in milliseconds
-        animation.setInterpolator (new DecelerateInterpolator());
-        animation.start ();
+//        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+//        ObjectAnimator animation = ObjectAnimator.ofInt (progressBar, "progress", 0, 500); // see this max value coming back here, we animale towards that value
+//        animation.setDuration (60000); //in milliseconds
+//        animation.setInterpolator (new DecelerateInterpolator());
+//        animation.start ();
+//
+//                new CountDownTimer(60000, 1000) {
+//
+//                    public void onTick(long millisUntilFinished) {
+//                        System.out.println("seconds remaining: " + millisUntilFinished / 1000);
+//                        //timer.setText("seconds remaining: " + millisUntilFinished / 1000);
+//                        if ((millisUntilFinished/1000)==55)
+//                        {
+//                            new Thread(new Runnable() {
+//                                public void run() {
+//
+//
+//
+//                                    String data2 = "";
+//                                    // Create data variable for sent values to server
+//                                    try {
+//
+//                                        data2 += "&" + URLEncoder.encode("challengeID", "UTF-8")
+//                                                + "=" + URLEncoder.encode(challengeID, "UTF-8");
+//                                    } catch (UnsupportedEncodingException e) {
+//                                        e.printStackTrace();
+//                                    }
+//
+//                                    BufferedReader reader2 = null;
+//
+//                                    // Send data
+//                                    try {
+//                                        // Defined URL  where to send data
+//                                        URL url = new URL(CommonUtilities.SERVER_URL + "pre_game_screen.php");
+//
+//                                        // Send POST data request
+//                                        Log.d("its pushh:", "notification !!");
+//                                        URLConnection conn = url.openConnection();
+//                                        conn.setDoOutput(true);
+//                                        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+//                                        wr.write(data2);
+//                                        wr.flush();
+//
+//                                        // Get the server response
+//
+//                                        reader2 = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+//                                        StringBuilder sb = new StringBuilder();
+//                                        String line = null;
+//                                        String builder = "";
+//
+//                                        // Read Server Response
+//                                        while ((line = reader2.readLine()) != null) {
+//                                            // Append server response in string
+//                                            System.out.println(builder);
+//                                            System.out.println(builder.length());
+//                                            //sb.append(line + "\n");
+//                                            builder += line;
+//
+//                                        }
+//
+//
+//                                        final String text = builder;
+//                                        System.out.println("Texter: " + text);
+//                                        System.out.println("len: " + text.length());
+//                                        if (!text.equals("failure")) {
+//
+//                                            inte.putExtra("accepted", challengeID);
+//                                            inte.putExtra("challengeid",challengeID);
+//                                            inte.putExtra("Boundary", getIntent().getExtras().getString("Boundary"));
+//                                            inte.putExtra("gamemode", getIntent().getExtras().getString("gamemode"));
+//                                            inte.putExtra("playermode", getIntent().getExtras().getString("playermode"));
+//
+//
+//                                        } else {
+//                                            Timer.this.runOnUiThread(new Runnable() {
+//                                                public void run() {
+//                                                    Toast.makeText(Timer.this, "Error: " + text, Toast.LENGTH_SHORT).show();
+//                                                }
+//                                            });
+//                                        }
+//                                    } catch (Exception ex) {
+//                                        ex.printStackTrace();
+//                                    } finally {
+//                                        try {
+//
+//                                            reader2.close();
+//                                        } catch (Exception ex) {
+//                                            ex.printStackTrace();
+//                                        }
+//                                    }
+//
+//                                }
+//                            }).start();
+//
+//                        }
+//                    }
+//
+//                    public void onFinish() {
+//                        startActivity(inte);
+//                          }
+//                }.start();
+        final java.util.Timer timer1 = new java.util.Timer();
+        timer1.scheduleAtFixedRate(new TimerTask() {
+            int check=0;
 
-                new CountDownTimer(60000, 1000) {
+            @Override
+            public void run(){
 
-                    public void onTick(long millisUntilFinished) {
-                        System.out.println("seconds remaining: " + millisUntilFinished / 1000);
-                        //timer.setText("seconds remaining: " + millisUntilFinished / 1000);
-                    }
+                if ((System.currentTimeMillis()-insert_time)<=10000.0 || (System.currentTimeMillis()-insert_time)>=50000.0)
+                    System.out.println((System.currentTimeMillis()-insert_time));
+                if (System.currentTimeMillis()>55000.0+insert_time && check==0)
+                {
 
-                    public void onFinish() {
-
-                        new Thread(new Runnable() {
-                            public void run() {
-
-
-
-                                String data2 = "";
-                        // Create data variable for sent values to server
-                        try {
-
-                            data2 += "&" + URLEncoder.encode("challengeID", "UTF-8")
-                                    + "=" + URLEncoder.encode(challengeID, "UTF-8");
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        }
-
-                        BufferedReader reader2 = null;
-
-                        // Send data
-                        try {
-                            // Defined URL  where to send data
-                            URL url = new URL(CommonUtilities.SERVER_URL + "pre_game_screen.php");
-
-                            // Send POST data request
-                            Log.d("its pushh:", "notification !!");
-                            URLConnection conn = url.openConnection();
-                            conn.setDoOutput(true);
-                            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-                            wr.write(data2);
-                            wr.flush();
-
-                            // Get the server response
-
-                            reader2 = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                            StringBuilder sb = new StringBuilder();
-                            String line = null;
-                            String builder = "";
-
-                            // Read Server Response
-                            while ((line = reader2.readLine()) != null) {
-                                // Append server response in string
-                                System.out.println(builder);
-                                System.out.println(builder.length());
-                                //sb.append(line + "\n");
-                                builder += line;
-
-                            }
+                    check=1;
+                    new Thread(new Runnable() {
+                                public void run() {
 
 
-                            final String text = builder;
-                            System.out.println("Texter: " + text);
-                            System.out.println("len: " + text.length());
-                            if (!text.equals("failure")) {
-                                Intent inte = new Intent(Timer.this, pregame.class);
-                                inte.putExtra("accepted", challengeID);
-                                inte.putExtra("challengeid",challengeID);
-                                inte.putExtra("Boundary", getIntent().getExtras().getString("Boundary"));
-                                inte.putExtra("gamemode", getIntent().getExtras().getString("gamemode"));
-                                inte.putExtra("playermode", getIntent().getExtras().getString("playermode"));
-                                startActivity(inte);
 
-                            } else {
-                                Timer.this.runOnUiThread(new Runnable() {
-                                    public void run() {
-                                        Toast.makeText(Timer.this, "Error: " + text, Toast.LENGTH_SHORT).show();
+                                    String data2 = "";
+                                    // Create data variable for sent values to server
+                                    try {
+
+                                        data2 += "&" + URLEncoder.encode("challengeID", "UTF-8")
+                                                + "=" + URLEncoder.encode(challengeID, "UTF-8");
+                                    } catch (UnsupportedEncodingException e) {
+                                        e.printStackTrace();
                                     }
-                                });
-                            }
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        } finally {
-                            try {
 
-                                reader2.close();
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                            }
-                        }
+                                    BufferedReader reader2 = null;
 
-                            }
-                        }).start();
-                    }
-                }.start();
+                                    // Send data
+                                    try {
+                                        // Defined URL  where to send data
+                                        URL url = new URL(CommonUtilities.SERVER_URL + "pre_game_screen.php");
 
+                                        // Send POST data request
+                                        Log.d("its pushh:", "notification !!");
+                                        URLConnection conn = url.openConnection();
+                                        conn.setDoOutput(true);
+                                        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                                        wr.write(data2);
+                                        wr.flush();
+
+                                        // Get the server response
+
+                                        reader2 = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                                        StringBuilder sb = new StringBuilder();
+                                        String line = null;
+                                        String builder = "";
+
+                                        // Read Server Response
+                                        while ((line = reader2.readLine()) != null) {
+                                            // Append server response in string
+                                            System.out.println(builder);
+                                            System.out.println(builder.length());
+                                            //sb.append(line + "\n");
+                                            builder += line;
+
+                                        }
+
+
+                                        final String text = builder;
+                                        System.out.println("Texter: " + text);
+                                        System.out.println("len: " + text.length());
+                                        if (!text.equals("failure")) {
+
+                                            a = challengeID;
+                                            b = getIntent().getExtras().getString("Boundary");
+                                            c = getIntent().getExtras().getString("gamemode");
+                                            d = getIntent().getExtras().getString("playermode");
+//                                            inte.putExtra("accepted", challengeID);
+//                                            inte.putExtra("challengeid",challengeID);
+//                                            inte.putExtra("Boundary", getIntent().getExtras().getString("Boundary"));
+//                                            inte.putExtra("gamemode", getIntent().getExtras().getString("gamemode"));
+//                                            inte.putExtra("playermode", getIntent().getExtras().getString("playermode"));
+
+
+                                        } else {
+                                            Timer.this.runOnUiThread(new Runnable() {
+                                                public void run() {
+                                                    Toast.makeText(Timer.this, "Error: " + text, Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        }
+                                    } catch (Exception ex) {
+                                        ex.printStackTrace();
+                                    } finally {
+                                        try {
+
+                                            reader2.close();
+                                        } catch (Exception ex) {
+                                            ex.printStackTrace();
+                                        }
+                                    }
+
+                                }
+                            }).start();
+
+                }
+                if (System.currentTimeMillis()>60000.0+insert_time)
+                {
+                    timer1.purge();
+                    timer1.cancel();
+                    Intent inte = new Intent(Timer.this,pregame.class);
+                    inte.putExtra("accepted", a);
+                    inte.putExtra("challengeid",a);
+                    inte.putExtra("Boundary", b);
+                    inte.putExtra("gamemode", c);
+                    inte.putExtra("playermode", d);
+                    startActivity(inte);
+                }
+
+            }
+        }, 0, 1);
 
 
 
