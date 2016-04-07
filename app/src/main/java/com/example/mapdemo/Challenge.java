@@ -52,19 +52,21 @@ public class Challenge extends ActionBarActivity {
 
         final TextView timer = (TextView) findViewById(R.id.timer);
 
-
-
         timer.setTypeface(custom_font);
 
 
+        final FrameLayout fm1 = (FrameLayout) findViewById(R.id.acceptlayout);
+        final FrameLayout fm2 = (FrameLayout) findViewById(R.id.rejectlayout);
 
 
         accept.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(android.view.View v) {
 
+             fm1.setVisibility(View.GONE);
+             fm2.setVisibility(View.GONE);
 
-            Thread t = new Thread(new Runnable() {
+             Thread t = new Thread(new Runnable() {
                     public void run(){
 
 
@@ -345,11 +347,19 @@ public class Challenge extends ActionBarActivity {
                     @Override
                     public void run(){
 
-//                        if ((System.currentTimeMillis()-insert_time)<=10000.0 || (System.currentTimeMillis()-insert_time)>=50000.0)
-//                            System.out.println("time left: " + (System.currentTimeMillis()-insert_time));
+                        if ((System.currentTimeMillis()-insert_time)%1000.0 == 0.0) {
+                            Challenge.this.runOnUiThread(new Runnable() {
+                                public void run() {
+                                    timer.setText(String.valueOf((System.currentTimeMillis() - insert_time) / 1000.0));
+                                }
+                            });
+
+
+                        }
                         if ((System.currentTimeMillis()-insert_time)>=60000.0)
                         {
                             Intent inte = new Intent(Challenge.this,pregame.class);
+                            inte.putExtra("insert_time",insert_time);
                             inte.putExtra("accepted",challengeID);
                             timer1.purge();
                             timer1.cancel();

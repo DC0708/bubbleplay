@@ -79,7 +79,7 @@ public class Timer extends AppCompatActivity {
         final TextView wait = (TextView) findViewById(R.id.textView9);
         wait.setTypeface(custom_font);
 
-
+        final TextView tv = (TextView) findViewById(R.id.clock);
 
         System.out.println("Entered timer Activity");
 
@@ -505,8 +505,15 @@ public class Timer extends AppCompatActivity {
             @Override
             public void run(){
 
-                if ((System.currentTimeMillis()-insert_time)<=10000.0 || (System.currentTimeMillis()-insert_time)>=50000.0)
-                    System.out.println((System.currentTimeMillis()-insert_time));
+                if ((System.currentTimeMillis()-insert_time)%1000.0 == 0.0) {
+                    Timer.this.runOnUiThread(new Runnable() {
+                        public void run() {
+                            tv.setText(String.valueOf((System.currentTimeMillis() - insert_time) / 1000.0));
+                        }
+                    });
+
+
+                }
                 if (System.currentTimeMillis()>55000.0+insert_time && check==0)
                 {
 
@@ -607,6 +614,7 @@ public class Timer extends AppCompatActivity {
                     inte.putExtra("Boundary", b);
                     inte.putExtra("gamemode", c);
                     inte.putExtra("playermode", d);
+                    inte.putExtra("insert_time",insert_time);
                     startActivity(inte);
                 }
 

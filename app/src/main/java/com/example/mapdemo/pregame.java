@@ -34,6 +34,7 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimerTask;
 
 
 public class pregame extends ActionBarActivity {
@@ -51,6 +52,7 @@ public class pregame extends ActionBarActivity {
     public String Gamemode;
 
     public Location location;
+
 
     public final double mediumfactor = 1.5;
     public final double largefactor = 2.0;
@@ -75,7 +77,7 @@ public class pregame extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pregame);
-        in  = new Intent(pregame.this,Controller2.class);
+        in = new Intent(pregame.this,Controller2.class);
         String accepted = "";
 
         String challenger_chk = "";
@@ -87,6 +89,9 @@ public class pregame extends ActionBarActivity {
         names.setTypeface(custom_font);
 
         final Bundle extr = getIntent().getExtras();
+
+        final double insert_time = extr.getDouble("insert_time");
+
         if (extr.containsKey("challengeid"))
         {
             challenger_chk="yes";
@@ -113,30 +118,26 @@ public class pregame extends ActionBarActivity {
            //tim.setText(getIntent().getExtras().getString("challengeID"));
 
 
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        ObjectAnimator animation = ObjectAnimator.ofInt (progressBar, "progress", 0, 500); // see this max value coming back here, we animale towards that value
-        animation.setDuration (10000); //in milliseconds
-        animation.setInterpolator (new DecelerateInterpolator());
-        animation.start ();
-
-        new CountDownTimer(10000, 1000) {
 
 
-            public void onTick(long millisUntilFinished) {
-
-                //tim.setText("Game will start in: " + millisUntilFinished / 1000);
-            }
-
-            public void onFinish() {
-
-                Toast.makeText(pregame.this, "Start the game!", Toast.LENGTH_SHORT).show();
-                Log.d("starting ", "game");
-
-                startActivity(in);
-
-            }
-
-        }.start();
+//        new CountDownTimer(10000, 1000) {
+//
+//
+//            public void onTick(long millisUntilFinished) {
+//
+//                //tim.setText("Game will start in: " + millisUntilFinished / 1000);
+//            }
+//
+//            public void onFinish() {
+//
+//                Toast.makeText(pregame.this, "Start the game!", Toast.LENGTH_SHORT).show();
+//                Log.d("starting ", "game");
+//
+//                startActivity(in);
+//
+//            }
+//
+//        }.start();
 
         if(challenger_chk.equals("yes")){
 
@@ -212,6 +213,33 @@ public class pregame extends ActionBarActivity {
 
         }
 
+//        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+//        ObjectAnimator animation = ObjectAnimator.ofInt (progressBar, "progress", 0, 500); // see this max value coming back here, we animale towards that value
+//        animation.setDuration (10000); //in milliseconds
+//        animation.setInterpolator (new DecelerateInterpolator());
+//        animation.start ();
+
+        final java.util.Timer timer = new java.util.Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+
+
+            @Override
+            public void run(){
+
+//                        if ((System.currentTimeMillis()-insert_time)<=10000.0 || (System.currentTimeMillis()-insert_time)>=50000.0)
+//                            System.out.println("time left: " + (System.currentTimeMillis()-insert_time));
+                if ((System.currentTimeMillis()-insert_time)>=70000.0)
+                {
+
+                    timer.purge();
+                    timer.cancel();
+                    startActivity(in);
+
+                }
+
+            }
+        }, 0, 1);
+
 
 
     }
@@ -229,7 +257,7 @@ public class pregame extends ActionBarActivity {
         initialsnacks.add(tempsnack);
         final int index = i;
 
-        new Thread(new Runnable() {
+        Thread t = new Thread(new Runnable() {
             public void run() {
 
                 // Get user defined values
@@ -339,7 +367,18 @@ public class pregame extends ActionBarActivity {
                 }
 
             }
-        }).start();
+        });
+
+        t.start();
+
+        try {
+            t.join();
+        }
+        catch(InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+
 
 
 
@@ -348,7 +387,7 @@ public class pregame extends ActionBarActivity {
     public void getSourceLoc(final String Challengeid){
 
         Log.d("getting source","location " + Challengeid);
-        new Thread(new Runnable() {
+        Thread t = new Thread(new Runnable() {
             public void run(){
 
 
@@ -461,7 +500,18 @@ public class pregame extends ActionBarActivity {
 
 
 
-        }).start();
+        });
+
+        t.start();
+
+        try {
+            t.join();
+        }
+        catch(InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+
 
 
     }
@@ -482,7 +532,7 @@ public class pregame extends ActionBarActivity {
         initialjunks.add(tempjunk);
         final int index = i;
 
-        new Thread(new Runnable() {
+        Thread t = new Thread(new Runnable() {
             public void run() {
 
 
@@ -594,10 +644,16 @@ public class pregame extends ActionBarActivity {
                 }
 
             }
-        }).start();
+        });
 
-
-
+        t.start();
+        try {
+            t.join();
+        }
+        catch(InterruptedException e)
+        {
+            e.printStackTrace();
+        }
 
     }
 
@@ -609,7 +665,7 @@ public class pregame extends ActionBarActivity {
 
             final int index = i;
 
-            new Thread(new Runnable() {
+            Thread t = new Thread(new Runnable() {
                 public void run() {
 
 
@@ -715,7 +771,18 @@ public class pregame extends ActionBarActivity {
                     }
 
                 }
-            }).start();
+            });
+
+            t.start();
+
+            try {
+                t.join();
+            }
+            catch(InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+
 
         }
     }

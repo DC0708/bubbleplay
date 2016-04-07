@@ -122,6 +122,8 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
 
     public List<Circle> otherPlayers = new ArrayList<Circle>(10);
 
+    public List<String> otherPlayerNames = new ArrayList<String>(10);
+
     public List<SnackBubble> snacks = new ArrayList<SnackBubble>(20);
 
     public List<JunkBubble> junks = new ArrayList<JunkBubble>(20);
@@ -185,7 +187,7 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
             Playermode = extras.getString("playermode");
 
             if(extras.containsKey("sourcelat")){
-                Log.d("lat and long", " " + extras.getDouble("sourcelat") + extras.getDouble("sourcelong"));
+                //Log.d("lat and long", " " + extras.getDouble("sourcelat") + extras.getDouble("sourcelong"));
 
                 SourceLoc = new LatLng(extras.getDouble("sourcelat"),extras.getDouble("sourcelong"));
 
@@ -193,7 +195,8 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
 
         }
 
-        Log.d("Game mode is", Gamemode);
+
+        //Log.d("Game mode is", Gamemode);
 
         final SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -580,13 +583,13 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
             tempsnack.setCenter(new LatLng(finalLoc.latitude,finalLoc.longitude));
             //        Log.d("moved","yes");
             double decFactor = 0.000005;
-            if (distFrom(latit, longit, InitialLoc.latitude + gamemodel.boundaryWidth / 2, longit) < snack.radius) {
+            if (distFrom(latit, longit, SourceLoc.latitude + gamemodel.boundaryWidth / 2, longit) < snack.radius) {
 
                 snack.dir = 360 - snack.dir;
                 snack.center.x = latit-decFactor;
                 snack.center.y = longit;
                 tempsnack.setCenter(new LatLng(finalLoc.latitude-decFactor,finalLoc.longitude));
-            } else if (distFrom(latit, longit, latit, InitialLoc.longitude + gamemodel.boundaryWidth / 2) < snack.radius) {
+            } else if (distFrom(latit, longit, latit, SourceLoc.longitude + gamemodel.boundaryWidth / 2) < snack.radius) {
 
                 if (snack.dir < 180)
                     snack.dir = 180 - snack.dir;
@@ -598,7 +601,7 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
                 snack.center.y = longit-decFactor;
                 tempsnack.setCenter(new LatLng(finalLoc.latitude,finalLoc.longitude-decFactor));
 
-            } else if (distFrom(latit, longit, InitialLoc.latitude - gamemodel.boundaryWidth / 2, longit) < snack.radius) {
+            } else if (distFrom(latit, longit, SourceLoc.latitude - gamemodel.boundaryWidth / 2, longit) < snack.radius) {
 
                 snack.dir = 360 - snack.dir;
 
@@ -607,7 +610,7 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
 
                 tempsnack.setCenter(new LatLng(finalLoc.latitude+decFactor,finalLoc.longitude));
 
-            } else if (distFrom(latit, longit, latit, InitialLoc.longitude - gamemodel.boundaryWidth / 2) < snack.radius) {
+            } else if (distFrom(latit, longit, latit, SourceLoc.longitude - gamemodel.boundaryWidth / 2) < snack.radius) {
 
                 if (snack.dir < 180)
                     snack.dir = 180 - snack.dir;
@@ -638,13 +641,13 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
             //
             // Log.d("moved","yes");
             double decFactor = 0.000005;
-            if (distFrom(latit, longit, InitialLoc.latitude + gamemodel.boundaryWidth / 2, longit) < snack.radius) {
+            if (distFrom(latit, longit, SourceLoc.latitude + gamemodel.boundaryWidth / 2, longit) < snack.radius) {
 
                 snack.dir = 360 - snack.dir;
                 snack.center.x = latit-decFactor;
                 snack.center.y = longit;
                 tempsnack.setCenter(new LatLng(finalLoc.latitude-decFactor,finalLoc.longitude));
-            } else if (distFrom(latit, longit, latit, InitialLoc.longitude + gamemodel.boundaryWidth / 2) < snack.radius) {
+            } else if (distFrom(latit, longit, latit, SourceLoc.longitude + gamemodel.boundaryWidth / 2) < snack.radius) {
 
                 if (snack.dir < 180)
                     snack.dir = 180 - snack.dir;
@@ -656,7 +659,7 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
                 snack.center.y = longit-decFactor;
                 tempsnack.setCenter(new LatLng(finalLoc.latitude,finalLoc.longitude-decFactor));
 
-            } else if (distFrom(latit, longit, InitialLoc.latitude - gamemodel.boundaryWidth / 2, longit) < snack.radius) {
+            } else if (distFrom(latit, longit, SourceLoc.latitude - gamemodel.boundaryWidth / 2, longit) < snack.radius) {
 
                 snack.dir = 360 - snack.dir;
 
@@ -665,7 +668,7 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
 
                 tempsnack.setCenter(new LatLng(finalLoc.latitude+decFactor,finalLoc.longitude));
 
-            } else if (distFrom(latit, longit, latit, InitialLoc.longitude - gamemodel.boundaryWidth / 2) < snack.radius) {
+            } else if (distFrom(latit, longit, latit, SourceLoc.longitude - gamemodel.boundaryWidth / 2) < snack.radius) {
 
                 if (snack.dir < 180)
                     snack.dir = 180 - snack.dir;
@@ -997,13 +1000,13 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
             tempsnack.setCenter(new LatLng(finalLoc.latitude,finalLoc.longitude));
             //        Log.d("moved","yes");
             double decFactor = 0.000005;
-            if (distFrom(latit, longit, InitialLoc.latitude + gamemodel.boundaryWidth / 2, longit) < snack.radius) {
+            if (distFrom(latit, longit, SourceLoc.latitude + gamemodel.boundaryWidth / 2, longit) < snack.radius) {
 
                 snack.dir = 360 - snack.dir;
                 snack.center.x = latit-decFactor;
                 snack.center.y = longit;
                 tempsnack.setCenter(new LatLng(finalLoc.latitude-decFactor,finalLoc.longitude));
-            } else if (distFrom(latit, longit, latit, InitialLoc.longitude + gamemodel.boundaryWidth / 2) < snack.radius) {
+            } else if (distFrom(latit, longit, latit, SourceLoc.longitude + gamemodel.boundaryWidth / 2) < snack.radius) {
 
                 if (snack.dir < 180)
                     snack.dir = 180 - snack.dir;
@@ -1015,7 +1018,7 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
                 snack.center.y = longit-decFactor;
                 tempsnack.setCenter(new LatLng(finalLoc.latitude,finalLoc.longitude-decFactor));
 
-            } else if (distFrom(latit, longit, InitialLoc.latitude - gamemodel.boundaryWidth / 2, longit) < snack.radius) {
+            } else if (distFrom(latit, longit, SourceLoc.latitude - gamemodel.boundaryWidth / 2, longit) < snack.radius) {
 
                 snack.dir = 360 - snack.dir;
 
@@ -1024,7 +1027,7 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
 
                 tempsnack.setCenter(new LatLng(finalLoc.latitude+decFactor,finalLoc.longitude));
 
-            } else if (distFrom(latit, longit, latit, InitialLoc.longitude - gamemodel.boundaryWidth / 2) < snack.radius) {
+            } else if (distFrom(latit, longit, latit, SourceLoc.longitude - gamemodel.boundaryWidth / 2) < snack.radius) {
 
                 if (snack.dir < 180)
                     snack.dir = 180 - snack.dir;
@@ -1200,9 +1203,12 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
 
                                         double centerlong = jsonArray.getJSONObject(pq).getDouble("longitude");
 
+                                        String playername = jsonArray.getJSONObject(pq).getString("name");
+
                                         Log.d("other players size"," "+ otherPlayers.size() +" " +  gameover);
 //                                        if (otherPlayers.size()>pq-1)
                                         otherPlayers.get(pq).setCenter(new LatLng(centerlat,centerlong));
+                                        otherPlayerNames.set(pq,playername);
 
                                         System.out.println("All players location updated");
                                     }
@@ -1332,6 +1338,8 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
 
                                         double centerlong = jsonArray.getJSONObject(pq).getDouble("longitude");
 
+                                        String playername = jsonArray.getJSONObject(pq).getString("name");
+
                                         CircleOptions temp3 = new CircleOptions()
                                                 .center(gpsLocation)
                                                 .radius(playerradii)
@@ -1341,6 +1349,7 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
                                         Circle otherPlayer;
                                         otherPlayer = googleMap.addCircle(temp3);
                                         otherPlayers.add(otherPlayer);
+                                        otherPlayerNames.add(playername);
 
                                         Log.d("yooooooooooo", "i am heree@@@@@@@@@@@@");
                                        // System.out.println("snackid: " + jsonArray.getJSONObject(pq).getInt("snackid"));
@@ -1855,7 +1864,7 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
 
     public void createrepeller(){
 
-        repeller = new RepellerBubble(gamemodel.isPlacedBubble,gamemodel,InitialLoc);
+        repeller = new RepellerBubble(gamemodel.isPlacedBubble,gamemodel,SourceLoc);
 
         Circle temp3 = googleMap.addCircle(new CircleOptions()
                 .center(new LatLng(repeller.center.x, repeller.center.y))
@@ -1937,97 +1946,205 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
 
         }
 
-        for(int i=0;i<snac.size();i++){
+//        for(int i=0;i<snac.size();i++){
+//
+//            for(int j=0;j<otherPlayers.size();j++) {
+//
+//                double distanceBwBubbles = distFrom(snacks.get(i).center.x, snacks.get(i).center.y, otherPlayers.get(j).getCenter().latitude, otherPlayers.get(j).getCenter().longitude);
+//
+//                Log.d("Snack", " and player");
+//
+//                if (otherPlayers.get(j).getRadius() + snacks.get(i).radius >= Math.abs(distanceBwBubbles)) {
+//
+//                    if (otherPlayers.get(j).getRadius() > snacks.get(i).radius) {
+//                        double r1 = otherPlayers.get(j).getRadius();
+//                        double r2 = snacks.get(i).radius;
+//
+//                        double newRadius = Math.pow((Math.pow(r1, 3) + Math.pow(r2, 3)), 1.0 / 3.0);
+//                        totalscore = totalscore + (int) (30 * Math.abs(Math.pow((Math.pow(r1, 3) - Math.pow(r2, 3)), 1.0 / 3.0)));
+//                        score.setText(" SCORE : " + totalscore);
+//                        otherPlayers.get(j).setRadius(newRadius);
+//                        snac.get(i).remove();
+//                        snac.remove(i);
+//                        snacks.remove(i);
+//                        break;
+//                    } else {
+//                        double r1 = otherPlayers.get(j).getRadius();
+//                        double r2 = snacks.get(i).radius;
+//
+//                        double newRadius = Math.pow((Math.pow(r2, 3) - Math.pow(r1, 3)), 1.0 / 3.0);
+//                        //totalscore = totalscore + (int) (30 * Math.abs(Math.pow((Math.pow(r1, 3) - Math.pow(r2, 3)), 1.0 / 3.0)));
+//                        //score.setText(" SCORE : " + totalscore);
+//                        snacks.get(i).radius = newRadius;
+//                        snac.get(i).setRadius(newRadius);
+//                        Log.d("Snack", " and other 1 1 player!!..Game Over!!");
+//                        otherPlayers.get(j).remove();
+//                        otherPlayers.remove(j);
+//                        //gameover = true;
+//                    }
+//
+//                }
+//                //if (gameover)
+//                //    break;
+//            }
+//           // if (gameover)
+//             //   break;
+//        }
+//
+//        for(int i=0;i<jun.size();i++) {
+//
+//            for (int j = 0; j < otherPlayers.size(); j++) {
+//
+//                double distanceBwBubbles = distFrom(junks.get(i).center.x, junks.get(i).center.y, otherPlayers.get(j).getCenter().latitude, otherPlayers.get(j).getCenter().longitude);
+//
+//                if (otherPlayers.get(j).getRadius() + junks.get(i).radius >= Math.abs(distanceBwBubbles)) {
+//                    Log.d("Junk", " and player");
+//                    if (otherPlayers.get(j).getRadius() > junks.get(i).radius) {
+//                        double r1 = otherPlayers.get(j).getRadius();
+//                        double r2 = junks.get(i).radius;
+//
+//                        double newRadius = Math.pow((Math.pow(r1, 3) - Math.pow(r2, 3)), 1.0 / 3.0);
+//
+//
+//                        totalscore = totalscore - (int) (30 * Math.abs(Math.pow((Math.pow(r1, 3) - Math.pow(r2, 3)), 1.0 / 3.0)));
+//                        score.setText(" SCORE : " + totalscore);
+//
+//                        otherPlayers.get(j).setRadius(newRadius);
+//                        jun.get(i).remove();
+//                        jun.remove(i);
+//                        junks.remove(i);
+//                        break;
+//                    } else {
+//                        Log.d("Junk", " and other 1 1  player!!..Game Over!!");
+//
+//                        double r1 = otherPlayers.get(j).getRadius();
+//                        double r2 = junks.get(i).radius;
+//
+//                        double newRadius = Math.pow((Math.pow(r2, 3) - Math.pow(r1, 3)), 1.0 / 3.0);
+//
+//                        junks.get(i).radius = newRadius;
+//                        jun.get(i).setRadius(newRadius);
+//
+//                        otherPlayers.get(j).remove();
+//                        otherPlayers.remove(j);
+//                        //gameover = true;
+//                    }
+//                }
+//                //if (gameover)
+//                //    break;
+//
+//            }
+//
+//          //  if (gameover)
+//          //      break;
+//
+//        }
+        for (int i=0;i<otherPlayers.size();i++)
+        {
+            final String temp = otherPlayerNames.get(i);
+            final int x = i;
+                new Thread(new Runnable() {
+                public void run(){
 
-            for(int j=0;j<otherPlayers.size();j++) {
 
-                double distanceBwBubbles = distFrom(snacks.get(i).center.x, snacks.get(i).center.y, otherPlayers.get(j).getCenter().latitude, otherPlayers.get(j).getCenter().longitude);
+                    String data1 = "";
 
-                Log.d("Snack", " and player");
+                    // Create data variable for sent values to server
+                    try {
 
-                if (otherPlayers.get(j).getRadius() + snacks.get(i).radius >= Math.abs(distanceBwBubbles)) {
+                        data1 += "&" + URLEncoder.encode("username", "UTF-8")
+                                + "=" + URLEncoder.encode(temp, "UTF-8");
+                        data1 += "&" + URLEncoder.encode("challengeid", "UTF-8")
+                                + "=" + URLEncoder.encode(Challengeid, "UTF-8");
 
-                    if (otherPlayers.get(j).getRadius() > snacks.get(i).radius) {
-                        double r1 = otherPlayers.get(j).getRadius();
-                        double r2 = snacks.get(i).radius;
-
-                        double newRadius = Math.pow((Math.pow(r1, 3) + Math.pow(r2, 3)), 1.0 / 3.0);
-                        totalscore = totalscore + (int) (30 * Math.abs(Math.pow((Math.pow(r1, 3) - Math.pow(r2, 3)), 1.0 / 3.0)));
-                        score.setText(" SCORE : " + totalscore);
-                        otherPlayers.get(j).setRadius(newRadius);
-                        snac.get(i).remove();
-                        snac.remove(i);
-                        snacks.remove(i);
-                        break;
-                    } else {
-                        double r1 = otherPlayers.get(j).getRadius();
-                        double r2 = snacks.get(i).radius;
-
-                        double newRadius = Math.pow((Math.pow(r2, 3) - Math.pow(r1, 3)), 1.0 / 3.0);
-                        //totalscore = totalscore + (int) (30 * Math.abs(Math.pow((Math.pow(r1, 3) - Math.pow(r2, 3)), 1.0 / 3.0)));
-                        //score.setText(" SCORE : " + totalscore);
-                        snacks.get(i).radius = newRadius;
-                        snac.get(i).setRadius(newRadius);
-                        Log.d("Snack", " and other 1 1 player!!..Game Over!!");
-                        otherPlayers.get(j).remove();
-                        otherPlayers.remove(j);
-                        //gameover = true;
+                    }
+                    catch(UnsupportedEncodingException e){
+                        e.printStackTrace();
                     }
 
-                }
-                //if (gameover)
-                //    break;
-            }
-           // if (gameover)
-             //   break;
-        }
+                    BufferedReader reader1=null;
 
-        for(int i=0;i<jun.size();i++) {
+                    // Send data
+                    try
+                    {
+                        // Defined URL  where to send data
+                        URL url = new URL(CommonUtilities.SERVER_URL + "checkPlayerLost.php");
 
-            for (int j = 0; j < otherPlayers.size(); j++) {
+                        // Send POST data request
+                        Log.d("its pushh:", "notification !!");
+                        URLConnection conn = url.openConnection();
+                        conn.setDoOutput(true);
+                        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                        wr.write(data1);
+                        wr.flush();
 
-                double distanceBwBubbles = distFrom(junks.get(i).center.x, junks.get(i).center.y, otherPlayers.get(j).getCenter().latitude, otherPlayers.get(j).getCenter().longitude);
+                        // Get the server response
 
-                if (otherPlayers.get(j).getRadius() + junks.get(i).radius >= Math.abs(distanceBwBubbles)) {
-                    Log.d("Junk", " and player");
-                    if (otherPlayers.get(j).getRadius() > junks.get(i).radius) {
-                        double r1 = otherPlayers.get(j).getRadius();
-                        double r2 = junks.get(i).radius;
+                        reader1 = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        StringBuilder sb = new StringBuilder();
+                        String line = null;
+                        String builder = "";
 
-                        double newRadius = Math.pow((Math.pow(r1, 3) - Math.pow(r2, 3)), 1.0 / 3.0);
+                        // Read Server Response
+                        while((line = reader1.readLine()) != null)
+                        {
+                            // Append server response in string
+                            System.out.println(builder);
+                            System.out.println(builder.length());
+                            //sb.append(line + "\n");
+                            builder+=line;
+
+                        }
 
 
-                        totalscore = totalscore - (int) (30 * Math.abs(Math.pow((Math.pow(r1, 3) - Math.pow(r2, 3)), 1.0 / 3.0)));
-                        score.setText(" SCORE : " + totalscore);
+                        final String text = builder;
+                        System.out.println("Textii: "+text);
+                        System.out.println("len: "+text.length());
+                        if (text.equals("lost"))
+                        {
 
-                        otherPlayers.get(j).setRadius(newRadius);
-                        jun.get(i).remove();
-                        jun.remove(i);
-                        junks.remove(i);
-                        break;
-                    } else {
-                        Log.d("Junk", " and other 1 1  player!!..Game Over!!");
+                            Controller2.this.runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Toast.makeText(Controller2.this, "A player just lost!", Toast.LENGTH_SHORT).show();
 
-                        double r1 = otherPlayers.get(j).getRadius();
-                        double r2 = junks.get(i).radius;
 
-                        double newRadius = Math.pow((Math.pow(r2, 3) - Math.pow(r1, 3)), 1.0 / 3.0);
+                            otherPlayers.get(x).remove();
+                            otherPlayers.remove(x);
+                            otherPlayerNames.remove(x);
 
-                        junks.get(i).radius = newRadius;
-                        jun.get(i).setRadius(newRadius);
+                                }
+                            });
 
-                        otherPlayers.get(j).remove();
-                        otherPlayers.remove(j);
-                        //gameover = true;
+
+
+
+                        }
+
                     }
+                    catch(Exception ex)
+                    {
+                        ex.printStackTrace();
+                    }
+                    finally
+                    {
+                        try
+                        {
+
+                            reader1.close();
+                        }
+
+                        catch(Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+
+
                 }
-                //if (gameover)
-                //    break;
 
-            }
 
-          //  if (gameover)
-          //      break;
+
+            }).start();
+
 
         }
 
@@ -2131,8 +2248,8 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
             repellerSafeDistance = 10.0;
 
 
-            if(InitialLoc != null)
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(InitialLoc.latitude, InitialLoc.longitude), 19.5f));
+            if(SourceLoc != null)
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(SourceLoc.latitude, SourceLoc.longitude), 19.5f));
 
         } else if (BoundaryType.equals("Medium")) {
 
@@ -2140,8 +2257,8 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
 
             repellerSafeDistance = 8.0;
 
-            if (InitialLoc != null)
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(InitialLoc.latitude, InitialLoc.longitude), 19.8f));
+            if (SourceLoc != null)
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(SourceLoc.latitude, SourceLoc.longitude), 19.8f));
 
         } else {
 
@@ -2149,8 +2266,8 @@ public class Controller2 extends AppCompatActivity implements LocationListener, 
 
             repellerSafeDistance = 6.0;
 
-            if (InitialLoc != null)
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(InitialLoc.latitude, InitialLoc.longitude), 20.8f));
+            if (SourceLoc != null)
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(SourceLoc.latitude, SourceLoc.longitude), 20.8f));
 
         }
 
